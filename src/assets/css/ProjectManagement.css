@@ -1,0 +1,34 @@
+.result .tab .project-table tr th:first-child{width:3%;}
+.result .tab .project-table tr th:last-child{width:20%}
+
+.result .tab .project-table tr td{border-bottom:1px solid #e1e6eb;border-right:1px solid #e1e6eb;height:45px;font-size:14px;color:#999;text-align: center;}
+.result .tab .project-table tr td:first-child{text-align:center;}
+.result .tab .project-table tr td:nth-child(11){text-align:center;color:#52d669;}
+
+.result .tab .project-table tr td:first-child input[type=checkbox]{
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;rance:none; -moz-appearance:none; -webkit-appearance:none;width:14px;height:14px;border:1px solid #c1c1c1;border-radius:50%;}
+.result .tab .project-table tr td:first-child input[type=checkbox]:checked{background:url(../images/icon_6.png)no-repeat center/contain;border:none;}
+
+.result .tab .project-table tr td:last-child a{font-size:14px;color:#1c7dfa;}
+.result .tab .project-table tr td:last-child a{margin-right:5%;}
+
+.depwd{height:60px;width: 600px;position: absolute;top: 10%;left: 40%;}
+.bot{width:100%;height: 570px;background-color: #fff;}
+.t-text{font-size: 14px;color: #fff;line-height: 60px;margin-left:25px;}
+.close{width:60px;height:60px;font-size: 14px;color: #fff;line-height: 60px;text-align: center;background-color: #006af2;}
+.close:hover{cursor: pointer;}
+.cet{width: 440px;margin: 0 auto;padding-top: 25px;}
+.red{color: #f35857;font-size: 14px;height: 30px;line-height: 30px;margin-bottom: 25px;padding-left: 90px;}
+.cet p{line-height: 30px;margin-bottom: 20px;}
+.cet p span{text-align:right;width: 20%;}
+.cet input{width: 330px;height: 30px;border: 1px solid #999;color:#999;float: right;padding-left: 10px;border-radius: 5px;}
+.icon-xingxing{font-size: 8px!important;color: #ff0000!important;}
+.bz>i{color: transparent!important;}
+.bz>input{width: 330px;height:85px;border: 1px solid #999;color:#999;float: right;padding-left:10px;border-radius: 5px;padding-bottom: 60px;}
+.button{height: 30px;width: 100%;margin-top: 30px;}
+.qx{display: block;height:30px;width: 90px;color:#1c7dfa;border: 1px solid #1c7dfa;border-radius: 5px;text-align: center;line-height: 30px;}
+.qx:hover{cursor: pointer;}
+.qr{display: block;height:30px;width: 90px;color:#fff;background-color:#1c7dfa;border-radius: 5px;margin-left: 30px;text-align: center;line-height: 30px;}
+.qr:hover{cursor: pointer;}

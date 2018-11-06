@@ -1,0 +1,82 @@
+.box{width:86%!important;height:98vh;}
+/*.content{width:100%;height:97%;background:rgba(0,0,0,.2);position:relative;}*/
+/*.content .search{width:100%;height:30%;padding:40px 3% 0;}*/
+.wrap{width: 100%;height: 38vh;}
+.wrap-left{width: 23%;height:100%;}
+.wrap-right{width: 76%;height:100%;}
+.wrap-right ul{width: 100%;height: 100%;}
+.wrap-right ul li{width: 49.5%;height: 100%;}
+.wrap-right ul li:first-child{float: left;background: url(../images/mc.png);background-size:cover;}
+.wrap-right ul li:last-child{float: right;background: url(../images/mc.png);background-size:cover;}
+.ltop{height: 48%;width: 100%;background-color: #fff;margin-bottom: 4%;padding: 0 5%;position: relative;}
+.lbot{height: 48%;width: 100%;background-color: #fff;padding: 0 5%;position: relative;}
+.p1{text-align: right;display: block;font-size:1rem;margin-bottom:.875rem;}
+.p1:hover{cursor: pointer;}
+.secl{width: 50%;height: 70%;}
+.secr{width: 50%;height: 70%;background-color: #f9f9fa;padding: 10% 5%;}
+.secr>b{display: block;font-size: 14px;text-align: center;color: #666;}
+.secr>span{display: block;font-size: 0.625rem;text-align: center;color: #ff0000;line-height:50px;}
+.wrap1{width: 100%;height: 47vh;padding-top: 10px;}
+.wrap1-left{width: 76%;height:100%;}
+.wrap1-right{width: 23%;height:100%;background-color: #fff;border-radius: 5px;}
+.top{height:4rem;width: 100%;background-color: #fff;border-radius: 5px;margin-bottom:1rem;padding-top: 1rem;}
+.top>a{display:block;height:2rem;text-align: center;color: #000;background-color: #f7f7f7;border-radius: 5px;border: 1px solid #E1E6EB;margin-left:1rem;line-height:2rem;}
+.top>a:hover{cursor: pointer;}
+.but1{width: 120px;}
+.but2{width: 90px;}
+.ptext{font-size: 14px;text-align: right;line-height: 2rem;color:#333;padding-right: 2rem;}
+.redtext{color: #e60012;font-size: 1.5rem;}
+.bot{width: 100%;background-color: #fff;padding: 1rem 1.2rem;border-radius: 5px;height: calc(100% - 5rem);}
+.bot table{width: 100%;border-collapse: collapse;}
+.bot table th{color:#666;height:4rem;background-color: #f4f5f9;border:1px solid #E1E6EB;text-align: center;}
+.bot table th:first-child{width:6%;}
+.bot table td{height:3rem;border-bottom: 1px solid #E1E6EB;border-right:1px solid #E1E6EB;text-align: center;color: #999;}
+.bot table tr td:first-child{border-left: 1px solid #E1E6EB;}
+.bot table td a{text-decoration: underline;color: #52d669;}
+.red{color: #ff0000!important;}
+.bot table td>i:not(:last-of-type){margin-right: 15px;}
+.cz{width: 15%;}
+
+.ckb{width: 1rem;height: 1rem;display: block!important;margin: 0 auto;}
+.ckb:hover{cursor: pointer;}
+
+.bot input{display: none;}
+.bot input+label{display: inline-block;border-radius: 50%;border: 1px #aaa solid;width: 1rem;height: 1rem; }
+.bot input:checked+label{background-image: url(../images/icon-gou.png);background-size: cover;border: none;}
+
+.py input{display: none;}
+.py input+label{display: inline-block;border-radius: 50%;border: 1px #aaa solid;width: 1rem;height: 1rem; }
+.py input:checked+label{background-image: url(../images/icon-gou.png);background-size: cover;border: none;}
+
+.wrap1-right{padding:1.5rem 1rem 0 1rem;}
+.iconfont:hover{cursor: pointer;}
+
+.section-one{width: 100%;background-color: #f9f9fa;border-radius: 5px;padding:1.25rem 0;margin-bottom: 40px;}
+.pbb{font-size: 2rem;text-align: center;line-height: 1.875rem;color: #1c7dfa;}
+.ps{width: 100%;font-size:.625rem;text-align: center;color: #969896;line-height:1.875rem;}
+.pst{width: 100%;font-size:.875rem;text-align: center;color: #969896;line-height:1.875rem;}
+.ps>span{color: #1c7dfa;}
+.pgt{font-size:1rem;text-align: center;line-height:2rem;color: #666;margin-bottom:.5rem;}
+.pgt>span{font-size: 3rem;color: #ff0000;}
+.pl{font-size: 0.625rem;}
+.pl>span{color: #ff0000;font-size: 2rem;}
+.pr{font-size: 0.625rem;}
+.pr>span{color: #ff0000;font-size: 2rem;}
+.py{margin-bottom: 2.5rem;position: relative;height: 1rem;width: 100%;}
+.pay{color: #969896;font-size:1rem;height: 1rem;}
+.xj{position: absolute;top: 0;left: 10%;}
+.wx{position: absolute;top: 0;right: 10%;}
+.zfb{height: 1rem;margin: 0 auto;width:4.5rem;}
+.wx{color: #969896;font-size:1rem;}
+.but{display:block;width: 100%;height:2.5rem;font-size:1rem;text-align: center;color: #FFF;line-height:2.5rem;border-radius: 5px;background-color: #1c7dfa;}
+.openc{width:4rem;background: #fff;box-shadow: 0 0 10px #ccc;position: absolute;top: 1.5rem;right: -1rem;}
+.openc div{width: 100%;height: 2rem;text-align: center;line-height: 2rem;cursor: pointer;color: #333;}
+.openc div:hover{background: #006AF2;color: #fff;}
+
+
+
+
+
+
+
+

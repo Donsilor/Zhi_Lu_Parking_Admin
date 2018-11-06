@@ -1,0 +1,52 @@
+.result .tab .usermanagement-table tr th:first-child{width:5%;}
+.result .tab .usermanagement-table tr th:nth-child(2){width:8%;text-align:center;}
+.result .tab .usermanagement-table tr th:nth-child(3){width:10%;text-align:center;}
+.result .tab .usermanagement-table tr th:nth-child(4){width:10%;text-align:center;}
+.result .tab .usermanagement-table tr th:nth-child(5){width:12%;text-align:center;}
+.result .tab .usermanagement-table tr th:nth-child(6){width:10%;text-align:left;padding-left:10px;}
+.result .tab .usermanagement-table tr th:nth-child(7){width:10%;text-align:left;padding-left:10px;}
+.result .tab .usermanagement-table tr th:nth-child(8){width:5%;text-align:center;}
+.result .tab .usermanagement-table tr th:nth-child(9){width:30%;text-align:center;}
+
+
+
+
+.result .tab .usermanagement-table tr td:first-child{text-align:center;}
+.result .tab .usermanagement-table tr td:nth-child(2){text-align:left;}
+.result .tab .usermanagement-table tr td:nth-child(2) span{display:block;width:40px;height:40px;margin:auto;overflow:hidden;border-radius:50%;}
+.result .tab .usermanagement-table tr td:nth-child(3){text-align:center;}
+.result .tab .usermanagement-table tr td:nth-child(4){text-align:center;}
+.result .tab .usermanagement-table tr td:nth-child(5){text-align:center;}
+.result .tab .usermanagement-table tr td:nth-child(8){text-align:center;}
+.result .tab .usermanagement-table tr td:nth-child(9){text-align:center;}
+.result .tab .usermanagement-table tr td .normal{color:#48b765;}
+.result .tab .usermanagement-table tr td .freeze{color:#ea5657;}
+.result .tab .usermanagement-table tr td:last-child a{font-size:14px;color:#1c7dfa;}
+.result .tab .usermanagement-table tr td:last-child a:not(:last-child){margin-right:20px;}
+
+
+.depwd{height:60px;width: 600px;position: absolute;top: 15%;left: 40%;}
+.bot{width:100%;height: 600px;background-color: #fff;}
+.t-text{font-size: 14px;color: #fff;line-height: 60px;margin-left:25px;}
+.close{width:60px;height:60px;font-size: 14px;color: #fff;line-height: 60px;text-align: center;}
+.close:hover{cursor: pointer;background-color: #006af2;}
+.cet{width: 440px;margin: 0 auto;padding-top: 10px;}
+.red{color: #f35857;font-size: 14px;height: 30px;line-height: 30px;margin-bottom: 25px;padding-left: 90px;}
+.cet p{line-height: 30px;margin-bottom: 20px;position: relative;}
+.remind{color: #FF0000;font-size: 12px;position: absolute;left: 120px;bottom: -25px;}
+.pswremind{display:none;}
+.ppswremind{display:none;}
+.telremind{display:none;}
+.cet p span{text-align:right;width: 20%;}
+.cet input{width: 330px;height: 30px;border: 1px solid #999;float: right;padding-left: 10px;border-radius: 5px;}
+.icon-xingxing{font-size: 8px!important;color: #ff0000!important;}
+.bz>i{color: transparent!important;}
+.bz>input{width: 330px;height:85px;border: 1px solid #999;float: right;padding-left:10px;border-radius: 5px;padding-bottom: 60px;}
+.button{height: 30px;width: 100%;margin-top: 30px;}
+.qx{display: block;height:30px;width: 90px;color:#1c7dfa;border: 1px solid #1c7dfa;border-radius: 5px;text-align: center;line-height: 30px;}
+.qx:hover{cursor: pointer;}
+.acknowledgement{display: block;height:30px;width: 90px;color:#fff;background-color:#1c7dfa;border-radius: 5px;margin-left: 30px;text-align: center;line-height: 30px;}
+.acknowledgement:hover{cursor: pointer;}
+.up{display:block;width: 80px!important;height: 80px!important;background-color: #eee;font-size: 20px;line-height: 80px;text-align: center!important;color: #999;margin-left: 25px;margin-right:20px;border-radius: 4px;}
+.up:hover{cursor: pointer;}
+.r-text{color: #999;width: 50%!important;text-align: left!important;margin-top: 60px;}
