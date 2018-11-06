@@ -2,6 +2,13 @@
 .box .result > .tab::-webkit-scrollbar{width: 10px;background-color: #eee;}
 .box .result > .tab::-webkit-scrollbar-thumb{background-color: #bbb;}
 
+.box .content .search .top > div{width: 100%;}
+.box .cominput input[type=text]{width: 300px;}
+.cominput .search-button.blu-button{float: left;height: 30px;line-height: 30px;margin-left: 15px;}
+
+
+
+/*
 .tab .tab_1 th{height: 40px;line-height: 40px;text-align: center;background-color: #efefef!important;font-size: 14px;border: 1px solid #eee;}
 .tab .tab_1 td{height: 50px;line-height: 50px;text-align: center;background-color: #ffffff;font-size: 0.8rem;border: 1px solid #eee;}
 .tab .tab_2 th{height: 40px;line-height: 40px;text-align: center;background-color: #edf8ff;font-size: 14px;border: 1px solid #eee;}
@@ -10,12 +17,103 @@
 .tab .tab_3 td{height: 40px;line-height: 40px;text-align: center;background-color: #fffcfb;font-size: 0.8rem;border: 1px solid #eee;}
 .de{width: 110px;}
 .ckb{width: 40px;color:#00479d;}
+*/
+
+.equipInfoTable{width: 100%;}
+.equipInfoTable a{color: #00479d;margin: 0 6px;}
+.equipInfoTable .tr:after{content: '';display: block;clear: both;}
+.equipInfoTable .td,
+.equipInfoTable .th{float: left;line-height: 50px;text-align: center;}
+.equipInfoTable .tr:not(:last-of-type){border-bottom: 1px solid #e9e9e9;}
+.equipInfoTable .td:not(:last-of-type),
+.equipInfoTable .th:not(:last-of-type){border-right: 1px solid #e9e9e9;}
+.equipInfoTable .th{background-color: #f4f4f4;}
+
+.equipInfoTable .level1_item,
+.equipInfoTable .level2_item,
+.equipInfoTable .level3_item{border-bottom: 1px solid #e9e9e9;border-left: 1px solid #e9e9e9;}
+
+.equipInfoTable .level1_ths > .th:nth-of-type(1){width: 3%;height: 50px;}
+.equipInfoTable .level1_ths > .th:nth-of-type(2){width: 10%;}
+.equipInfoTable .level1_ths > .th:nth-of-type(3){width: 20%;}
+.equipInfoTable .level1_ths > .th:nth-of-type(4){width: 10%;}
+.equipInfoTable .level1_ths > .th:nth-of-type(5){width: 10%;}
+.equipInfoTable .level1_ths > .th:nth-of-type(6){width: 12%;}
+.equipInfoTable .level1_ths > .th:nth-of-type(7){width: 12%;}
+.equipInfoTable .level1_ths > .th:nth-of-type(8){width: 11%;}
+.equipInfoTable .level1_ths > .th:nth-of-type(9){width: 6%;}
+.equipInfoTable .level1_ths > .th:nth-of-type(10){width: 6%;}
+
+.equipInfoTable .level2_ths > .th:nth-of-type(1){width: 3%;height: 50px;}
+.equipInfoTable .level2_ths > .th:nth-of-type(2){width: 14%;}
+.equipInfoTable .level2_ths > .th:nth-of-type(3){width: 8%;}
+.equipInfoTable .level2_ths > .th:nth-of-type(4){width: 7%;}
+.equipInfoTable .level2_ths > .th:nth-of-type(5){width: 10%;}
+.equipInfoTable .level2_ths > .th:nth-of-type(6){width: 9%;}
+.equipInfoTable .level2_ths > .th:nth-of-type(7){width: 9%;}
+.equipInfoTable .level2_ths > .th:nth-of-type(8){width: 13%;}
+.equipInfoTable .level2_ths > .th:nth-of-type(9){width: 13%;}
+.equipInfoTable .level2_ths > .th:nth-of-type(10){width: 7%;}
+.equipInfoTable .level2_ths > .th:nth-of-type(11){width: 7%;}
+
+.equipInfoTable .level3_ths > .th:nth-of-type(1){width: 11%;height: 50px;}
+.equipInfoTable .level3_ths > .th:nth-of-type(2){width: 10%;}
+.equipInfoTable .level3_ths > .th:nth-of-type(3){width: 7%;}
+.equipInfoTable .level3_ths > .th:nth-of-type(4){width: 10%;}
+.equipInfoTable .level3_ths > .th:nth-of-type(5){width: 20%;}
+.equipInfoTable .level3_ths > .th:nth-of-type(6){width: 14%;}
+.equipInfoTable .level3_ths > .th:nth-of-type(7){width: 13%;}
+.equipInfoTable .level3_ths > .th:nth-of-type(8){width: 6%;}
+.equipInfoTable .level3_ths > .th:nth-of-type(9){width: 9%;}
+
+.equipInfoTable .level1_itemTable > .td:first-of-type,
+.equipInfoTable .level2_itemTable > .td:first-of-type{width: 3%;}
+.equipInfoTable .level1_itemTable > .td:last-of-type,
+.equipInfoTable .level2_itemTable > .td:last-of-type{width: 97%;}
+.equipInfoTable .level3_itemTable > .td{width: 100%}
+
+.equipInfoTable .level2_itemTable{background-color: #d2f7ff;}
+.equipInfoTable .level3_itemTable{background-color: #fffcfb;}
+
+.equipInfoTable .level1_dataItem > .td:nth-of-type(1){width: 10.3%;}
+.equipInfoTable .level1_dataItem > .td:nth-of-type(2){width: 20.6%;}
+.equipInfoTable .level1_dataItem > .td:nth-of-type(3){width: 10.35%;}
+.equipInfoTable .level1_dataItem > .td:nth-of-type(4){width: 10.3%;}
+.equipInfoTable .level1_dataItem > .td:nth-of-type(5){width: 12.35%;}
+.equipInfoTable .level1_dataItem > .td:nth-of-type(6){width: 12.4%;}
+.equipInfoTable .level1_dataItem > .td:nth-of-type(7){width: 11.3%;}
+.equipInfoTable .level1_dataItem > .td:nth-of-type(8){width: 6.2%;}
+.equipInfoTable .level1_dataItem > .td:nth-of-type(9){width: 6.2%;}
+
+.equipInfoTable .level2_dataItem > .td:nth-of-type(1){width: 14.4%;}
+.equipInfoTable .level2_dataItem > .td:nth-of-type(2){width: 8.3%;}
+.equipInfoTable .level2_dataItem > .td:nth-of-type(3){width: 7.2%;}
+.equipInfoTable .level2_dataItem > .td:nth-of-type(4){width: 10.3%;}
+.equipInfoTable .level2_dataItem > .td:nth-of-type(5){width: 9.3%;}
+.equipInfoTable .level2_dataItem > .td:nth-of-type(6){width: 9.3%;}
+.equipInfoTable .level2_dataItem > .td:nth-of-type(7){width: 13.4%;}
+.equipInfoTable .level2_dataItem > .td:nth-of-type(8){width: 13.35%;}
+.equipInfoTable .level2_dataItem > .td:nth-of-type(9){width: 7.2%;}
+.equipInfoTable .level2_dataItem > .td:nth-of-type(10){width: 7.2%;}
+
+.equipInfoTable .level3_dataItem > .td{height: 50px;}
+.equipInfoTable .level3_dataItem > .td:nth-of-type(1){width: 11%;}
+.equipInfoTable .level3_dataItem > .td:nth-of-type(2){width: 10%;}
+.equipInfoTable .level3_dataItem > .td:nth-of-type(3){width: 7%;}
+.equipInfoTable .level3_dataItem > .td:nth-of-type(4){width: 10%;}
+.equipInfoTable .level3_dataItem > .td:nth-of-type(5){width: 20%;}
+.equipInfoTable .level3_dataItem > .td:nth-of-type(6){width: 14%;}
+.equipInfoTable .level3_dataItem > .td:nth-of-type(7){width: 13%;}
+.equipInfoTable .level3_dataItem > .td:nth-of-type(8){width: 6%;}
+.equipInfoTable .level3_dataItem > .td:nth-of-type(9){width: 9%;}
+
+
 .icon-edit{font-size: 14px!important;}
 i:hover{cursor:pointer;}
 
 
-.depwd{width: 600px;top: 20%;left: 35%;}
-.main .bot{width:100%;height: 570px;background-color: #fff;padding-top: 10px;}
+.depwd{width: 600px;top: 12%;left: 30%;}
+.main .bot{width:100%;background-color: #fff;padding-top: 10px;padding-bottom: 30px;}
 .t-text{font-size: 14px;color: #fff;line-height: 60px;margin-left:25px;}
 .close{width:60px;height:60px;font-size: 14px;color: #fff;line-height: 60px;text-align: center;background-color: #006af2;}
 .close:hover{cursor: pointer;}

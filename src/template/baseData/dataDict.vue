@@ -45,7 +45,7 @@
             <th>操作</th>
           </tr>
           <tr v-for="(dictionary, index) in dictionarys.dataItems" v-bind:key="index">
-            <td><input type="checkbox" v-model="selectedDictionarys"></td>
+            <td><input type="checkbox" :value="index" v-model="selectedDictionarys"></td>
             <td>{{dictionary.dic_code}}</td>
             <td>{{dictionary.dic_name}}</td>
             <td>{{dictionary.dic_key}}</td>
