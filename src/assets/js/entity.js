@@ -36,6 +36,13 @@ export const RequestParams = class RequestParams {
     $.extend(this, obj);
   }
 
+  addAttributes(objs){
+    for(let key in objs){
+      this.addAttribute(key, objs[key]);
+    }
+    return this;
+  }
+
   addAttribute(name, value) {
     if (value) {
       this.attributes[name] = value;

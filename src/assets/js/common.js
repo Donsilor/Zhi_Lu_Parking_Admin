@@ -54,8 +54,9 @@ export const array2Descendants = function (arr = [], idKey = "id", pidKey = "pid
 
 /**用户数据管理 */
 export const User = new class User {
-  get info(){
-    return $.extend({
+
+  constructor(){
+    this.__info = $.extend({
       create_time: null,
       dept_id: null,
       full_name: null,
@@ -71,8 +72,12 @@ export const User = new class User {
       user_type: null
     },JSON.parse(localStorage.getItem("UserInfo") || "{}"));
   }
+
+  get info(){
+    return this.__info;
+  }
   set info(v){
-    localStorage.setItem("UserInfo", JSON.stringify(v));
+    localStorage.setItem("UserInfo", JSON.stringify(this.__info = v));
   }
   empty(){
     this.info.id = null;

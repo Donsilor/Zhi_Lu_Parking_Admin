@@ -81,6 +81,13 @@ export default {
         serviceId: 'dept.editor'
       }
     },
+    delete:{
+      url: '/dept/delete',
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: 'dept.delete'
+      }
+    },
     /**获取部门列表 */
     getlist: {
       url: '/dept/getlist',
@@ -222,6 +229,14 @@ export default {
           param:{
               serviceId:"dictionary.getlist",
           }
+      },
+      /**删除字典记录 */
+      delete:{
+        url:"/dictionary/delete",
+        method: HTTP_REQUEST_METHOD.POST,
+        param:{
+            serviceId:"dictionary.delete",
+        }
       }
   }
 }

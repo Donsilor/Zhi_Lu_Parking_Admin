@@ -10,7 +10,7 @@ import $ from 'jquery';
 import echarts from 'echarts';
 import api from "./assets/js/sereviceapi";
 import './assets/iconfont/iconfont.css';
-import { User, MessageBox } from "./assets/js/common";
+import { User } from "./assets/js/common";
 import vueDrag from 'vue-dragging';
 
 Vue.prototype.$echarts = echarts;

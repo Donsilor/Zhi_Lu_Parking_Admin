@@ -2,26 +2,26 @@
   <div class="content clf">
     <div class="search ">
       <div class="add">
-        <button class="add-department blu-button" @click="ifEditDepartment = true">+新增</button>
+        <button class="add-department blu-button" @click="showEditDept(null)">+新增</button>
       </div>
       <div class="clf top toggleDiv" v-show="searchDivShow">
         <div class="condition">
           <span class="conditions-text">搜索条件：</span>
           <div class="custom-input">
-            <input type="text" placeholder="请输入">
-            <input type="submit" value="">
+            <input type="text" placeholder="请输入" v-model="searchParam">
+            <input type="submit" value="" @click="loadDeptsDatas(1, {key:searchParam})">
           </div>
         </div>
       </div>
       <div class="clf bottom">
         <div class="fl">
-          <button class="plechoose fl">请选择 <img src="../../assets/images/icon_9.png" alt=""></button>
-          <button class="batchdel fl">批量删除</button>
-          <div>共搜索到 <span>922</span> 条数据</div>
+          <button class="plechoose fl" @click="selectedAll">全选 <img src="../../assets/images/icon_9.png" alt=""></button>
+          <button class="batchdel fl" @click="delDept(null)">批量删除</button>
+          <div>共搜索到 <span>{{depts.attributes.tatal || 0}}</span> 条数据</div>
         </div>
         <div class="fr">
-          <button class="search-button blu-button">搜索</button>
-          <button class="clear-button bluborder-button">清除</button>
+          <button class="search-button blu-button" @click="loadDeptsDatas(1, {key:searchParam})">搜索</button>
+          <button class="clear-button bluborder-button" @click="searchParam = null">清除</button>
           <button class="ss transf-button" v-bind:class="{hide:searchDivShow}" v-on:click="searchDivShow=!searchDivShow">
             <i><img src="../../assets/images/icon_t_arrow2.png" alt=""></i>
             <span>{{searchDivShow ? "收起搜索" : "展开搜索"}}</span>
@@ -30,24 +30,24 @@
       </div>
     </div>
     <div class="result clf">
-      <div class="selected">已选 <span>5</span> 项数据</div>
+      <div class="selected" v-show="selectedDepts.length">已选 <span>{{selectedDepts.length}}</span> 项数据</div>
       <div class="tab">
         <table class="departmentmanagement-table">
           <tr>
-            <th><input type="checkbox" name="checkbox"></th>
+            <th></th>
             <th>编号</th>
             <th>名称</th>
             <th>备注</th>
             <th>操作</th>
           </tr>
-          <tr v-for="(dept, id) in depts.dataItems" v-bind:key="id">
-            <td><input type="checkbox" v-model="dept.selected"></td>
+          <tr v-for="(dept, index) in depts.dataItems" v-bind:key="index">
+            <td><input type="checkbox" v-model="selectedDepts"></td>
             <td>{{dept.dept_code}}</td>
             <td>{{dept.dept_name}}</td>
             <td>{{dept.remark}}</td>
             <td>
-              <a href="javascript:" class="edit" @click="ifEditDepartment = true">编辑</a>
-              <a href="javascript:" class="delete" @click="ifDel = true">删除</a>
+              <a href="javascript:" class="edit" @click="showEditDept(index)">编辑</a>
+              <a href="javascript:" class="delete" @click="delDept(index)">删除</a>
             </td>
           </tr>
         </table>
@@ -72,23 +72,20 @@
         <div class="bot">
           <div class="cet">
             <div class="clf">
-              <p class="red"><i class="iconfont icon-jian-tianchong"></i>错误提示的文案</p>
-              <p class="num"><span class='red-text'>*</span><span>编号：</span><input type="text" placeholder="请输入编号，必填">
-              </p>
-              <p class="name"><span class='red-text'>*</span><span>名称：</span><input type="text" placeholder="请输入名称，必填">
-              </p>
-              <p class="bz"><span class='red-text'>*</span><span>备注：</span><input type="text" placeholder="请输入备注"
-                                                                                  id="inp"></p>
+              <!-- <p class="red"><i class="iconfont icon-jian-tianchong"></i>错误提示的文案</p> -->
+              <p class="num"><span class='red-text'>*</span><span>编号：</span><input type="text" v-model="deptData.dept_code" placeholder="请输入编号，必填">  </p>
+              <p class="name"><span class='red-text'>*</span><span>名称：</span><input type="text"  v-model="deptData.dept_name" placeholder="请输入名称，必填"> </p>
+              <p class="bz"><span class='red-text'>*</span><span>备注：</span><input type="text"  v-model="deptData.remark" placeholder="请输入备注" id="inp"></p>
             </div>
             <div class="button clf">
-              <a class="qr fr">确定</a>
+              <a class="qr fr" @click="editDept">确定</a>
               <a class="qx fr" @click="ifEditDepartment = false">取消</a>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="delete_prompt" v-if="ifDel">
+    <!-- <div class="delete_prompt" v-if="ifDel">
       <div class="depwd">
         <div class="text">你是否确认删除选中的记录</div>
         <div class="button clf">
@@ -96,14 +93,14 @@
           <a class="qx fr" @click="ifDel = false">取消</a>
         </div>
       </div>
-    </div>
+    </div> -->
     <!--弹窗-->
   </div>
 </template>
 
 <script>
-import { array2Object } from "../../assets/js/common";
-import { RequestParams } from "../../assets/js/entity";
+import { User } from "../../assets/js/common";
+import { RequestParams, RequestDataItem } from "../../assets/js/entity";
 import Pagination from "../Pagination";
 import moment from "moment";
   export default {
@@ -112,6 +109,18 @@ import moment from "moment";
         searchDivShow: true,
         ifEditDepartment: false,
         ifDel: false,
+        searchParam: "",
+        selectedDepts:[],
+        deptData:{
+          /**ID  */
+          id:null,
+          /**部门编号 */
+          dept_code:null,
+          /**部门名称 */
+          dept_name:null,
+          /**部门备注 */
+          remark:null,
+        },
         depts: {
           attributes: {
             page_index: 1, //当前页码
@@ -119,8 +128,7 @@ import moment from "moment";
             tatal: 10, //总条目数
             total_pages: 10 //条页数
           },
-          dataItems: {
-          }
+          dataItems: []
         }
       };
     },
@@ -129,17 +137,64 @@ import moment from "moment";
       Pagination
     },
     methods: {
-      /**加载用户列表数据 */
-      loadDeptsDatas(pageNum, params = {}) {
-        this.$api.dept
-          .getlist({
-              attributes: $.extend({
-                  page_index: pageNum //当前页码
-              },params)
+
+      selectedAll(){
+        if(this.selectedDepts.length){
+          this.selectedDepts = [];
+        }
+        else this.selectedDepts = this.depts.dataItems.map((o,i)=>i);
+      },
+
+      showEditDept(id){
+        this.deptData = this.depts.dataItems[id] || {};
+        this.ifEditDepartment = true;
+      },
+      
+      editDept(){
+
+        this.$api.dept.editor(new RequestParams()
+        .addAttributes(this.deptData)
+        .addAttribute("project_id", User.info.project_id))
+        .then(response=>{
+          this.$message.error(response.message)
+          this.ifEditDepartment = false;
+          this.loadDeptsDatas();
+        })
+        .catch(({message}) => this.$message.error(message))
+      },
+
+      delDept(id){
+          
+        let datas = id != null ? [this.depts.dataItems[id]] : this.selectedDepts.map(o=>this.depts.dataItems[o]);
+        console.log(datas)
+        if(datas.length){
+          this.$confirm(`确定要删除[${datas.map(o=>o.dept_name)}]吗?`, '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
           })
+          .then(() => this.$api.dept.delete(new RequestParams().addDataItems(datas.map(o=>new RequestDataItem().addAttribute("id", o.id)))))
+          .then(response=>{
+            this.$message.success("删除成功");
+            this.loadDeptsDatas();
+          })
+          .catch(({message}) => this.$message.error(message))
+          .catch(() => {
+            this.$message.info("已取消删除");
+          });
+        }
+        else this.$message.info("请选择要删除的部门");
+      },
+
+      /**加载用户列表数据 */
+      loadDeptsDatas(pageNum = 1, params = {}) {
+        this.$api.dept
+          .getlist(new RequestParams()
+          .addAttributes(params)
+          .addAttribute("page_index", pageNum))
           .then(response => {
             this.depts.attributes = response.attributes;
-            this.depts.dataItems = array2Object(response.dataItems.map(o => o.attributes), "id");
+            this.depts.dataItems = response.dataItems.map(o => o.attributes)
           })
           .catch(response => this.$message.error(response.message));
       }

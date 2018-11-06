@@ -2,7 +2,7 @@
   <div class="content clf">
     <div class="search ">
       <div class="add">
-        <button class="add-department blu-button" @click="ifEditInfo = true">+新增</button>
+        <button class="add-department blu-button" @click="showEditProject">+新增</button>
       </div>
       <div class="clf top toggleDiv" v-show="searchDivShow">
         <div class="condition fl">
@@ -38,7 +38,7 @@
         </div>
         <div class="fr">
           <button class="search-button blu-button" v-on:click="loadProjectDatas(1, {key:searchParam})">搜索</button>
-          <button class="clear-button bluborder-button" v-on:click="searchParam = null">清除</button>
+          <button class="clear-button bluborder-button" v-on:click="searchParam = null, searchTimes = []">清除</button>
           <button class="ss transf-button" v-bind:class="{hide:searchDivShow}" v-on:click="searchDivShow=!searchDivShow">
             <i><img src="../../assets/images/icon_t_arrow2.png" alt=""></i>
             <span>{{searchDivShow === true ? "收起搜索" : "展开搜索"}}</span>
@@ -47,7 +47,7 @@
       </div>
     </div>
     <div class="result clf">
-      <div class="selected">已选 <span>{{selectedProjects.length}}</span> 项数据</div>
+      <div class="selected" v-show="selectedProjects.length">已选 <span>{{selectedProjects.length}}</span> 项数据</div>
       <div class="tab">
         <table class="project-table">
             <thead>
@@ -80,7 +80,7 @@
               <td>{{project.user_name}}</td>
               <td><span v-bind:class="{normal:project.status}">正常</span></td>
               <td>
-                <a class="bj" href="javascript:" @click="ifEditInfo = true">编辑</a>
+                <a class="bj" href="javascript:" @click="showEditProject(index)">编辑</a>
                 <a href="javascript:" class="delete" v-on:click="delProject(index)">删除</a>
                 <a href="javascript:">重置密码</a>
               </td>
@@ -108,22 +108,17 @@
         <div class="bot">
           <div class="cet">
             <div class="clf">
-              <p class="red"><i class="iconfont icon-jian-tianchong"></i>错误提示的文案</p>
-              <p class="clf"><span class="fl"><span class='red-text'>*</span>项目编号：</span><input class="fl"
-                                                                                                type="text"
-                                                                                                value="请输入编号，必填"></p>
-              <p class="clf"><span class="fl"><span class='red-text'>*</span>项目名称：</span><input class="fl"
-                                                                                                type="text"
-                                                                                                value="请输入6-8位数字密码，必填">
-              </p>
-              <p class="clf"><span class="fl">地址：</span><input class="fl" type="text" value="请输入6-8位数字密码，必填"></p>
-              <p class="clf"><span class="fl">联系人：</span><input class="fl" type="text" value="请输入6-8位数字密码，必填"></p>
-              <p class="clf"><span class="fl">联系电话：</span><input class="fl" type="text" value="请输入编号，必填"></p>
-              <p class="clf"><span class="fl">车位总数：</span><input class="fl" type="text" value="请输入编号，必填"></p>
-              <p class="bz clf"><span class="fl">备注：</span><input class="fl" type="text" value="请输入备注" id="inp"></p>
+              <!-- <p class="red" ><i class="iconfont icon-jian-tianchong"></i>错误提示的文案</p> -->
+              <p class="clf"><span class="fl"><span class='red-text'>*</span>项目编号：</span><input class="fl" v-model="projectData.project_code"  placeholder="请输入编号，必填" type="text" ></p>
+              <p class="clf"><span class="fl"><span class='red-text'>*</span>项目名称：</span><input class="fl" v-model="projectData.project_name"  type="text" placeholder="请输入6-8位数字密码，必填"> </p>
+              <p class="clf"><span class="fl">地址：</span><input class="fl" type="text" v-model="projectData.addr"  placeholder="请输入6-8位数字密码，必填"></p>
+              <p class="clf"><span class="fl">联系人：</span><input class="fl" type="text" v-model="projectData.linkman"  placeholder="请输入6-8位数字密码，必填"></p>
+              <p class="clf"><span class="fl">联系电话：</span><input class="fl" type="text" v-model="projectData.tel"  placeholder="请输入编号，必填"></p>
+              <p class="clf"><span class="fl">车位总数：</span><input class="fl" type="text" v-model="projectData.total_place"  placeholder="请输入编号，必填"></p>
+              <p class="bz clf"><span class="fl">备注：</span><input class="fl" type="text" v-model="projectData.remark"  placeholder="请输入备注" id="inp"></p>
             </div>
             <div class="button clf">
-              <a class="qr fr">确定</a>
+              <a class="qr fr" @click="editProject">确定</a>
               <a class="qx fr" @click="ifEditInfo = false">取消</a>
             </div>
           </div>
@@ -136,7 +131,7 @@
 
 <script>
 import { RequestParams,RequestDataItem } from "../../assets/js/entity";
-import { array2Object } from "../../assets/js/common";
+import { array2Object , User} from "../../assets/js/common";
 import Pagination from "../Pagination";
 import moment from "moment";
 export default {
@@ -151,20 +146,24 @@ export default {
       selectedProjects:[],
       /**项目列表的数据 */
       projectData:{
-        "create_time":"2018-10-10 12:09:20",
-        "operator_id":"7581147280a4405698cea3b2eb30d3b0",
-        "user_name":"弗兰克",
-        "project_code":"DONGHAI2",
-        "remark":"东海花园",
-        "total_place":18,
-        "project_name":"东海花园2",
-        "linkman":"李小华",
-        "update_time":"2018-10-10 12:09:20",
-        "tel":"18900921182",
-        "id":"8ea490a81b9944b1b136de598748e4d6",
-        "addr":"中国广东省深圳市福田区香林路28号",
-        "status":0,
-        selected: false
+        /**ID */
+        id:null,
+        /**项目编号 */
+        project_code:null,
+        /**项目名称 */
+        project_name:null,
+        /**项目地址 */
+        addr:null,
+        /**联系人 */
+        linkman:null,
+        /**联系电话 */
+        tel:null,
+        /**总车位数 */
+        total_place:null,
+        /**操作员ID */
+        operator_id:User.info.id,
+        /**备注 */
+        remark:null,
       },
       projects: {
         attributes: {
@@ -223,8 +222,45 @@ export default {
       else this.selectedProjects = this.projects.dataItems.map((o,i)=>i);
     },
 
+    showEditProject(id){
+      this.projectData = this.projects.dataItems[id] || {};
+      this.ifEditInfo = true;
+    },
+
     editProject(){
-      
+
+      // if(this.projectData.id){
+
+      // }
+      // else if(this.projectData.project_code){
+
+      // }
+      // else if(this.projectData.project_name){
+
+      // }
+      // else if(this.projectData.addr){
+
+      // }
+      // else if(this.projectData.linkman){
+
+      // }
+      // else if(this.projectData.tel){
+
+      // }
+      // else if(this.projectData.operator_id){
+
+      // }
+      // else if(this.projectData.remark){
+
+      // }
+
+      this.$api.project.editor(new RequestParams().addAttributes(this.projectData).addAttribute("operator_id", User.info.id))
+      .then(response=>{
+        this.$message.error(response.message)
+        this.ifEditInfo = false;
+        this.loadProjectDatas();
+      })
+      .catch(({message}) => this.$message.error(message))
     },
 
     delProject(id){
@@ -240,9 +276,7 @@ export default {
         .then(() => this.$api.project.delete(new RequestParams().addDataItems(datas.map(o=>new RequestDataItem().addAttribute("id", o.id)))))
         .then(response=>{
           this.$message.success("删除成功");
-          this.projects.dataItems.splice(this.delProjectindex, 1);
-          this.projects = this.projects;
-
+          this.loadProjectDatas();
         })
         .catch(({message}) => this.$message.error(message))
         .catch(() => {
@@ -253,16 +287,14 @@ export default {
     },
 
     /**加载项目列表数据 */
-    loadProjectDatas(pageNum, params = {}) {
-      let searchTimes = this.searchTimes.map(o=>moment().format("yyyy-MM-dd HH:mm:ss"))
+    loadProjectDatas(pageNum = 1, params = {}) {
+      let searchTimes = this.searchTimes.map(o=>moment(o).format("YYYY-MM-DD HH:mm:ss"));
       this.$api.project
-        .getlist({
-          attributes: $.extend({
-              page_index: pageNum ,//当前页码,
-            },
-            new RequestParams(params).addAttribute("begin_time", searchTimes[0]).addAttribute("end_time", searchTimes[1])
-          )
-        })
+        .getlist(new RequestParams()
+        .addAttributes(params)
+        .addAttribute("page_index", pageNum)
+        .addAttribute("begin_time", searchTimes[0])
+        .addAttribute("end_time", searchTimes[1]))
         .then(response => {
           this.projects.attributes = response.attributes;
           this.projects.dataItems = response.dataItems.map(o => o.attributes);
