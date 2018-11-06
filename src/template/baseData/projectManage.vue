@@ -32,8 +32,8 @@
       </div>
       <div class="clf bottom">
         <div class="fl">
-          <button class="plechoose fl">请选择 <img src="../../assets/images/icon_9.png" alt=""></button>
-          <button class="batchdel fl">批量删除</button>
+          <button class="plechoose fl" @click="selectedAll" >全选 <img src="../../assets/images/icon_9.png" alt=""></button>
+          <button class="batchdel fl" @click="delProject(null)">批量删除</button>
           <div>共搜索到 <span>{{projects.attributes.tatal || 0}}</span> 条数据</div>
         </div>
         <div class="fr">
@@ -47,7 +47,7 @@
       </div>
     </div>
     <div class="result clf">
-      <div class="selected">已选 <span>{{projects.dataItems.filter(o=>o.selected).length}}</span> 项数据</div>
+      <div class="selected">已选 <span>{{selectedProjects.length}}</span> 项数据</div>
       <div class="tab">
         <table class="project-table">
             <thead>
@@ -68,7 +68,7 @@
             </thead>
           <tbody>
             <tr  v-for="(project, index) in projects.dataItems" v-bind:key="index">
-              <td><input type="checkbox" v-model="project.selected"></td>
+              <td><input type="checkbox" :value="index" v-model="selectedProjects"></td>
               <td>{{project.project_code}}</td>
               <td>{{project.project_name}}</td>
               <td>{{project.addr}}</td>
@@ -81,7 +81,7 @@
               <td><span v-bind:class="{normal:project.status}">正常</span></td>
               <td>
                 <a class="bj" href="javascript:" @click="ifEditInfo = true">编辑</a>
-                <a href="javascript:" class="delete" v-on:click="(delProjectWindow=true,delProjectindex=index)">删除</a>
+                <a href="javascript:" class="delete" v-on:click="delProject(index)">删除</a>
                 <a href="javascript:">重置密码</a>
               </td>
             </tr>
@@ -130,21 +130,13 @@
         </div>
       </div>
     </div>
-    <div class="delete_prompt"  v-bind:style="{display:delProjectWindow?'block':'none'}">
-      <div class="depwd">
-        <div class="text">你是否确认删除选中的记录</div>
-        <div class="button clf">
-          <a class="qr fr" v-on:click="delProject">确定</a>
-          <a class="qx fr" v-on:click="delProjectWindow = false">取消</a>
-        </div>
-      </div>
-    </div>
     <!--弹窗-->
   </div>
 </template>
 
 <script>
-import { RequestParams } from "../../assets/js/entity";
+import { RequestParams,RequestDataItem } from "../../assets/js/entity";
+import { array2Object } from "../../assets/js/common";
 import Pagination from "../Pagination";
 import moment from "moment";
 export default {
@@ -156,10 +148,24 @@ export default {
       /**搜索参数 */
       searchParam: "",
       searchTimes:[],
-      /**删除用户的弹窗 */
-      delProjectWindow: false,
-      delProjectindex:-1,
+      selectedProjects:[],
       /**项目列表的数据 */
+      projectData:{
+        "create_time":"2018-10-10 12:09:20",
+        "operator_id":"7581147280a4405698cea3b2eb30d3b0",
+        "user_name":"弗兰克",
+        "project_code":"DONGHAI2",
+        "remark":"东海花园",
+        "total_place":18,
+        "project_name":"东海花园2",
+        "linkman":"李小华",
+        "update_time":"2018-10-10 12:09:20",
+        "tel":"18900921182",
+        "id":"8ea490a81b9944b1b136de598748e4d6",
+        "addr":"中国广东省深圳市福田区香林路28号",
+        "status":0,
+        selected: false
+      },
       projects: {
         attributes: {
           page_index: 1, //当前页码
@@ -167,24 +173,7 @@ export default {
           tatal: 10, //总条目数
           total_pages: 10 //条页数
         },
-        dataItems: [
-          {
-            "create_time":"2018-10-10 12:09:20",
-            "operator_id":"7581147280a4405698cea3b2eb30d3b0",
-            "user_name":"弗兰克",
-            "project_code":"DONGHAI2",
-            "remark":"东海花园",
-            "total_place":18,
-            "project_name":"东海花园2",
-            "linkman":"李小华",
-            "update_time":"2018-10-10 12:09:20",
-            "tel":"18900921182",
-            "id":"8ea490a81b9944b1b136de598748e4d6",
-            "addr":"中国广东省深圳市福田区香林路28号",
-            "status":0,
-            selected: false
-          }
-        ]
+        dataItems: []
       },
       pickerOptions: {
         shortcuts: [
@@ -227,20 +216,40 @@ export default {
   },
   methods: {
 
-    delProject(){
-      let delid = this.projects.dataItems[this.delProjectindex].id;
-      this.delProjectWindow = false;
-      this.$api.project.delete(new RequestParams({
-        attributes:{
-          id:delid
-        }
-      })).then(response=>{
+    selectedAll(){
+      if(this.selectedProjects.length){
+        this.selectedProjects = [];
+      }
+      else this.selectedProjects = this.projects.dataItems.map((o,i)=>i);
+    },
 
-        console.log("成功", response)
-        this.projects.dataItems.splice(this.delProjectindex, 1);
-        this.projects = this.projects;
+    editProject(){
+      
+    },
 
-      }).catch(response => console.log("失败", response));
+    delProject(id){
+
+      let datas = id != null ? [this.projects.dataItems[id]] : this.selectedProjects.map(o=>this.projects.dataItems[o]);
+      console.log(datas)
+      if(datas.length){
+        this.$confirm(`确定要删除[${datas.map(o=>o.project_name)}]吗?`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+        .then(() => this.$api.project.delete(new RequestParams().addDataItems(datas.map(o=>new RequestDataItem().addAttribute("id", o.id)))))
+        .then(response=>{
+          this.$message.success("删除成功");
+          this.projects.dataItems.splice(this.delProjectindex, 1);
+          this.projects = this.projects;
+
+        })
+        .catch(({message}) => this.$message.error(message))
+        .catch(() => {
+          this.$message.info("已取消删除");
+        });
+      }
+      else this.$message.info("请选择要删除的项目");
     },
 
     /**加载项目列表数据 */
@@ -258,7 +267,7 @@ export default {
           this.projects.attributes = response.attributes;
           this.projects.dataItems = response.dataItems.map(o => o.attributes);
         })
-        .catch(response => console.log(response));
+        .catch(({message}) => this.$message.error(message));
     },
   },
   mounted() {

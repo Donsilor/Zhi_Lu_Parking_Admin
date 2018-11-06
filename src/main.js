@@ -10,7 +10,7 @@ import $ from 'jquery';
 import echarts from 'echarts';
 import api from "./assets/js/sereviceapi";
 import './assets/iconfont/iconfont.css';
-import { User } from "./assets/js/common";
+import { User, MessageBox } from "./assets/js/common";
 import vueDrag from 'vue-dragging';
 
 Vue.prototype.$echarts = echarts;
@@ -42,10 +42,11 @@ router.beforeEach((to, from, next) => {
 
 
 /* eslint-disable no-new */
-new Vue({
+let vue = new Vue({
   el: '#app',
   router,
   components: {App},
   template: '<App/>'
 });
+
 

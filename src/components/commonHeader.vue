@@ -23,7 +23,7 @@ import { User } from "../assets/js/common";
         location.reload();
       },
       outLogin(){
-        User.info = {};
+        User.empty();
         this.$router.push("/login");
       }
     }

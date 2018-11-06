@@ -48,6 +48,24 @@ export const RequestParams = class RequestParams {
     return this;
   }
 
+  addDataItems(requestDataItems){
+    this.dataItems = this.dataItems.concat(requestDataItems);
+    return this;
+  }
+
+  addDataItemAttr(index, key, value){
+    let dataItem = this.dataItems[index];
+    if(dataItem){
+      dataItem.addAttribute(key, value);
+    }
+    else {
+      dataItem = new RequestDataItem();
+      dataItem.addAttribute(key, value);
+      this.dataItems.push(dataItem)
+    }
+    return this;
+  }
+
 }
 
 export const ResponseBody = class ResponseBody {

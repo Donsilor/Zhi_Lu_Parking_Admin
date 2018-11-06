@@ -6,7 +6,7 @@ import $ from 'jquery';
  * @param {*} arr 
  * @param {*} key 
  */
-export const array2Object = function (arr = [], key = "") {
+export const array2Object = function (arr = [], key = "id") {
   let result = {};
   for (let o of arr) {
     if (o[key]) result[o[key]] = o;
@@ -73,5 +73,9 @@ export const User = new class User {
   }
   set info(v){
     localStorage.setItem("UserInfo", JSON.stringify(v));
+  }
+  empty(){
+    this.info.id = null;
+    this.info = this.info;
   }
 };

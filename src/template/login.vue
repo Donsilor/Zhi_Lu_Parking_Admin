@@ -19,7 +19,7 @@
         <div class="btn"><input type="submit" value="登录" @click="login"></div>
       </form>
     </div>
-    <router-link to="/admin/home">登录</router-link>
+    <router-link to="/home">登录</router-link>
   </div>
 </template>
 
@@ -30,7 +30,7 @@ import { User } from "../assets/js/common";
 export default {
   data() {
     return {
-      user_name:"",
+      user_name:User.info.user_name || "",
       password:""
     };
   },
