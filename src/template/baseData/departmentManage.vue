@@ -41,7 +41,7 @@
             <th>操作</th>
           </tr>
           <tr v-for="(dept, index) in depts.dataItems" v-bind:key="index">
-            <td><input type="checkbox" v-model="selectedDepts"></td>
+            <td><input type="checkbox" :value="index" v-model="selectedDepts"></td>
             <td>{{dept.dept_code}}</td>
             <td>{{dept.dept_name}}</td>
             <td>{{dept.remark}}</td>
