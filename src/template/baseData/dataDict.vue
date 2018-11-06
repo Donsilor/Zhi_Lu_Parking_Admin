@@ -16,7 +16,7 @@
       </div>
       <div class="clf bottom">
         <div class="fl">
-          <button class="plechoose fl">全选 <img src="../../assets/images/icon_9.png" alt=""></button>
+          <button class="plechoose fl" @click="selectedAll" >全选 <img src="../../assets/images/icon_9.png" alt=""></button>
           <button class="batchdel fl" @click="delDictionary(null)">批量删除</button>
           <div>共搜索到 <span>{{dictionarys.attributes.tatal || 0}}</span> 条数据</div>
         </div>
