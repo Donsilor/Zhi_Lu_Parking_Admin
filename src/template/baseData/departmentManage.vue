@@ -22,7 +22,8 @@
         <div class="fr">
           <button class="search-button blu-button" @click="loadDeptsDatas(1, {key:searchParam})">搜索</button>
           <button class="clear-button bluborder-button" @click="searchParam = null">清除</button>
-          <button class="ss transf-button" v-bind:class="{hide:searchDivShow}" v-on:click="searchDivShow=!searchDivShow">
+          <button class="ss transf-button" v-bind:class="{hide:!searchDivShow}"
+                  v-on:click="searchDivShow=!searchDivShow">
             <i><img src="../../assets/images/icon_t_arrow2.png" alt=""></i>
             <span>{{searchDivShow ? "收起搜索" : "展开搜索"}}</span>
           </button>
@@ -53,7 +54,7 @@
         </table>
       </div>
       <Pagination
-        :previousPage="loadDeptsDatas" 
+        :previousPage="loadDeptsDatas"
         :nextPage="loadDeptsDatas"
         :skipPage="loadDeptsDatas"
         :pageIndex="depts.attributes.page_index"
@@ -149,7 +150,7 @@ import moment from "moment";
         this.deptData = this.depts.dataItems[id] || {};
         this.ifEditDepartment = true;
       },
-      
+
       editDept(){
 
         this.$api.dept.editor(new RequestParams()
@@ -164,7 +165,7 @@ import moment from "moment";
       },
 
       delDept(id){
-          
+
         let datas = id != null ? [this.depts.dataItems[id]] : this.selectedDepts.map(o=>this.depts.dataItems[o]);
         console.log(datas)
         if(datas.length){

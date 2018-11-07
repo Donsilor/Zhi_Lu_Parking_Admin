@@ -39,7 +39,8 @@
         <div class="fr">
           <button class="search-button blu-button" v-on:click="loadProjectDatas(1, {key:searchParam})">搜索</button>
           <button class="clear-button bluborder-button" v-on:click="searchParam = null, searchTimes = []">清除</button>
-          <button class="ss transf-button" v-bind:class="{hide:searchDivShow}" v-on:click="searchDivShow=!searchDivShow">
+          <button class="ss transf-button" v-bind:class="{hide:!searchDivShow}"
+                  v-on:click="searchDivShow=!searchDivShow">
             <i><img src="../../assets/images/icon_t_arrow2.png" alt=""></i>
             <span>{{searchDivShow === true ? "收起搜索" : "展开搜索"}}</span>
           </button>

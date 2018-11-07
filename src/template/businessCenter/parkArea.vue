@@ -49,7 +49,8 @@
         <div class="fr">
           <button class="search-button blu-button">搜索</button>
           <button class="clear-button bluborder-button">清除</button>
-          <button class="ss transf-button" v-bind:class="{hide:searchDivShow}" v-on:click="searchDivShow=!searchDivShow">
+          <button class="ss transf-button" v-bind:class="{hide:!searchDivShow}"
+                  v-on:click="searchDivShow=!searchDivShow">
             <i><img src="../../assets/images/icon_t_arrow2.png" alt=""></i>
             <span>{{searchDivShow === true ? "收起搜索" : "展开搜索"}}</span>
           </button>
@@ -94,7 +95,7 @@
         </table>
       </div>
       <Pagination
-        :previousPage="loadAreasDatas" 
+        :previousPage="loadAreasDatas"
         :nextPage="loadAreasDatas"
         :skipPage="loadAreasDatas"
         :pageIndex="areas.attributes.page_index"
@@ -296,7 +297,7 @@ import moment from "moment";
             )
           })
           .then(response => {
-            
+
             this.areas.attributes = response.attributes;
             this.areas.dataItems = array2Object(response.dataItems.map(o => o.attributes), "id");
             console.log(this.areas.dataItems)

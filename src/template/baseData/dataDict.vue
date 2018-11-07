@@ -23,7 +23,8 @@
         <div class="fr">
           <button class="search-button blu-button" @click="loadDictionarysDatas(1,{'key':searchParam})">搜索</button>
           <button class="clear-button bluborder-button" v-on:click="searchParam = null">清除</button>
-          <button class="ss transf-button" v-bind:class="{hide:searchDivShow}" v-on:click="searchDivShow=!searchDivShow">
+          <button class="ss transf-button" v-bind:class="{hide:!searchDivShow}"
+                  v-on:click="searchDivShow=!searchDivShow">
             <i><img src="../../assets/images/icon_t_arrow2.png" alt=""></i>
             <span>{{searchDivShow ? "收起搜索" : "展开搜索"}}</span>
           </button>
@@ -60,7 +61,7 @@
         </table>
       </div>
       <Pagination
-        :previousPage="loadDictionarysDatas" 
+        :previousPage="loadDictionarysDatas"
         :nextPage="loadDictionarysDatas"
         :skipPage="loadDictionarysDatas"
         :pageIndex="dictionarys.attributes.page_index"
@@ -155,7 +156,7 @@ import moment from "moment";
       Pagination
     },
     methods: {
-      
+
       selectedAll(){
         if(this.selectedDictionarys.length){
           this.selectedDictionarys = [];
@@ -167,7 +168,7 @@ import moment from "moment";
         this.dictionaryData = this.dictionarys.dataItems[id] || {};
         this.ifEditDict = true;
       },
-      
+
       editDictionary(){
 
         this.$api.project.editor(new RequestParams()
@@ -182,7 +183,7 @@ import moment from "moment";
       },
 
       delDictionary(id){
-          
+
         let datas = id != null ? [this.dictionarys.dataItems[id]] : this.selectedDictionarys.map(o=>this.dictionarys.dataItems[o]);
         console.log(datas)
         if(datas.length){

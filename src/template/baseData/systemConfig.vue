@@ -5,11 +5,12 @@
       <div class="c_box">
         <div>
           <span>东海花园停车场管理系统</span>
-          <a href="javascript:" class="modify">修改</a>
+          <!--<a href="javascript:" class="modify">修改</a>-->
         </div>
         <div>
           <span>广东省深圳市福田区农林路东海花园</span>
-          <a href="javascript:" class="modify">修改</a><span class="time">更新日期：<i>2016-02-23</i></span>
+          <!--<a href="javascript:" class="modify">修改</a>-->
+          <span class="time">更新日期：<i>2016-02-23</i></span>
         </div>
       </div>
 
@@ -52,6 +53,53 @@
       </div>
       <div class="prompt"><span>0-28, 0为立即起用，1-28值自然日的1-28号，29,30,31号三天不做为初次授权开始日期使用，在这三天初次授权的，下一自然天开始计算</span></div>
     </div>
+    <!--弹窗-->
+    <div class="main" v-if="ifAuthorize">
+      <div class="depwd" v-drag.cursor="'#authorize'">
+        <div class="top-nav" id="authorize">
+          <p class="t-text fl">授权信息</p>
+          <p class="close fr" @click="ifAuthorize = false">x</p>
+        </div>
+        <div class="bot">
+          <div class="cet">
+            <div class="clf">
+              <p class="red"><i class="iconfont icon-jian-tianchong"></i>错误提示的文案</p>
+              <p class="clf"><span class="fl"><span class='red-text'>*</span>授权名称：</span><input class="fl user"
+                                                                                                name="user" type="text"
+                                                                                                placeholder="请输入编号，必填">
+              </p>
+              <p class="clf">
+                <span class="fl"><span class='red-text'>*</span>授权KEY：</span>
+                <input class="fl psw" name="psw" type="text" placeholder="请输入6-8位数字密码，必填">
+                <span class="pswremind remind">请输入正确信息</span>
+              </p>
+              <p class="clf">
+                <span class="fl"><span class='red-text'>*</span>确认KEY：</span>
+                <input class="fl ppsw" name="ppsw" type="text" placeholder="请输入6-8位数字密码，必填">
+                <span class="ppswremind remind">请输入正确信息</span>
+              </p>
+              <p class="clf"><span class="fl"><span class='red-text'>*</span>客户名称：</span><input class="fl" type="text"
+                                                                                                placeholder="请输入姓名，必填">
+              </p>
+              <p class="clf">
+                <span class="fl"><span class='red-text'>*</span>电话：</span>
+                <input class="fl tel" type="text" name="tel" placeholder="请输入电话号码，必填">
+                <span class="telremind remind">请输入正确信息</span>
+              </p>
+              <p class="clf upload"><span class="fl">地址：</span><input class="fl" type="text" placeholder="请输入备注">
+              </p>
+              <p class="bz clf"><span class="fl">备注：</span><input class="fl" type="text" placeholder="请输入备注" id="inp">
+              </p>
+            </div>
+            <div class="button clf">
+              <a class="acknowledgement fr">确定</a>
+              <a class="qx fr" @click="ifAuthorize = false">取消</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--弹窗-->
   </div>
 </template>
 
