@@ -38,21 +38,26 @@
 
 /*弹窗*/
 
-.depwd{height: 415px;width: 600px;position: absolute;top: 10%;left: 40%;}
-.bot{width:100%;height: 570px;background-color: #fff;}
-.t-text{font-size: .875rem;color: #fff;line-height: 3.75rem;margin-left:25px;}
-.close{width:3.75rem;height:3.75rem;font-size: .875rem;color: #fff;line-height: 3.75rem;text-align: center;background-color: #006af2;}
-.close:hover{cursor: pointer;}
-.cet{width: 500px;margin: 0 auto;padding-top: 1.25rem;}
-.red{color: #f35857;font-size: .875rem;height: 1.875rem;line-height: 1.875rem;margin-bottom: 25px;padding-left: 5.625rem;}
-.cet p{line-height: 1.875rem;margin-bottom: 1.25rem;}
-.cet p span{text-align:right;width: 30%;}
-.cet input{width: 31.875rem;height: 1.875rem;border: 1px solid #999;color:#999;float: right;padding-left: .625rem;border-radius: 5px;}
-.icon-xingxing{font-size: 8px!important;color: #ff0000!important;}
-.bz>i{color: transparent!important;}
-.bz>input{width: 31.875rem;height:5.25rem;border: 1px solid #999;color:#999;float: right;padding-left:.625rem;border-radius: 5px;padding-bottom: 3.75rem;}
-.button{height: 1.875rem;width: 100%;margin-top: 1.875rem;}
-.qx{display: block;height:1.875rem;width: 5.625rem;color:#1c7dfa;border: 1px solid #1c7dfa;border-radius: 5px;text-align: center;line-height: 1.875rem;}
-.qx:hover{cursor: pointer;}
-.qr{display: block;height:1.875rem;width: 5.625rem;color:#fff;background-color:#1c7dfa;border-radius: 5px;margin-left: 1.875rem;text-align: center;line-height: 1.875rem;}
-.qr:hover{cursor: pointer;}
+.depwd{width: 630px;position: absolute;top: 10%;left: 35%;}
+.depwd .bot{width:100%;background-color: #fff;padding-bottom: 30px;}
+.depwd .t-text{font-size: .875rem;color: #fff;line-height: 3.75rem;margin-left:25px;}
+.depwd .cet{width: 500px;margin: 0 auto;padding-top: 1.25rem;}
+.depwd .red{color: #f35857;font-size: .875rem;height: 1.875rem;line-height: 1.875rem;margin-bottom: 25px;padding-left: 5.625rem;}
+.depwd .cet p{line-height: 1.875rem;margin-bottom: 1.5rem;}
+.depwd .cet p span{text-align:right;width: 25%;}
+.depwd .cet input{width: 75%;height: 2.25rem;border: 1px solid #999;color:#999;float: right;padding-left: .625rem;border-radius: 5px;}
+.depwd .cet textarea{width: 70%;height: 70px;border-radius: 5px;padding:8px;color: #999;font-family: "Microsoft YaHei";resize: none;}
+.depwd .icon-xingxing{font-size: 8px!important;color: #ff0000!important;}
+.depwd .bz>i{color: transparent!important;}
+.depwd .button{height: 1.875rem;width: 100%;margin-top: 1.875rem;}
+.depwd .qx{display: block;height:1.875rem;width: 5.625rem;color:#1c7dfa;border: 1px solid #1c7dfa;border-radius: 5px;text-align: center;line-height: 1.875rem;}
+.depwd .qx:hover{cursor: pointer;}
+.depwd .qr{display: block;height:1.875rem;width: 5.625rem;color:#fff;background-color:#1c7dfa;border-radius: 5px;margin-left: 1.875rem;text-align: center;line-height: 1.875rem;}
+.depwd .qr:hover{cursor: pointer;}
+
+
+.ParkingVariate .cet p span{width: 30%;font-size: 12px;}
+.ParkingVariate .cet input{width: 70%;float: left;font-size: 14px;}
+/*.ParkingVariate .cet input.w30{width: 30%;}*/
+/*.ParkingVariate .cet input.w50{width: 50%;}*/
+

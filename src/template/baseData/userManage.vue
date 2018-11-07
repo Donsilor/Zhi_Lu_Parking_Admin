@@ -59,9 +59,9 @@
               <td><span v-bind:class="{normal:user.status}">正常</span></td>
               <td>
                 <a href="javascript:" class="edit">编辑</a>
-                <a href="javascript:" class="delete" v-on:click="(delUserWindow=true,delUserindex=index)">删除</a>
-                <a href="javascript:">重置密码</a>
-                <a href="javascript:">角色</a>
+                <a href="javascript:" class="delete" v-on:click="(delUserWindow=true, delUserindex=index)">删除</a>
+                <a href="javascript:" @click="resetPW = true">重置密码</a>
+                <a href="javascript:" @click="ifAssignRoles = true">角色</a>
               </td>
             </tr>
           </tbody>
@@ -87,7 +87,7 @@
         <div class="bot">
           <div class="cet">
             <div class="clf">
-              <p class="red" v-if="addErrorDesc!=''" ><i class="iconfont icon-jian-tianchong"></i>{{addErrorDesc}}</p>
+              <p class="red" v-if="addErrorDesc!==''" ><i class="iconfont icon-jian-tianchong"></i>{{addErrorDesc}}</p>
               <p class="clf"><span class="fl"><span class='red-text'>*</span>用户名：</span><input v-bind:style="{'border-color': addUserData.user_name.warm?'#ff0000':'#000000'}" class="fl user" v-model="addUserData.user_name.value" name="user" type="text" placeholder="请输入编号，必填">
               </p>
               <p class="clf">
@@ -141,6 +141,37 @@
         </div>
       </div>
     </div>
+    <div class="resetPW" v-if="resetPW">
+      <div class="depwd">
+        <div class="text">密码已重新设置为888888</div>
+        <div class="button clf">
+          <a class="qr fr">确定</a>
+          <a class="qx fr" @click="resetPW = false">取消</a>
+        </div>
+      </div>
+    </div>
+    <div class="assignRoles" v-if="ifAssignRoles">
+      <div class="depwd" v-drag.cursor="'#AssignRoles'">
+        <div class="top-nav" id="AssignRoles">
+          <p class="t-text fl">分配角色</p>
+          <p class="close fr" @click="ifAssignRoles = false">x</p>
+        </div>
+        <div class="bot">
+          <div class="cet">
+            <el-tree
+              :data="data"
+              :props="defaultProps"
+              show-checkbox
+              @node-click="handleNodeClick">
+            </el-tree>
+            <div class="button clf">
+              <a class="qx">取消</a>
+              <a class="qr">确定</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <!--弹窗-->
   </div>
 </template>
@@ -168,7 +199,7 @@ export default {
         user_name: {
           warm: false,
           check: function(v) {
-            if (this.value != "") {
+            if (this.value !== "") {
               v.addUserData.user_name.warm = false;
               return true;
             }
@@ -181,7 +212,7 @@ export default {
         full_name: {
           warm: false,
           check: function(v) {
-            if (this.value != "") {
+            if (this.value !== "") {
               v.addUserData.full_name.warm = false;
               return true;
             }
@@ -194,7 +225,7 @@ export default {
         password: {
           warm: false,
           check: function(v) {
-            if (this.value != "") {
+            if (this.value !== "") {
               v.addUserData.password.warm = false;
               return true;
             }
@@ -207,7 +238,7 @@ export default {
         password2: {
           warm: false,
           check: function(v) {
-            if (v.addUserData.password.value == v.addUserData.password2.value) {
+            if (v.addUserData.password.value === v.addUserData.password2.value) {
               v.addUserData.password2.warm = false;
               return true;
             }
@@ -292,7 +323,44 @@ export default {
             selected: false
           }
         ]
-      }
+      },
+      resetPW: false,
+      ifAssignRoles: false,
+      data: [
+        {
+          label: '基础资料',
+          children: [
+            {label: '资源管理'},
+            {label: '角色管理'},
+            {label: '用户管理'},
+            {label: '系统配置'},
+            {label: '操作日志'}
+          ]
+        },
+        {
+          label: '业务中心',
+          children: [
+            {label: '房屋管理'},
+            {label: '车辆授权'},
+            {label: '月卡续费'}
+          ]
+        },
+        {
+          label: '监控中心',
+          children: [
+            {label: '设备监控'}
+          ]
+        },
+        {
+          label: '报表中心',
+          children: [
+            {label: '固定车辆信息统计表'},
+            {label: '房屋信息统计表'},
+            {label: '固定车辆收费信息统计'},
+            {label: '临时车辆收费信息统计'}
+          ]
+        }
+      ],
     };
   },
   components: {

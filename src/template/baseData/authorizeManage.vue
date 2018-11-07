@@ -35,125 +35,94 @@
         <table class="usermanagement-table">
           <tr>
             <th></th>
-            <th>照片</th>
-            <th>用户名</th>
-            <th>姓名</th>
+            <th>授权名称</th>
+            <th>客户</th>
             <th>电话</th>
+            <th>地址</th>
             <th>创建时间</th>
             <th>更新时间</th>
+            <th>操作员</th>
             <th>状态</th>
             <th>操作</th>
           </tr>
           <tr>
             <td><input type="checkbox"></td>
-            <td><span><img src="../../assets/images/photo_1.jpg" alt=""></span></td>
             <td>user</td>
-            <td>用户1</td>
+            <td>客户</td>
             <td>13099998888</td>
+            <td>地址</td>
             <td>2015-09-06 <br> 08:50:08</td>
             <td>2015-09-06 <br> 08:50:08</td>
+            <td>admin</td>
             <td><span class="normal">正常</span></td>
             <td>
               <a href="javascript:" class="edit" @click="ifAuthorize = true">编辑</a>
               <a href="javascript:" class="delete" @click="ifDel = true">删除</a>
-              <a href="javascript:">重置密码</a>
-              <a href="javascript:">角色</a>
+              <a href="javascript:" @click="resetPW = true">重置密码</a>
             </td>
           </tr>
           <tr>
             <td><input type="checkbox"></td>
-            <td><span><img src="../../assets/images/photo_1.jpg" alt=""></span></td>
             <td>user</td>
-            <td>用户1</td>
+            <td>客户</td>
             <td>13099998888</td>
+            <td>地址</td>
             <td>2015-09-06 <br> 08:50:08</td>
             <td>2015-09-06 <br> 08:50:08</td>
+            <td>admin</td>
             <td><span class="normal">正常</span></td>
             <td>
-              <a href="javascript:" class="edit">编辑</a>
-              <a href="javascript:" class="delete">删除</a>
-              <a href="javascript:">重置密码</a>
-              <a href="javascript:">角色</a>
-            </td>
-          </tr>
-          <tr>
-            <td><input type="checkbox"></td>
-            <td><span><img src="../../assets/images/photo_1.jpg" alt=""></span></td>
-            <td>user</td>
-            <td>用户1</td>
-            <td>13099998888</td>
-            <td>2015-09-06 <br> 08:50:08</td>
-            <td>2015-09-06 <br> 08:50:08</td>
-            <td><span class="normal">正常</span></td>
-            <td>
-              <a href="javascript:" class="edit">编辑</a>
-              <a href="javascript:" class="delete">删除</a>
-              <a href="javascript:">重置密码</a>
-              <a href="javascript:">角色</a>
-            </td>
-          </tr>
-          <tr>
-            <td><input type="checkbox"></td>
-            <td><span><img src="../../assets/images/photo_1.jpg" alt=""></span></td>
-            <td>user</td>
-            <td>用户1</td>
-            <td>13099998888</td>
-            <td>2015-09-06 <br> 08:50:08</td>
-            <td>2015-09-06 <br> 08:50:08</td>
-            <td><span class="normal">正常</span></td>
-            <td>
-              <a href="javascript:" class="edit">编辑</a>
-              <a href="javascript:" class="delete">删除</a>
-              <a href="javascript:">重置密码</a>
-              <a href="javascript:">角色</a>
-            </td>
-          </tr>
-          <tr>
-            <td><input type="checkbox"></td>
-            <td><span><img src="../../assets/images/photo_1.jpg" alt=""></span></td>
-            <td>user</td>
-            <td>用户1</td>
-            <td>13099998888</td>
-            <td>2015-09-06 <br> 08:50:08</td>
-            <td>2015-09-06 <br> 08:50:08</td>
-            <td><span class="normal">正常</span></td>
-            <td>
-              <a href="javascript:" class="edit">编辑</a>
-              <a href="javascript:" class="delete">删除</a>
-              <a href="javascript:">重置密码</a>
-              <a href="javascript:">角色</a>
-            </td>
-          </tr>
-          <tr>
-            <td><input type="checkbox"></td>
-            <td><span><img src="../../assets/images/photo_1.jpg" alt=""></span></td>
-            <td>user</td>
-            <td>用户1</td>
-            <td>13099998888</td>
-            <td>2015-09-06 <br> 08:50:08</td>
-            <td>2015-09-06 <br> 08:50:08</td>
-            <td><span class="normal">正常</span></td>
-            <td>
-              <a href="javascript:" class="edit">编辑</a>
-              <a href="javascript:" class="delete">删除</a>
-              <a href="javascript:">重置密码</a>
-              <a href="javascript:">角色</a>
-            </td>
-          </tr>
-          <tr>
-            <td><input type="checkbox"></td>
-            <td><span><img src="../../assets/images/photo_1.jpg" alt=""></span></td>
-            <td>user</td>
-            <td>用户1</td>
-            <td>13099998888</td>
-            <td>2015-09-06 <br> 08:50:08</td>
-            <td>2015-09-06 <br> 08:50:08</td>
-            <td><span class="freeze">正常</span></td>
-            <td>
-              <a href="javascript:" class="edit">编辑</a>
+              <a href="javascript:" class="edit" @click="ifAuthorize = true">编辑</a>
               <a href="javascript:" class="delete" @click="ifDel = true">删除</a>
-              <a href="javascript:">重置密码</a>
-              <a href="javascript:">角色</a>
+              <a href="javascript:" @click="resetPW = true">重置密码</a>
+            </td>
+          </tr>
+          <tr>
+            <td><input type="checkbox"></td>
+            <td>user</td>
+            <td>客户</td>
+            <td>13099998888</td>
+            <td>地址</td>
+            <td>2015-09-06 <br> 08:50:08</td>
+            <td>2015-09-06 <br> 08:50:08</td>
+            <td>admin</td>
+            <td><span class="normal">正常</span></td>
+            <td>
+              <a href="javascript:" class="edit" @click="ifAuthorize = true">编辑</a>
+              <a href="javascript:" class="delete" @click="ifDel = true">删除</a>
+              <a href="javascript:" @click="resetPW = true">重置密码</a>
+            </td>
+          </tr>
+          <tr>
+            <td><input type="checkbox"></td>
+            <td>user</td>
+            <td>客户</td>
+            <td>13099998888</td>
+            <td>地址</td>
+            <td>2015-09-06 <br> 08:50:08</td>
+            <td>2015-09-06 <br> 08:50:08</td>
+            <td>admin</td>
+            <td><span class="normal">正常</span></td>
+            <td>
+              <a href="javascript:" class="edit" @click="ifAuthorize = true">编辑</a>
+              <a href="javascript:" class="delete" @click="ifDel = true">删除</a>
+              <a href="javascript:" @click="resetPW = true">重置密码</a>
+            </td>
+          </tr>
+          <tr>
+            <td><input type="checkbox"></td>
+            <td>user</td>
+            <td>客户</td>
+            <td>13099998888</td>
+            <td>地址</td>
+            <td>2015-09-06 <br> 08:50:08</td>
+            <td>2015-09-06 <br> 08:50:08</td>
+            <td>admin</td>
+            <td><span class="normal">正常</span></td>
+            <td>
+              <a href="javascript:" class="edit" @click="ifAuthorize = true">编辑</a>
+              <a href="javascript:" class="delete" @click="ifDel = true">删除</a>
+              <a href="javascript:" @click="resetPW = true">重置密码</a>
             </td>
           </tr>
         </table>
@@ -230,6 +199,15 @@
         </div>
       </div>
     </div>
+    <div class="resetPW" v-if="resetPW">
+      <div class="depwd">
+        <div class="text">密码已重新设置为888888</div>
+        <div class="button clf">
+          <a class="qr fr">确定</a>
+          <a class="qx fr" @click="resetPW = false">取消</a>
+        </div>
+      </div>
+    </div>
     <!--弹窗-->
   </div>
 </template>
@@ -242,6 +220,7 @@
         toggleSearchText: '收起搜索',
         searchDivShow: true,
         ifAuthorize: false,
+        resetPW: false,
         ifDel: false
       };
     },

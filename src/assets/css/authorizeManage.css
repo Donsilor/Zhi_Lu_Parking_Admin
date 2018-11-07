@@ -1,18 +1,22 @@
-.result .tab .usermanagement-table tr th:first-child{width:5%;}
-.result .tab .usermanagement-table tr th:nth-child(2){width:8%;text-align:center;}
-.result .tab .usermanagement-table tr th:nth-child(3){width:10%;text-align:center;}
-.result .tab .usermanagement-table tr th:nth-child(4){width:10%;text-align:center;}
-.result .tab .usermanagement-table tr th:nth-child(5){width:12%;text-align:center;}
-.result .tab .usermanagement-table tr th:nth-child(6){width:10%;text-align:left;padding-left:10px;}
-.result .tab .usermanagement-table tr th:nth-child(7){width:10%;text-align:left;padding-left:10px;}
-.result .tab .usermanagement-table tr th:nth-child(8){width:5%;text-align:center;}
-.result .tab .usermanagement-table tr th:nth-child(9){width:30%;text-align:center;}
+.result th,
+.result td{text-align: center;}
+
+.result .tab .usermanagement-table tr th:nth-child(1){width:2.6%;}
+.result .tab .usermanagement-table tr th:nth-child(2){width:12.4%;}
+.result .tab .usermanagement-table tr th:nth-child(3){width:6.5%;}
+.result .tab .usermanagement-table tr th:nth-child(4){width:11.5%;}
+.result .tab .usermanagement-table tr th:nth-child(5){width:9.3%;}
+.result .tab .usermanagement-table tr th:nth-child(6){width:16%;}
+.result .tab .usermanagement-table tr th:nth-child(7){width:15%;}
+.result .tab .usermanagement-table tr th:nth-child(8){width:10%;}
+.result .tab .usermanagement-table tr th:nth-child(9){width:11.7%;}
+.result .tab .usermanagement-table tr th:nth-child(9){width:5%;}
 
 
 
 
-.result .tab .usermanagement-table tr td:first-child{text-align:center;}
-.result .tab .usermanagement-table tr td:nth-child(2){text-align:left;}
+/*.result .tab .usermanagement-table tr td:nth-child(1){text-align:center;}*/
+/*.result .tab .usermanagement-table tr td:nth-child(2){text-align:left;}*/
 .result .tab .usermanagement-table tr td:nth-child(2) span{display:block;width:40px;height:40px;margin:auto;overflow:hidden;border-radius:50%;}
 .result .tab .usermanagement-table tr td:nth-child(3){text-align:center;}
 .result .tab .usermanagement-table tr td:nth-child(4){text-align:center;}
@@ -21,8 +25,7 @@
 .result .tab .usermanagement-table tr td:nth-child(9){text-align:center;}
 .result .tab .usermanagement-table tr td .normal{color:#48b765;}
 .result .tab .usermanagement-table tr td .freeze{color:#ea5657;}
-.result .tab .usermanagement-table tr td:last-child a{font-size:14px;color:#1c7dfa;}
-.result .tab .usermanagement-table tr td:last-child a:not(:last-child){margin-right:20px;}
+.result .tab .usermanagement-table tr td  a{font-size:14px;color:#1c7dfa;margin: 0 3px;}
 
 
 .depwd{height:60px;width: 600px;position: absolute;top: 15%;left: 40%;}
