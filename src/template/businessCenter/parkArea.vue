@@ -86,10 +86,10 @@
             <td>{{area.update_time}}</td>
             <td>{{area.user_name}}</td>
             <td>
-              <a href="javascript:" class="bj">编辑</a>
-              <a href="javascript:" class='delete'>删除</a>
+              <a href="javascript:" class="bj" @click="ifRenew = true">编辑</a>
+              <a href="javascript:" class='delete' @click="ifDel = true">删除</a>
               <a href="javascript:" @click="ifVehreg = true">管理车位</a>
-              <a href="javascript:" class="fees">收费标准</a>
+              <a href="javascript:" class="fees" @click="ifConfig = true">收费标准</a>
             </td>
           </tr>
         </table>

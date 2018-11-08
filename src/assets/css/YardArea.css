@@ -42,8 +42,6 @@
 .main1 .depwd{width:830px;position: absolute;}
 .main1 .bot{width:100%;height:420px;background-color: #fff;}
 .main1 .t-text{font-size: 14px;color: #fff;line-height: 60px;margin-left:25px;}
-.main1 .fees-close{width:60px;height:60px;font-size: 14px;color: #fff;line-height: 60px;text-align: center;}
-.main1 .fees-close:hover{cursor: pointer;background-color: #006af2;}
 
 .main1 .bot .bot-left{width: 175px;height: 100%;border-right: 1px solid #eee;padding-top: 30px;}
 .main1 .bot .bot-left input[type=text]{display:block;width: 138px;height: 30px;padding-left: 10px;line-height: 30px;font-size: 14px;border: 1px solid #999;border-radius: 5px;margin: 0 auto;margin-bottom: 40px;}
@@ -72,8 +70,6 @@
 .vehreg-main>.depwd{width:1180px;top: 15%;left: 10%;}
 .vehreg-main .bot{width:100%;background-color: #fff;padding-bottom: 30px;}
 .vehreg-main .t-text{font-size: 14px;color: #fff;line-height: 60px;margin-left:25px;}
-.vehreg-main .v-close{width:60px;height:60px;font-size: 14px;color: #fff;line-height: 60px;text-align: center;background-color: #006af2;}
-.vehreg-main .v-close:hover{cursor: pointer;}
 .vehreg-main .vc-cet{width:95%;margin: 0 auto;padding-top: 20px;}
 .vehreg-main .vc-cet p{line-height: 30px;width: 35%;float:left;margin-top: 0;}
 .vehreg-main .vc-cet p span{text-align:right;float: left;width: 30%;padding-right: .5rem;}
