@@ -88,7 +88,7 @@
             <td>
               <a href="javascript:" class="bj">编辑</a>
               <a href="javascript:" class='delete'>删除</a>
-              <a href="javascript:">管理车位</a>
+              <a href="javascript:" @click="ifVehreg = true">管理车位</a>
               <a href="javascript:" class="fees">收费标准</a>
             </td>
           </tr>
@@ -213,6 +213,135 @@
         </div>
       </div>
     </div>
+    <div class="vehreg-main" v-if="ifVehreg">
+      <div class="depwd" v-drag.cursor="'#Vehreg'">
+        <div class="top-nav" id="Vehreg">
+          <p class="t-text fl">车位管理</p>
+          <p class="v-close fr" @click="ifVehreg = false">x</p>
+        </div>
+        <div class="bot">
+          <div class="vc-cet">
+            <div class="clf">
+              <p class="clf">
+                <span class="fl">车场区域：</span>
+                <input type="text">
+              </p>
+              <p class="clf">
+                <span class="fl">车位号：</span>
+                <input type="text">
+              </p>
+              <p class="button clf">
+                <a class="v-qr fl">添加车位</a>
+                <a class="v-qr fl">导入车位</a>
+              </p>
+            </div>
+          </div>
+          <div class="vehregHandle clf">
+            <div class="fl">
+              <button class="plechoose fl">请选择 <img src="../../assets/images/icon_9.png" alt=""></button>
+              <button class="batchdel fl">批量删除</button>
+              <button class="greenbut fl">合并到车位组</button>
+              <div class="fl">共搜索到 <span>922</span> 条数据</div>
+            </div>
+            <div class="fr ParkingSpotSearch clf">
+              <span class="fl">车位号：</span>
+              <input type="search" placeholder="请输入车位号">
+              <button class="v-qr fr">搜索</button>
+            </div>
+          </div>
+          <div class="selected">已选 <span>5</span> 项数据</div>
+          <div class="residents-table clf">
+            <table>
+              <tr>
+                <th></th>
+                <th>车位组编号</th>
+                <th>车位号</th>
+                <th>创建时间</th>
+                <th>更新时间</th>
+                <th>操作员</th>
+                <th>操作</th>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td>L0678</td>
+                <td>L0678</td>
+                <td>2015-09-28 08:50:08</td>
+                <td>2015-09-28 08:50:08</td>
+                <td>灵昔</td>
+                <td>
+                  <a href="javascript:" class="v-choose">编辑</a>
+                  <a href="javascript:" class="v-choose">删除</a>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td>L0678</td>
+                <td>L0678</td>
+                <td>2015-09-28 08:50:08</td>
+                <td>2015-09-28 08:50:08</td>
+                <td>灵昔</td>
+                <td>
+                  <a href="javascript:" class="v-choose">编辑</a>
+                  <a href="javascript:" class="v-choose">删除</a>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td>L0678</td>
+                <td>L0678</td>
+                <td>2015-09-28 08:50:08</td>
+                <td>2015-09-28 08:50:08</td>
+                <td>灵昔</td>
+                <td>
+                  <a href="javascript:" class="v-choose">编辑</a>
+                  <a href="javascript:" class="v-choose">删除</a>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td>L0678</td>
+                <td>L0678</td>
+                <td>2015-09-28 08:50:08</td>
+                <td>2015-09-28 08:50:08</td>
+                <td>灵昔</td>
+                <td>
+                  <a href="javascript:" class="v-choose">编辑</a>
+                  <a href="javascript:" class="v-choose">删除</a>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td>L0678</td>
+                <td>L0678</td>
+                <td>2015-09-28 08:50:08</td>
+                <td>2015-09-28 08:50:08</td>
+                <td>灵昔</td>
+                <td>
+                  <a href="javascript:" class="v-choose">编辑</a>
+                  <a href="javascript:" class="v-choose">删除</a>
+                </td>
+              </tr>
+            </table>
+            <div class="page clf">
+              <a href="javascript:"><img src="../../assets/images/icon_l_arrow.png" alt=""></a>
+              <a href="javascript:">1</a>
+              <a href="javascript:">2</a>
+              <a href="javascript:">3</a>
+              <a href="javascript:">4</a>
+              <a href="javascript:">5</a>
+              <a href="javascript:">6</a>
+              <a href="javascript:">7</a>
+              <a href="javascript:">8</a>
+              <a href="javascript:">9</a>
+              <a href="javascript:"><img src="../../assets/images/icon_r_arrow.png" alt=""></a>
+              <span>10条/页</span>
+              <span>跳至<input type="text">页</span>
+              <button class="go">Go</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="delete_prompt" v-if="ifDel">
       <div class="depwd">
         <div class="text">你是否确认删除选中的记录</div>
@@ -266,6 +395,7 @@ import moment from "moment";
         searchTimes:[],
         ifRenew: false,
         ifConfig: false,
+        ifVehreg: false,
         ifDel: false,
         areas: {
           attributes: {
