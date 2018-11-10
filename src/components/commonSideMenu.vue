@@ -1,7 +1,7 @@
 <template>
   <div class="left_column">
-    <ul id="sideMenuUl">
-      <li class='current'>
+    <ul id="sideMenuUl" ref="sideMenuUl">
+      <li class=''>
         <div class="title">基础资料</div>
         <div class="menu">
           <router-link to="/resourceManage">资源管理</router-link>
@@ -42,35 +42,47 @@
 </template>
 
 <script>
-  export default {
-    data () {
-      return {};
-    },
-    methods: {
-      simplifyToggle () {
-        let $sideMenu = $('.left_column');
-        $sideMenu.toggleClass('simplify');
-      }
-    },
-    mounted () {
-      function initSideMenuTab (id) {
-        let ul = document.getElementById(id);
-        let lis = ul.children;
-        for (let i = 0; i < lis.length; i++) {
-          lis[i].onclick = function () {
-            for (let i = 0; i < lis.length; i++) {
-              lis[i].className = '';
-            }
-            this.className = 'current';
-          };
-        }
-      }
-
-      initSideMenuTab('sideMenuUl');
+export default {
+  data() {
+    return {
+      currentMenu:0
+    };
+  },
+  methods: {
+    simplifyToggle() {
+      let $sideMenu = $(".left_column");
+      $sideMenu.toggleClass("simplify");
     }
-  };
+  },
+  mounted() {
+    this.currentMenu = localStorage.getItem("currentMenu")
+      ? localStorage.getItem("currentMenu")
+      : 0;
+
+    this.currentMenu
+      ? $(".router-link-active")
+          .parents("li")
+          .addClass("current")
+      : $(this.$refs.sideMenuUl.children[0]).addClass("current");
+
+    function initSideMenuTab(id) {
+      let ul = document.getElementById(id);
+      let lis = ul.children;
+      for (let i = 0; i < lis.length; i++) {
+        lis[i].onclick = function() {
+          for (let i = 0; i < lis.length; i++) {
+            lis[i].className = "";
+          }
+          this.className = "current";
+          localStorage.setItem('currentMenu', i)
+        };
+      }
+    }
+
+    initSideMenuTab("sideMenuUl");
+  }
+};
 </script>
 
 <style scoped>
-
 </style>

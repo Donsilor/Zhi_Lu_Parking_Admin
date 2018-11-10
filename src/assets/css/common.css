@@ -113,7 +113,7 @@ input[type=checkbox]{cursor: pointer;}
 .result .tab table tr th{border-bottom:1px solid #e1e6eb;height:4rem;color:#666;font-size:.875rem;font-weight:500;background:#f4f5f9;border-right:1px solid #e1e6eb;}
 .result .tab table input[type=checkbox]{-webkit-appearance: none;-moz-appearance: none;appearance: none;width:1rem;height:1rem;border:1px solid #c1c1c1;border-radius:50%;cursor: pointer;}
 .result .tab table input[type=checkbox]:checked{background:url(../images/icon_6.png)no-repeat center/contain;border:none;}
-.result .tab table tr td:last-child a{font-size:.875rem;color:#1c7dfa;padding: 0 0.3rem;}
+.result .tab table tr td:last-child a{font-size:.875rem;color:#1c7dfa;padding: 0 0.3rem;display: inline-block}
 .result .tab table tr td {border-bottom: 1px solid #e1e6eb;height: 3rem;font-size: .875rem;color: #999;border-right: 1px solid #e1e6eb;text-align: center;}
 .result .page {float: right;width: auto;height: auto;margin-top: 0.9375rem;}
 
@@ -170,6 +170,25 @@ input[type=checkbox]{cursor: pointer;}
 
 
 
+.bot .page {float: right;width: auto;height: auto;margin-top: 0.9375rem;}
+.bot .page a {float: left;font-size: .875rem;color: #333;padding: .625rem;background: #f5f5f6;margin-right: .625rem;}
+.bot .page a.active,
+.bot .page a:hover {background: #1c7dfa;color: #fff;}
+/*.bot .page a:nth-of-type(1){}*/
+.bot .page span {float: left;padding: .625rem;}
+.bot .page span:nth-of-type(1) {font-size: .875rem;color: #333;}
+.bot .page span:nth-of-type(2) {font-size: .875rem;color: #333;}
+.bot .page span:nth-of-type(2) input {background: none;border-bottom: 1px solid #333;width: 2.1875rem;display: inline-block;margin: 0 .3125rem;text-align: center;font-size: .75rem;color: #333;height: auto;line-height: 0;padding-left: 0}
+.bot .page .go{width: 1.875rem;text-align: center;}
 
 
 
+.el-tree-node__content,
+.el-tree-node{position: relative;}
+.el-tree-node__content{height: 30px;}
+.custom-tree-node{width: 200px;line-height: 1;}
+.custom-tree-node .handleBtns{position: absolute;top: 0;right: 0;bottom: 0;line-height: 30px;}
+.custom-tree-node .handleBtns a{margin: 0 3px;}
+
+.nonreg-main .cet p .el-input__icon{line-height: 25px;}
+.nonreg-main .cet p input[type=text]{padding-left: 10%;}

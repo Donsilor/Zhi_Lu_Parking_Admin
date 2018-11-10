@@ -30,12 +30,23 @@
 .box .content .nav-top ul li:hover{background: #fff;color:#1c7dfa ;}
 
 .box .content .right{float:left;width:calc(99% - 15.625rem);height:85vh;background:#fff;padding-top:1.875rem;}
-.box .content .right > div{overflow:hidden;margin-bottom:25px;}
+.box .content .right > div{margin-bottom:25px;}
+.box .content .right > div:after{content: '';display: block;clear: both;}
 .box .content .right > div:first-child{margin-bottom:0;}
 .box .content .right > div .name{float:left;width:20%;text-align:right;font-size:16px;color:#000;line-height:30px;}
+
+
+
+.box .content .right > div .up{display:block;width: 80px!important;height: 80px!important;background-color: #eee;font-size: 20px;line-height: 80px;text-align: center!important;color: #999;margin-left: 25px;margin-right:20px;border-radius: 4px;cursor: pointer;}
+.box .content .right > div .up img.up{margin: 0;}
+.box .content .right > div .r-text{color: #999;width: 50%!important;text-align: left!important;margin-top: 60px;}
+
+
+
 .box .content .right > div .role{float:left;width:350px;height:30px;margin-left:15px;border:1px solid #000;border-radius:5px;}
-.box .content .right > div .role-icon{float:left;width:90px;height:30px;margin-left:15px;border:1px solid #999;border-radius:5px;background:#f7f7f7;text-align: center;line-height: 30px;}
-.box .content .right > div .role input[type=text]{display:block;width:100%;height:100%;background:none;font-size:14px;color:#000;padding-left:5%;}
+/*.box .content .right > div .role-icon{float:left;width:90px;height:30px;margin-left:15px;border:1px solid #999;border-radius:5px;background:#f7f7f7;text-align: center;line-height: 30px;}*/
+.box .content .right > div .role input[type=text],
+.box .content .right > div .role select{display:block;width:100%;height:100%;background:none;font-size:14px;color:#000;padding-left:5%;}
 .box .content .right > div:first-child .role{background:url(../images/icon_12.png)no-repeat 95% center;}
 .box .content .right > div:nth-child(5) .role{border:0;line-height:30px;}
 .box .content .right > div:nth-child(5) .role input[type=radio]{width:16px;height:16px;border:1px solid #000;border-radius:50%;

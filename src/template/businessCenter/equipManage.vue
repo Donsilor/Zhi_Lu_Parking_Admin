@@ -2,389 +2,140 @@
   <div class="content clf">
     <div class="search ">
       <div class="add">
-        <button class="add-department blu-button" @click="ifEditInfo = true">+新增</button>
+        <button class="add-department blu-button" @click="showEditDevice(null)">+新增</button>
       </div>
       <div class="clf top toggleDiv" v-show="searchDivShow">
         <div class="cominput fl">
           <span class="conditions-text">车场区域：</span>
-          <input type="text" placeholder="请输入">
-        </div>
-      </div>
-      <div class="clf bottom">
-        <div class="fl">
-          <button class="plechoose fl">请选择 <img src="../../assets/images/icon_9.png" alt=""></button>
-          <button class="batchdel fl">批量删除</button>
-          <div>共搜索到 <span>922</span> 条数据</div>
-        </div>
-        <div class="fr">
-          <button class="search-button blu-button">搜索</button>
-          <button class="clear-button bluborder-button">清除</button>
-          <button class="ss transf-button" @click="toggleSearch">
-            <i><img src="../../assets/images/icon_t_arrow2.png" alt=""></i>
-            <span>{{toggleSearchText}}</span>
-          </button>
+          <input type="text" placeholder="请输入" v-model="searchParam">
+          <button @click="loadDeviceDatas()" class="search-button blu-button fl">搜索</button>
         </div>
       </div>
     </div>
     <div class="result clf">
-      <div class="selected">已选 <span>5</span> 项数据</div>
       <div class="tab">
-        <table class="tab_1">
-          <tr>
-            <th class="ckb">
-              <!--<input class="chk" type="checkbox">--></th>
-            <th>设备编号</th>
-            <th>设备名称</th>
-            <th>所属区域</th>
-            <th>设备类型</th>
-            <th>IP地址</th>
-            <th>创建时间</th>
-            <th>更新时间</th>
-            <th>操作员</th>
-            <th class="de">操作</th>
-          </tr>
-          <tr>
-            <td class="ckb show"><span><strong>+</strong></span></td>
-            <td>粤b123456</td>
-            <td>李大亮</td>
-            <td>碧海苑2栋1单元1609</td>
-            <td>13056874952</td>
-            <td>192.168.1.1</td>
-            <td>2018-08-21</td>
-            <td>2018-08-21</td>
-            <td>
-              <a href="javascript:">admin</a>
-            </td>
-            <td class="de detext">
-              <i style="margin-right: 1rem;margin-left: 2rem;" class="iconfont icon-edit fl bj"
-                 @click="ifEditInfo = true"></i>
-              <i class="iconfont icon-shanchu fl" @click="ifDel = true"></i>
-            </td>
-          </tr>
-          <tr class="jun" colspan="9">
-            <td class="ckb"></td>
-            <td colspan="9">
-              <table class="tab_2">
-                <tr>
-                  <th class="ckb">
-                    <!--<input class="chk" type="checkbox">--></th>
-                  <th>设备编号</th>
-                  <th>设备名称</th>
-                  <th>所属区域</th>
-                  <th>设备类型</th>
-                  <th>IP地址</th>
-                  <th>创建时间</th>
-                  <th>创建时间</th>
-                  <th>更新时间</th>
-                  <th>操作员</th>
-                  <th class="de">操作</th>
-                </tr>
-                <tr>
-                  <td class="ckb show_1"><span><strong>＋</strong></span></td>
-                  <td>粤b123456</td>
-                  <td>李大亮</td>
-                  <td>碧海苑2栋1单元1609</td>
-                  <td>13056874952</td>
-                  <td>192.168.1.1</td>
-                  <td>2018-08-21</td>
-                  <td>2018-08-21</td>
-                  <td>2018-08-21</td>
-                  <td>
-                    <a href="javascript:">admin</a>
-                  </td>
-                  <td class="de detext"><i style="margin-right: 1rem;margin-left: 2rem;"
-                                           class="iconfont icon-edit fl"></i><i class="iconfont icon-shanchu fl"></i>
-                  </td>
-                </tr>
-                <tr class="jun_1">
-                  <td class="ckb"></td>
-                  <td colspan="10">
-                    <table class="tab_3">
-                      <tr>
-                        <th class="ckb">
-                          <!--<input class="chk" type="checkbox">--></th>
-                        <th>设备编号</th>
-                        <th>设备名称</th>
-                        <th>所属区域</th>
-                        <th>设备类型</th>
-                        <th>IP地址</th>
-                        <th>创建时间</th>
-                        <th>更新时间</th>
-                        <th>操作员</th>
-                        <th class="de">操作</th>
-                      </tr>
-                      <tr>
-                        <td class="ckb show_2"><span><strong>＋</strong></span></td>
-                        <td>粤b123456</td>
-                        <td>李大亮</td>
-                        <td>碧海苑2栋1单元1609</td>
-                        <td>13056874952</td>
-                        <td>192.168.1.1</td>
-                        <td>2018-08-21</td>
-                        <td>2018-08-21</td>
-                        <td>
-                          <a href="javascript:">admin</a>
-                        </td>
-                        <td class="de detext"><i style="margin-right: 1rem;margin-left: 2rem;"
-                                                 class="iconfont icon-edit fl bj"></i><i
-                          class="iconfont icon-shanchu fl"></i>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="ckb show_2"><span><strong>＋</strong></span></td>
-                        <td>粤b123456</td>
-                        <td>李大亮</td>
-                        <td>碧海苑2栋1单元1609</td>
-                        <td>13056874952</td>
-                        <td>192.168.1.1</td>
-                        <td>2018-08-21</td>
-                        <td>2018-08-21</td>
-                        <td>
-                          <a href="javascript:">admin</a>
-                        </td>
-                        <td class="de detext"><i style="margin-right: 1rem;margin-left: 2rem;"
-                                                 class="iconfont icon-edit fl bj"></i><i
-                          class="iconfont icon-shanchu fl"></i>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="ckb show_2"><span><strong>＋</strong></span></td>
-                        <td>粤b123456</td>
-                        <td>李大亮</td>
-                        <td>碧海苑2栋1单元1609</td>
-                        <td>13056874952</td>
-                        <td>192.168.1.1</td>
-                        <td>2018-08-21</td>
-                        <td>2018-08-21</td>
-                        <td>
-                          <a href="javascript:">admin</a>
-                        </td>
-                        <td class="de detext"><i style="margin-right: 1rem;margin-left: 2rem;"
-                                                 class="iconfont icon-edit fl bj"></i><i
-                          class="iconfont icon-shanchu fl"></i>
-                        </td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="ckb show_1"><span><strong>＋</strong></span></td>
-                  <td>粤b123456</td>
-                  <td>李大亮</td>
-                  <td>碧海苑2栋1单元1609</td>
-                  <td>13056874952</td>
-                  <td>192.168.1.1</td>
-                  <td>2018-08-21</td>
-                  <td>2018-08-21</td>
-                  <td>2018-08-21</td>
-                  <td>
-                    <a href="javascript:">admin</a>
-                  </td>
-                  <td class="de detext"><i style="margin-right: 1rem;margin-left: 2rem;"
-                                           class="iconfont icon-edit fl"></i><i class="iconfont icon-shanchu fl"></i>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="ckb show_1"><span><strong>＋</strong></span></td>
-                  <td>粤b123456</td>
-                  <td>李大亮</td>
-                  <td>碧海苑2栋1单元1609</td>
-                  <td>13056874952</td>
-                  <td>192.168.1.1</td>
-                  <td>2018-08-21</td>
-                  <td>2018-08-21</td>
-                  <td>2018-08-21</td>
-                  <td>
-                    <a href="javascript:">admin</a>
-                  </td>
-                  <td class="de detext"><i style="margin-right: 1rem;margin-left: 2rem;"
-                                           class="iconfont icon-edit fl"></i><i class="iconfont icon-shanchu fl"></i>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-          <tr>
-            <td class="ckb show"><span><strong>+</strong></span></td>
-            <td>粤b123456</td>
-            <td>李大亮</td>
-            <td>碧海苑2栋1单元1609</td>
-            <td>13056874952</td>
-            <td>192.168.1.1</td>
-            <td>2018-08-21</td>
-            <td>2018-08-21</td>
-            <td>
-              <a href="javascript:">admin</a>
-            </td>
-            <td class="de detext">
-              <i style="margin-right: 1rem;margin-left: 2rem;" class="iconfont icon-edit fl bj"></i>
-              <i class="iconfont icon-shanchu fl"></i>
-            </td>
-          </tr>
-          <tr class="jun" colspan="9">
-            <td class="ckb"></td>
-            <td colspan="9">
-              <table class="tab_2">
-                <tr>
-                  <th class="ckb">
-                    <!--<input class="chk" type="checkbox">--></th>
-                  <th>设备编号</th>
-                  <th>设备名称</th>
-                  <th>所属区域</th>
-                  <th>设备类型</th>
-                  <th>IP地址</th>
-                  <th>创建时间</th>
-                  <th>创建时间</th>
-                  <th>更新时间</th>
-                  <th>操作员</th>
-                  <th class="de">操作</th>
-                </tr>
-                <tr>
-                  <td class="ckb show_1"><span><strong>＋</strong></span></td>
-                  <td>粤b123456</td>
-                  <td>李大亮</td>
-                  <td>碧海苑2栋1单元1609</td>
-                  <td>13056874952</td>
-                  <td>192.168.1.1</td>
-                  <td>2018-08-21</td>
-                  <td>2018-08-21</td>
-                  <td>2018-08-21</td>
-                  <td>
-                    <a href="javascript:">admin</a>
-                  </td>
-                  <td class="de detext">
-                    <i style="margin-right: 1rem;margin-left: 2rem;" class="iconfont icon-edit fl"></i>
-                    <i class="iconfont icon-shanchu fl"></i>
-                  </td>
-                </tr>
-                <tr class="jun_1">
-                  <td class="ckb"></td>
-                  <td colspan="10">
-                    <table class="tab_3">
-                      <tr>
-                        <th class="ckb">
-                          <!--<input class="chk" type="checkbox">--></th>
-                        <th>设备编号</th>
-                        <th>设备名称</th>
-                        <th>所属区域</th>
-                        <th>设备类型</th>
-                        <th>IP地址</th>
-                        <th>创建时间</th>
-                        <th>更新时间</th>
-                        <th>操作员</th>
-                        <th class="de">操作</th>
-                      </tr>
-                      <tr>
-                        <td class="ckb show_2"><span><strong>＋</strong></span></td>
-                        <td>粤b123456</td>
-                        <td>李大亮</td>
-                        <td>碧海苑2栋1单元1609</td>
-                        <td>13056874952</td>
-                        <td>192.168.1.1</td>
-                        <td>2018-08-21</td>
-                        <td>2018-08-21</td>
-                        <td>
-                          <a href="javascript:">admin</a>
-                        </td>
-                        <td class="de detext"><i style="margin-right: 1rem;margin-left: 2rem;"
-                                                 class="iconfont icon-edit fl bj"></i><i
-                          class="iconfont icon-shanchu fl"></i>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="ckb show_2"><span><strong>＋</strong></span></td>
-                        <td>粤b123456</td>
-                        <td>李大亮</td>
-                        <td>碧海苑2栋1单元1609</td>
-                        <td>13056874952</td>
-                        <td>192.168.1.1</td>
-                        <td>2018-08-21</td>
-                        <td>2018-08-21</td>
-                        <td>
-                          <a href="javascript:">admin</a>
-                        </td>
-                        <td class="de detext"><i style="margin-right: 1rem;margin-left: 2rem;"
-                                                 class="iconfont icon-edit fl bj"></i><i
-                          class="iconfont icon-shanchu fl"></i>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="ckb show_2"><span><strong>＋</strong></span></td>
-                        <td>粤b123456</td>
-                        <td>李大亮</td>
-                        <td>碧海苑2栋1单元1609</td>
-                        <td>13056874952</td>
-                        <td>192.168.1.1</td>
-                        <td>2018-08-21</td>
-                        <td>2018-08-21</td>
-                        <td>
-                          <a href="javascript:">admin</a>
-                        </td>
-                        <td class="de detext"><i style="margin-right: 1rem;margin-left: 2rem;"
-                                                 class="iconfont icon-edit fl bj"></i><i
-                          class="iconfont icon-shanchu fl"></i>
-                        </td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="ckb show_1"><span><strong>＋</strong></span></td>
-                  <td>粤b123456</td>
-                  <td>李大亮</td>
-                  <td>碧海苑2栋1单元1609</td>
-                  <td>13056874952</td>
-                  <td>192.168.1.1</td>
-                  <td>2018-08-21</td>
-                  <td>2018-08-21</td>
-                  <td>2018-08-21</td>
-                  <td>
-                    <a href="javascript:">admin</a>
-                  </td>
-                  <td class="de detext">
-                    <i style="margin-right: 1rem;margin-left: 2rem;" class="iconfont icon-edit fl bj"></i>
-                    <i class="iconfont icon-shanchu fl"></i>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="ckb show_1"><span><strong>＋</strong></span></td>
-                  <td>粤b123456</td>
-                  <td>李大亮</td>
-                  <td>碧海苑2栋1单元1609</td>
-                  <td>13056874952</td>
-                  <td>192.168.1.1</td>
-                  <td>2018-08-21</td>
-                  <td>2018-08-21</td>
-                  <td>2018-08-21</td>
-                  <td>
-                    <a href="javascript:">admin</a>
-                  </td>
-                  <td class="de detext">
-                    <i style="margin-right: 1rem;margin-left: 2rem;" class="iconfont icon-edit fl bj"></i>
-                    <i class="iconfont icon-shanchu fl"></i>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-        </table>
+        <div class="equipInfoTable">
+          <div class="tr level1_ths">
+            <div class="th"></div>
+            <div class="th">设备编号</div>
+            <div class="th">设备名称</div>
+            <div class="th">所属区域</div>
+            <div class="th">设备类型</div>
+            <div class="th">IP地址</div>
+            <div class="th">创建时间</div>
+            <div class="th">更新时间</div>
+            <div class="th">操作员</div>
+            <div class="th">操作</div>
+          </div>
+          <div class="level1_item" v-for="(device, index) in devices.tree" v-bind:key="index">
+            <div class="tr level1_itemTable">
+              <div class="td"><a href="javascript:" class="toggleBtn" @click="device.isShowChildren = !device.isShowChildren">+</a></div>
+              <div class="td">
+                <div class="tr level1_dataItem">
+                  <div class="td">{{device.device_code}}</div>
+                  <div class="td">{{device.device_name}}</div>
+                  <div class="td">{{device.area_id}}</div>
+                  <div class="td">{{/*设备类型(WORKS：工作站 INLET：入口　OUTLET：出口 CAMERA：摄像头 LED：LED显示屏 HORN：喇叭 BARRIERGATE：道闸,从数据字典获取，有层级关系，工作站为第一层，出入口为第二层，其他设备为第三层)*/
+                    {WORKS:"工作站",INLET:"入口",OUTLET:"出口",CAMERA:"摄像头",LED:"LED显示屏",HORN:"喇叭",BARRIERGATE:"道闸"}[device.device_type]
+                  }}</div>
+                  <div class="td">{{device.device_ip}}</div>
+                  <div class="td">{{device.create_time}}</div>
+                  <div class="td">{{device.update_time}}</div>
+                  <div class="td">{{device.user_name}}</div>
+                  <div class="td">
+                    <a href="javascript:" @click="showEditDevice(device)">编辑</a>
+                    <a href="javascript:">删除</a>
+                  </div>
+                </div>
+                <div class="tr level1_toggleTable" v-if="device.isShowChildren && device.children.length">
+                  <div class="tr level2_ths">
+                    <div class="th"></div>
+                    <div class="th">设备编号</div>
+                    <div class="th">设备名称</div>
+                    <div class="th">设备类型</div>
+                    <div class="th">IP地址</div>
+                    <div class="th">开闸方式</div>
+                    <div class="th">加载参数</div>
+                    <div class="th">创建时间</div>
+                    <div class="th">更新时间</div>
+                    <div class="th">操作员</div>
+                    <div class="th">操作</div>
+                  </div>
+                  <div class="tr level2_item" v-for="(device_, index_) in device.children" v-bind:key="index_">
+                    <div class="tr level2_itemTable">
+                      <div
+                        class="td"><a href="javascript:" class="toggleBtn" @click="device_.isShowChildren = !device_.isShowChildren">+</a></div>
+                      <div class="td">
+                        <div class="tr level2_dataItem">
+                          <div class="td">{{device_.device_code}}</div>
+                          <div class="td">{{device_.device_name}}</div>
+                          <div class="td">{{/*设备类型(WORKS：工作站 INLET：入口　OUTLET：出口 CAMERA：摄像头 LED：LED显示屏 HORN：喇叭 BARRIERGATE：道闸,从数据字典获取，有层级关系，工作站为第一层，出入口为第二层，其他设备为第三层)*/
+                            {WORKS:"工作站",INLET:"入口",OUTLET:"出口",CAMERA:"摄像头",LED:"LED显示屏",HORN:"喇叭",BARRIERGATE:"道闸"}[device.device_type]
+                          }}</div>
+                          <div class="td">{{device.device_ip}}</div>
+                          <div class="td">{{[/*开闸方式(0无1自动开闸2确认开闸)*/"无","自动开闸","确认开闸"][device.cut_off_mode]}}</div>
+                          <div class="td">{{device_.load_para}}</div>
+                          <div class="td">{{device_.create_time}}</div>
+                          <div class="td">{{device_.update_time}}</div>
+                          <div class="td">{{device_.user_name}}</div>
+                          <div class="td">
+                            <a href="javascript:" @click="showEditDevice(device_)">编辑</a>
+                            <a href="javascript:">删除</a>
+                          </div>
+                        </div>
+                        <div class="tr level2_toggleTable" v-if="device_.isShowChildren && device_.children.length">
+                          <div class="tr level3_ths">
+                            <div class="th">设备编号</div>
+                            <div class="th">设备名称</div>
+                            <div class="th">设备类型</div>
+                            <div class="th">IP地址</div>
+                            <div class="th">加载参数</div>
+                            <div class="th">创建时间</div>
+                            <div class="th">更新时间</div>
+                            <div class="th">操作员</div>
+                            <div class="th">操作</div>
+                          </div>
+                          <div class="tr level3_item" v-for="(device__, index__) in device_.children" v-bind:key="index__">
+                            <div class="tr level3_itemTable">
+                              <div class="td">
+                                <div class="tr level3_dataItem">
+                                  <div class="td">{{device_.device_code}}</div>
+                                  <div class="td">{{device_.device_name}}</div>
+                                  <div class="td">{{/*设备类型(WORKS：工作站 INLET：入口　OUTLET：出口 CAMERA：摄像头 LED：LED显示屏 HORN：喇叭 BARRIERGATE：道闸,从数据字典获取，有层级关系，工作站为第一层，出入口为第二层，其他设备为第三层)*/
+                                    {WORKS:"工作站",INLET:"入口",OUTLET:"出口",CAMERA:"摄像头",LED:"LED显示屏",HORN:"喇叭",BARRIERGATE:"道闸"}[device.device_type]
+                                  }}</div>
+                                  <div class="td">{{device.device_ip}}</div>
+                                  <div class="td">{{device_.load_para}}</div>
+                                  <div class="td">{{device_.create_time}}</div>
+                                  <div class="td">{{device_.update_time}}</div>
+                                  <div class="td">{{device_.user_name}}</div>
+                                  <div class="td">
+                                    <a href="javascript:" @click="showEditDevice(device_)">编辑</a>
+                                    <a href="javascript:">删除</a>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="page">
-        <a href="javascript:"><img src="../../assets/images/icon_l_arrow.png" alt=""></a>
-        <a href="javascript:">1</a>
-        <a href="javascript:">2</a>
-        <a href="javascript:">3</a>
-        <a href="javascript:">4</a>
-        <a href="javascript:">5</a>
-        <a href="javascript:">6</a>
-        <a href="javascript:">7</a>
-        <a href="javascript:">8</a>
-        <a href="javascript:">9</a>
-        <a href="javascript:"><img src="../../assets/images/icon_r_arrow.png" alt=""></a>
-        <span>10条/页</span>
-        <span>跳至<input type="text">页</span>
-        <button class="go">Go</button>
-      </div>
+      <Pagination
+        :previousPage="loadDeviceDatas"
+        :nextPage="loadDeviceDatas"
+        :skipPage="loadDeviceDatas"
+        :pageIndex="devices.attributes.page_index"
+        :totalPages="devices.attributes.total_pages"
+        :pageSize="devices.attributes.page_size"
+        :tatal="devices.attributes.tatal"
+      ></Pagination>
     </div>
     <!--弹窗-->
     <div class="main" v-if="ifEditInfo">
@@ -394,105 +145,209 @@
           <p class="close fr" @click="ifEditInfo = false">x</p>
         </div>
         <div class="bot">
-          <p class="red"><i class="iconfont icon-jian-tianchong"></i>错误提示的文案<span>x</span></p>
+          <p class="red" hidden><i class="iconfont icon-jian-tianchong"></i>错误提示的文案<span>x</span></p>
           <div class="cet">
             <div class="clf">
+              <p class="clf"><span class="fl">项目ID：</span><input class="fl" type="text" placeholder="请输入项目ID，必填" v-model="deviceData.project_id"></p>
               <p class="clf"><span class="fl">父级设备：</span>
-                <select name="">
-                  <option value="" style="display: none;">请选择</option>
-                  <option value="1">选择1</option>
-                  <option value="2">选择2</option>
+                <select v-model="selectedParentIndex">
+                  <option  v-for="(device, index) in devices.dataItems" v-bind:key="index" :value="index">{{device.device_name}}</option>
                 </select>
               </p>
-              <p class="clf"><span class="fl">设备编号：</span><input class="fl" type="text" value="请输入编号，必填"></p>
-              <p class="clf"><span class="fl">设备名称：</span><input class="fl" type="text" value="请输入"></p>
+              <p class="clf"><span class="fl">设备编号：</span><input class="fl" type="text" placeholder="请输入编号，必填" v-model="deviceData.device_code"></p>
+              <p class="clf"><span class="fl">设备名称：</span><input class="fl" type="text" placeholder="请输入" v-model="deviceData.device_name"></p>
               <p class="clf"><span class="fl">设备类型：</span>
-                <select name="">
-                  <option value="" style="display: none;">请选择</option>
-                  <option value="">选择1</option>
-                  <option value="">选择2</option>
+                <select v-model="deviceData.device_type">
+                  <option  v-for='(device, index) in {
+                    WORKS:"工作站",INLET:"入口",OUTLET:"出口",CAMERA:"摄像头",LED:"LED显示屏",HORN:"喇叭",BARRIERGATE:"道闸"
+                  }' v-bind:key="index" :value="index">{{device}}</option>
                 </select>
               </p>
               <p class="clf"><span class="fl">所属区域：</span>
-                <select name="">
-                  <option value="" style="display: none;">请选择</option>
-                  <option value="">选择1</option>
-                  <option value="">选择2</option>
+                <select v-model="deviceData.area_id">
+                  <option value="a70150f317554385934d84dcffd7b73d">选择2</option>
                 </select>
               </p>
-              <p class="clf"><span class="fl">IP地址或机号：</span><input class="fl" type="text" value="请输入"></p>
-              <p class="bz clf"><span class="fl">备注：</span><input class="fl" type="text" value="请输入备注" id="inp"></p>
+              <p class="clf"><span class="fl">IP地址或机号：</span><input class="fl" type="text" placeholder="请输入" v-model="deviceData.device_ip"></p>
+              <p class="bz clf"><span class="fl">备注：</span><input class="fl" type="text" placeholder="请输入备注" v-model="deviceData.remark"></p>
             </div>
             <div class="button clf">
-              <a class="qr fr">确定</a>
+              <a class="qr fr" @click="editDevice()">确定</a>
               <a class="qx fr" @click="ifEditInfo = false">取消</a>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="delete_prompt" v-if="ifDel">
+    <!-- <div class="delete_prompt" v-if="ifDel">
       <div class="depwd">
         <div class="text">你是否确认删除选中的记录</div>
         <div class="button clf">
-          <a class="qr fr">确定</a>
+          <a class="qr fr" @click="">确定</a>
           <a class="qx fr" @click="ifDel = false">取消</a>
         </div>
       </div>
-    </div>
+    </div> -->
     <!--弹窗-->
   </div>
 </template>
 
 <script>
-  export default {
-    data () {
-      return {
-        toggleSearchText: '收起搜索',
-        searchDivShow: true,
-        ifEditInfo: false,
-        ifDel: false
-      };
-    },
-    methods: {
-      PageInit () {
-        $(function () {
-          $('.jun').hide();
-          $('.jun_1').hide();
-          $(".show").click(function() {
-            let $jun = $(this).parent().next(".jun");
-            if($jun.is(":hidden")) {
-              $jun.show();
-            } else {
-              $jun.hide();
-            }
-          });
-          $(".show_1").click(function() {
-            let $jun_1 = $(this).parent().next(".jun_1");
-            if($jun_1.is(":hidden")) {
-              $jun_1.show();
-            } else {
-              $jun_1.hide();
-            }
-          });
-        });
+import { RequestParams,RequestDataItem } from "../../assets/js/entity";
+import { array2Descendants , User, isChildrensId} from "../../assets/js/common";
+import Pagination from "../Pagination";
+import moment from "moment";
+export default {
+  data () {
+    return {
+      searchDivShow: true,
+      ifEditInfo: false,
+      ifDel: false,
+      selectedParentIndex:-1,
+      /**搜索参数 */
+      searchParam: "",
+      deviceData:{
+        id:null,//          	Y	String	ID
+        project_id:null,//  	Y	String	项目ID
+        area_id:null,//     	Y	String	区域ID
+        pid:null,//         	Y	String	设备父级ID
+        device_code:null,// 	Y	String	设备编号
+        device_name:null,// 	Y	String	设备名称
+        device_type:null,// 	Y	String	设备类型(WORKS：工作站 INLET：入口　OUTLET：出口 CAMERA：摄像头 LED：LED显示屏 HORN：喇叭 BARRIERGATE：道闸,从数据字典获取，有层级关系，工作站为第一层，出入口为第二层，其他设备为第三层)
+        cut_off_mode:null,//	Y	Int	    开闸方式(0无1自动开闸2确认开闸)
+        device_ip:null,//   	Y	String	IP地址
+        load_para:null,//   	N	String	加载参数
+        isfee_zero:null,//  	Y	Int	    收费0元自动开闸（0：否1是；设备类型为出口时使用）
+        operator_id:null,// 	Y	String	操作员ID
+        user_name:null,//	    Y	String	操作员
+        remark:null,//      	N	String	备注
+        create_time:null,// 	Y	String	创建时间
+        update_time:null,// 	Y	String	更新时间
+
       },
-      toggleSearch () {
-        this.searchDivShow = !this.searchDivShow;
-        this.toggleSearchText = this.searchDivShow === true ? '收起搜索' : '展开搜索';
-        if (this.searchDivShow) {
-          $('.transf-button').removeClass('hide');
-        } else {
-          $('.transf-button').addClass('hide');
-        }
+      devices:{
+        attributes: {
+          page_index: 1, //当前页码
+          page_size: 2, //当前页数
+          tatal: 10, //总条目数
+          total_pages: 10 //条页数
+        },
+        tree:[],
+        dataItems: {
+
+        },
+      },
+      pickerOptions: {
+        shortcuts: [
+          {
+            text: "最近一周",
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit("pick", [start, end]);
+            }
+          },
+          {
+            text: "最近一个月",
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              picker.$emit("pick", [start, end]);
+            }
+          },
+          {
+            text: "最近三个月",
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+              picker.$emit("pick", [start, end]);
+            }
+          }
+        ]
       }
+    };
+  },
+  components: {
+    /**分页组件 */
+    Pagination
+  },
+  filters:{
+  },
+  methods: {
+
+    showEditDevice(data){
+      this.deviceData = data || {};
+      this.ifEditInfo = true;
     },
-    mounted () {
-      this.PageInit();
+
+    editDevice(){
+
+      if(this.selectedParentIndex >= 0)
+      if(!isChildrensId(this.deviceData, this.devices.dataItems[this.selectedParentIndex].id)){
+        this.$api.device.editor(new RequestParams()
+        .addAttributes(this.deviceData)
+        .addAttribute("pid", this.devices.dataItems[this.selectedParentIndex].id)
+        .addAttribute("operator_id", User.info.id))
+        .then(response=>{
+          this.$message.error(response.message)
+          this.ifEditInfo = false;
+          this.loadDeviceDatas();
+        })
+        .catch(({message}) => this.$message.error(message))
+        }
+      else this.$message.error("不能选择下级元素")
+      else this.$message.error("请选择父级")
+    },
+
+    delProject(id){
+
+      let datas = id != null ? [this.projects.dataItems[id]] : this.selectedProjects.map(o=>this.projects.dataItems[o]);
+      if(datas.length){
+        this.$confirm(`确定要删除[${datas.map(o=>o.project_name)}]吗?`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+        .then(() => this.$api.project.delete(new RequestParams().addDataItems(datas.map(o=>new RequestDataItem().addAttribute("id", o.id)))))
+        .then(response=>{
+          this.$message.success("删除成功");
+          this.loadProjectDatas();
+        })
+        .catch(({message}) => this.$message.error(message))
+        .catch(() => {
+          this.$message.info("已取消删除");
+        });
+      }
+      else this.$message.info("请选择要删除的项目");
+    },
+
+    /**加载车辆区域列表数据 */
+    loadDeviceDatas(pageNum = 1, params = {}) {
+      this.$api.device
+        .getlist(new RequestParams()
+        .addAttributes(params)
+        .addAttribute("key", this.searchParam)
+        .addAttribute("page_index", pageNum)
+        .addAttribute("page_size", 100000)
+        )
+        .then(response => {
+
+          this.devices.attributes = response.attributes;
+          this.devices.dataItems = response.dataItems.map(o => o.attributes);
+          this.devices.tree = array2Descendants(response.dataItems.map((o,i) => (o.attributes.isShowChildren = false,o.attributes.index = i,o.attributes)));
+        })
+        .catch(response => this.$message.error(response.message));
     }
-  };
+  },
+  mounted() {
+    this.loadDeviceDatas(1, {});
+  }
+}
 </script>
 
 <style scoped>
-  @import "../../assets/css/EquipmentManagement_1.css";
+@import "../../assets/css/EquipmentManagement_1.css";
 </style>

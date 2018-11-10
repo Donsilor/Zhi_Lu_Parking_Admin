@@ -156,7 +156,7 @@ import moment from "moment";
         .addAttributes(this.deptData)
         .addAttribute("project_id", User.info.project_id))
         .then(response=>{
-          this.$message.error(response.message)
+          this.$message.success(response.message)
           this.ifEditDepartment = false;
           this.loadDeptsDatas();
         })
@@ -166,7 +166,6 @@ import moment from "moment";
       delDept(id){
           
         let datas = id != null ? [this.depts.dataItems[id]] : this.selectedDepts.map(o=>this.depts.dataItems[o]);
-        console.log(datas)
         if(datas.length){
           this.$confirm(`确定要删除[${datas.map(o=>o.dept_name)}]吗?`, '提示', {
             confirmButtonText: '确定',

@@ -78,8 +78,9 @@
 .nonreg-main .cet p:first-child span:first-child{text-align:right;width:22%;}
 .nonreg-main .cet p .p-text{font-size: 12px;width: 350px;height: 30px;line-height: 30px;display: block;text-align: left;float: right;}
 .nonreg-main .cet p .red-text{color: #FF0000;padding-left: 10px;width: auto;}
-.nonreg-main .cet p .position-red{position:absolute;top: 0;left:150px;font-size: 12px;}
-.nonreg-main .cet p .ap-choose{display: block;height: 30px;line-height: 30px;color:#1c7dfa;position: absolute;top:0;right: -45px;}
+.nonreg-main .cet p .position-red{position:absolute;top: 25px;left:100px;font-size: 12px;}
+
+.nonreg-main .cet p .ap-choose{display: block;height: 30px;line-height: 30px;color:#1c7dfa;position: absolute;top:0;right: 0;}
 .nonreg-main .cet input[type=text]{font-size: 12px;width: 350px;height: 30px;border: 1px solid #999;color:#999;float: right;padding-left: 10px;border-radius: 5px;}
 .nonreg-main .icon-xingxing{font-size: 8px!important;color: #ff0000!important;}
 .nonreg-main .bz>i{color: transparent!important;}
@@ -104,13 +105,17 @@
 .vehreg-main .vc-cet{width:95%;margin: 0 auto;padding-top: 20px;margin-bottom: 50px;}
 .vehreg-main .vc-cet p{line-height: 30px;margin-bottom: 20px;width: 50%;float:left}
 .vehreg-main .vc-cet p span{text-align:left;}
-.vehreg-main .vc-cet select{width: 330px;height: 30px;border: 1px solid #999;color:#999;padding-left: 10px;border-radius: 5px;float: left;}
+.vehreg-main .vc-cet select,
+.vehreg-main .vc-cet input{width: 330px;height: 30px;border: 1px solid #999;color:#999;padding-left: 10px;border-radius: 5px;float: left;}
 .vehreg-main .vc-cet p:nth-child(2) select{float: right;}
 .vehreg-main .button{height: 30px;width: 100%}
 .vehreg-main .v-qx{display: block;height:30px;width: 90px;color:#1c7dfa;border: 1px solid #1c7dfa;border-radius: 5px;text-align: center;line-height: 30px;}
 .vehreg-main .v-qx:hover{cursor: pointer;}
 .vehreg-main .v-qr{display: block;height:30px;width: 90px;color:#fff;background-color:#1c7dfa;border-radius: 5px;margin-left: 30px;text-align: center;line-height: 30px;}
 .vehreg-main .v-qr:hover{cursor: pointer;}
+
+.vehreg-main .button a:not(:last-of-type){margin-left: 30px;}
+
 .vehreg-main .data{width: 95%;margin: 0 auto;margin-bottom: 10px;}
 .vehreg-main .data a{display: block;height:30px;width: 90px;border: 1px solid #ccc;border-radius: 5px;text-align: center;line-height: 30px;float: left;}
 .vehreg-main .data span{color:#ccc;padding-left: 15px;line-height: 30px;display: block;float: left;}
@@ -128,7 +133,7 @@
 
 
 .traffic-main .depwd{width:955px;left:25%;top: 10%;}
-.traffic-main .bot{width:100%;height:730px;background-color: #fff;}
+.traffic-main .bot{width:100%;padding-bottom: 30px;background-color: #fff;}
 .traffic-main .t-text{font-size: 14px;color: #fff;line-height: 60px;margin-left:25px;}
 .traffic-main .traffic-close{width:60px;height:60px;font-size: 14px;color: #fff;line-height: 60px;text-align: center;background-color: #006af2;}
 .traffic-main .traffic-close:hover{cursor: pointer;}
@@ -144,12 +149,16 @@
 .traffic-main .button{height: 30px;width: 100%}
 .traffic-main .traffic-qx{display: block;height:30px;width: 90px;color:#1c7dfa;border: 1px solid #1c7dfa;border-radius: 5px;text-align: center;line-height: 30px;}
 .traffic-main .traffic-qx:hover{cursor: pointer;}
-.traffic-main .traffic-qr{display: block;height:30px;width: 90px;color:#fff;background-color:#1c7dfa;border-radius: 5px;margin-left: 30px;text-align: center;line-height: 30px;}
+.traffic-main .traffic-qr{display: block;height:30px;width: 90px;color:#fff;background-color:#1c7dfa;border-radius: 5px;text-align: center;line-height: 30px;}
 .traffic-main .traffic-qr:hover{cursor: pointer;}
+
+.traffic-main .button a:not(:last-of-type){margin-left: 30px;}
+
 .traffic-main .data{width: 95%;margin: 0 auto;margin-bottom: 10px;}
 .traffic-main .data a{display: block;height:30px;width: 90px;border: 1px solid #ccc;border-radius: 5px;text-align: center;line-height: 30px;float: left;}
 .traffic-main .data span{color:#ccc;padding-left: 15px;line-height: 30px;display: block;float: left;}
 
+.traffic-main .residents-table .scrollDiv{height: 321px;overflow-y: scroll;}
 .traffic-main .residents-table table{width:100%;border-collapse:collapse;}
 .traffic-main .residents-table table tr{height: 40px;}
 .traffic-main .residents-table table tr th{font-size:14px;font-weight:500;text-align:center;background:#e5f0ff;}
@@ -159,11 +168,12 @@
 .traffic-main .traffic-ckb input+label{display: inline-block;border-radius: 50%;border: 1px #aaa solid;width: 16px;height: 16px;cursor: pointer;}
 .traffic-main .traffic-ckb input:checked+label{background-image:url(../images/icon-gou.png);background-size: cover;border: none;}
 
+.traffic-main .residents-table + .button{padding: 1rem 2.5%;}
 
 
-
-.ap-main .depwd{width:671px;}
-.ap-main .bot{width:100%;height:450px;background-color: #fff;}
+.ap-main .depwd{width:700px;}
+.ap-main .bot{width:100%;padding-bottom: 30px;background-color: #fff;}
+.ap-main .bot:after{content: '';display: block;clear: both;}
 .ap-main .t-text{font-size: 14px;color: #fff;line-height: 60px;margin-left:25px;}
 .ap-main .ap-close{width:60px;height:60px;font-size: 14px;color: #fff;line-height: 60px;text-align: center;background-color: #006af2;}
 .ap-main .ap-close:hover{cursor: pointer;}

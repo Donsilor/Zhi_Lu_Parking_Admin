@@ -40,6 +40,13 @@ export default {
       param: {
         serviceId: 'operator.delete'
       }
+    },
+    resetpwd:{
+      url: "/operator/resetpwd",
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: "operator.resetpwd"
+      }
     }
   },
   /**
@@ -68,6 +75,13 @@ export default {
       method: HTTP_REQUEST_METHOD.POST,
       param: {
         serviceId: 'project.delete'
+      }
+    },
+    resetpwd:{
+      url: "/project/resetpwd",
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: "project.resetpwd"
       }
     }
   },
@@ -107,6 +121,13 @@ export default {
         serviceId: 'role.editor'
       }
     },
+    delete:{
+      url: '/role/delete',
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: 'role.delete'
+      }
+    },
     /**或者角色列表 */
     getlist: {
       url: '/role/getlist',
@@ -114,10 +135,31 @@ export default {
       param: {
         serviceId: 'role.getlist'
       }
+    },
+    assign:{
+      url: '/role/assign',
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: 'role.assign'
+      }
     }
   },
   /**资源管理 */
   menu: {
+    getlist:{
+        url:"/menu/getlist",
+        method: HTTP_REQUEST_METHOD.POST,
+        param:{
+            serviceId:"menu.getlist",
+        }
+    },
+    delete:{
+      url:"/menu/delete",
+      method: HTTP_REQUEST_METHOD.POST,
+      param:{
+          serviceId:"menu.delete",
+      }
+    },
     /**新增或者修改资源 */
     editor: {
       url: '/menu/editor',
@@ -176,6 +218,30 @@ export default {
       }
     }
   },
+  car:{
+    getlist:{
+        url:"/car/getlist",
+        method: HTTP_REQUEST_METHOD.POST,
+        param:{
+            serviceId:"car.getlist",
+        }
+    },
+    delete:{
+      url:"/car/delete",
+      method: HTTP_REQUEST_METHOD.POST,
+      param:{
+          serviceId:"car.delete",
+      }
+    },
+    /** */
+    editor: {
+      url: "/car/editor",
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: "car.editor"
+      }
+    },
+  },
   /**车辆授权管理 */
   carauth: {
     /**获取授权列表 */
@@ -185,7 +251,14 @@ export default {
       param: {
         serviceId: 'carauth.getauth'
       }
-    }
+    },
+    editor: {
+      url: "/carauth/editor",
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: "carauth.editor"
+      }
+    },
   },
   /**月卡续费管理 */
   delay: {
@@ -200,6 +273,21 @@ export default {
   },
   //**设备管理 */
   device:{
+      delete:{
+        url:"/device/delete",
+        method: HTTP_REQUEST_METHOD.POST,
+        param:{
+            serviceId:"device.delete",
+        }
+      },
+      /** */
+      editor: {
+        url: "/device/editor",
+        method: HTTP_REQUEST_METHOD.POST,
+        param: {
+          serviceId: "device.editor"
+        }
+      },
       /**获取设备列表 */
       getlist:{
           url:"/device/getlist",
@@ -238,5 +326,113 @@ export default {
             serviceId:"dictionary.delete",
         }
       }
+  },
+  /**授权管理 */
+  oauth:{
+    /**获取列表 */
+    getlist:{
+        url:"/oauth/getlist",
+        method: HTTP_REQUEST_METHOD.POST,
+        param:{
+            serviceId:"oauth.getlist",
+        }
+    },
+    /**授权记录 */
+    delete:{
+      url:"/oauth/delete",
+      method: HTTP_REQUEST_METHOD.POST,
+      param:{
+          serviceId:"oauth.delete",
+      }
+    },
+    /** */
+    editor: {
+      url: "/oauth/editor",
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: "oauth.editor"
+      }
+    },
+    resetpwd:{
+      url: "/oauth/resetpwd",
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: "oauth.resetpwd"
+      }
+    }
+  },
+  house:{
+      getlist:{
+        url:"/house/getlist",
+        method: HTTP_REQUEST_METHOD.POST,
+        param:{
+            serviceId:"house.getlist",
+        }
+      },
+      delete:{
+        url:"/house/delete",
+        method: HTTP_REQUEST_METHOD.POST,
+        param:{
+            serviceId:"house.delete",
+        }
+      },
+      /** */
+      editor: {
+        url: "/house/editor",
+        method: HTTP_REQUEST_METHOD.POST,
+        param: {
+          serviceId: "house.editor"
+        }
+      }
+  },
+  household:{
+    getlist:{
+      url:"/household/getlist",
+      method: HTTP_REQUEST_METHOD.POST,
+      param:{
+          serviceId:"household.getlist",
+      }
+    },
+    delete:{
+      url:"/household/delete",
+      method: HTTP_REQUEST_METHOD.POST,
+      param:{
+          serviceId:"household.delete",
+      }
+    },
+    /** */
+    editor: {
+      url: "/household/editor",
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: "household.editor"
+      }
+    }
+  },
+  /**车场管理 */
+  place:{
+    getlist:{
+      url:"/place/getlist",
+      method: HTTP_REQUEST_METHOD.POST,
+      param:{
+          serviceId:"place.getlist",
+      }
+    },
+    delete:{
+      url:"/place/delete",
+      method: HTTP_REQUEST_METHOD.POST,
+      param:{
+          serviceId:"place.delete",
+      }
+    },
+    /** */
+    editor: {
+      url: "/place/editor",
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: "place.editor"
+      }
+    }
   }
+  
 }

@@ -7,23 +7,15 @@
       <div class="clf top toggleDiv" v-show="searchDivShow">
         <div class="cominput fl">
           <span class="conditions-text">车牌号码：</span>
-          <input type="text" placeholder="请输入">
+          <input type="text" placeholder="请输入" >
         </div>
         <div class="cominput fl">
           <span class="conditions-text">住户：</span>
-          <select>
-            <option>请选择</option>
-            <option>请选择</option>
-            <option>请选择</option>
-          </select>
+          <input type="text" placeholder="请输入">
         </div>
         <div class="cominput fl">
           <span class="conditions-text">状态：</span>
-          <select>
-            <option>请选择</option>
-            <option>请选择</option>
-            <option>请选择</option>
-          </select>
+          <input type="text" placeholder="请输入">
         </div>
         <div class="condition">
           <span class="conditions-text">车位：</span>
@@ -172,17 +164,19 @@
 </template>
 
 <script>
-import { array2Object } from "../../assets/js/common";
-import { RequestParams } from "../../assets/js/entity";
+import { User } from "../../assets/js/common";
+import { RequestParams, RequestDataItem } from "../../assets/js/entity";
 import Pagination from "../Pagination";
 import moment from "moment";
   export default {
     data () {
       return {
-        toggleSearchText: '收起搜索',
         searchDivShow: true,
         ifRegister: false,
         searchTimes:[],
+        searchParams:{
+          
+        },
         ifImportAuthorize: false,
         delayDatas:{
           attributes: {
@@ -231,22 +225,21 @@ import moment from "moment";
     methods: {
       
       /**加载车辆区域列表数据 */
-      loadDelayDatas(pageNum, params = {}) {
+      loadDelayDatas(pageNum = 1, params = {}) {
+        let searchTimes = this.searchTimes.map(o=>moment(o).format("YYYY-MM-DD HH:mm:ss"))
         this.$api.delay
-          .getlist({
-            attributes: $.extend({
-                page_index: pageNum ,//当前页码,
-              },
-              new RequestParams(params)
-            )
-          })
+          .getlist(new RequestParams()
+          .addAttributes(this.searchParams)
+          .addAttributes(params)
+          .addAttribute("begin_time", searchTimes[0])
+          .addAttribute("end_time", searchTimes[1])
+          .addAttribute("page_index", pageNum))
           .then(response => {
             
             this.delayDatas.attributes = response.attributes;
-            this.delayDatas.dataItems = array2Object(response.dataItems.map(o => o.attributes), "id");
-            console.log(this.delayDatas.dataItems)
+            this.delayDatas.dataItems = response.dataItems.map(o => o.attributes);
           })
-          .catch(response => console.log(response));
+          .catch(response => this.$message.error(response.message));
       },
     },
     mounted () {

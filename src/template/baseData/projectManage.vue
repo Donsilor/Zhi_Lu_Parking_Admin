@@ -82,7 +82,7 @@
               <td>
                 <a class="bj" href="javascript:" @click="showEditProject(index)">编辑</a>
                 <a href="javascript:" class="delete" v-on:click="delProject(index)">删除</a>
-                <a href="javascript:">重置密码</a>
+                <a href="javascript:" @click="resetPassword(project.id, project.project_name, project.project_code)">重置密码</a>
               </td>
             </tr>
           </tbody>
@@ -229,31 +229,6 @@ export default {
 
     editProject(){
 
-      // if(this.projectData.id){
-
-      // }
-      // else if(this.projectData.project_code){
-
-      // }
-      // else if(this.projectData.project_name){
-
-      // }
-      // else if(this.projectData.addr){
-
-      // }
-      // else if(this.projectData.linkman){
-
-      // }
-      // else if(this.projectData.tel){
-
-      // }
-      // else if(this.projectData.operator_id){
-
-      // }
-      // else if(this.projectData.remark){
-
-      // }
-
       this.$api.project.editor(new RequestParams().addAttributes(this.projectData).addAttribute("operator_id", User.info.id))
       .then(response=>{
         this.$message.error(response.message)
@@ -261,6 +236,22 @@ export default {
         this.loadProjectDatas();
       })
       .catch(({message}) => this.$message.error(message))
+    },
+
+    resetPassword(id, project_code, name){
+      this.$confirm(`确定要重置[${name}]的密码吗?`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+        .then(() => this.$api.project.resetpwd(new RequestParams().addAttribute("id", id).addAttribute("project_code", project_code)))
+        .then(response=>{
+          this.$message.success("重置成功");
+        })
+        .catch(({message}) => this.$message.error(message))
+        .catch(() => {
+          this.$message.info("已取消重置");
+        });
     },
 
     delProject(id){

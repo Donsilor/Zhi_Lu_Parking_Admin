@@ -36,12 +36,11 @@ export default {
   },
   methods:{
     login(){
-      this.$api.operator.login(new RequestParams({
-        attributes:{
-          user_name:this.user_name,
-          password:this.password
-        }
-      })).then(({dataItems})=>{
+      this.$api.operator
+      .login(new RequestParams()
+      .addAttribute("user_name", this.user_name)
+      .addAttribute("password", this.password))
+      .then(({dataItems})=>{
         console.log(dataItems)
         User.info = dataItems[0].attributes;
         this.$router.push(this.$route.query.redirect || "/");
