@@ -15,6 +15,7 @@ import userManage from '../template/baseData/userManage';
 import roleManage from '../template/baseData/roleManage';
 import resourceManage from '../template/baseData/resourceManage';
 import projectManage from '../template/baseData/projectManage';
+import systemConfig from '../template/baseData/systemConfig';
 
 import parkArea from '../template/businessCenter/parkArea';
 import carAccredit from '../template/businessCenter/carAccredit';
@@ -52,6 +53,7 @@ export default new Router({
         {path: '/roleManage', component: roleManage, meta: {title: '基础资料 - 角色管理', requireAuth:true}},
         {path: '/resourceManage', component: resourceManage, meta: {title: '基础资料 - 资源管理', requireAuth:true}},
         {path: '/projectManage', component: projectManage, meta: {title: '基础资料 - 项目管理', requireAuth:true}},
+        {path: '/systemConfig', component: systemConfig, meta: {title: '基础资料 - 系统配置', requireAuth:true}},
         {path: '/parkArea', component: parkArea, meta: {title: '业务中心 - 车场区域', requireAuth:true}},
         {path: '/carAccredit', component: carAccredit, meta: {title: '业务中心 - 车辆授权', requireAuth:true}},
         {path: '/houseManage', component: houseManage, meta: {title: '业务中心 - 房屋管理', requireAuth:true}},

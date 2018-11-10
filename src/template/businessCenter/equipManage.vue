@@ -34,7 +34,7 @@
                 <div class="tr level1_dataItem">
                   <div class="td">{{device.device_code}}</div>
                   <div class="td">{{device.device_name}}</div>
-                  <div class="td">{{device.area_id}}</div>
+                  <div class="td">{{/*device.area_id*/0}}</div>
                   <div class="td">{{/*设备类型(WORKS：工作站 INLET：入口　OUTLET：出口 CAMERA：摄像头 LED：LED显示屏 HORN：喇叭 BARRIERGATE：道闸,从数据字典获取，有层级关系，工作站为第一层，出入口为第二层，其他设备为第三层)*/
                     {WORKS:"工作站",INLET:"入口",OUTLET:"出口",CAMERA:"摄像头",LED:"LED显示屏",HORN:"喇叭",BARRIERGATE:"道闸"}[device.device_type]
                   }}</div>
@@ -292,13 +292,13 @@ export default {
         .addAttribute("pid", this.devices.dataItems[this.selectedParentIndex].id)
         .addAttribute("operator_id", User.info.id))
         .then(response=>{
-          this.$message.error(response.message)
+          this.$message.success(response.message)
           this.ifEditInfo = false;
           this.loadDeviceDatas();
         })
         .catch(({message}) => this.$message.error(message))
         }
-      else this.$message.error("不能选择下级元素")
+      else this.$message.error("不能选择自己/下级元素")
       else this.$message.error("请选择父级")
     },
 
@@ -338,6 +338,7 @@ export default {
           this.devices.attributes = response.attributes;
           this.devices.dataItems = response.dataItems.map(o => o.attributes);
           this.devices.tree = array2Descendants(response.dataItems.map((o,i) => (o.attributes.isShowChildren = false,o.attributes.index = i,o.attributes)));
+          console.log(this.devices.tree)
         })
         .catch(response => this.$message.error(response.message));
     }

@@ -12,6 +12,7 @@
           <router-link to="/projectManage">项目管理</router-link>
           <router-link to="/authorizeManage">授权管理</router-link>
           <router-link to="/handleLog">操作日志</router-link>
+          <router-link to="/systemConfig">系统配置</router-link>
         </div>
       </li>
       <li>

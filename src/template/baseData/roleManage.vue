@@ -173,7 +173,7 @@ export default {
         })
         .catch(({message}) => this.$message.error(message))
       }
-      else this.$message.error("不能选择下级元素")
+      else this.$message.error("不能选择自己/下级元素")
       else this.$message.error("请选择父级")
 
     },

@@ -52,7 +52,6 @@
           <div>共搜索到 <span>{{cars.attributes.tatal || 0}}</span> 条数据</div>
         </div>
         <div class="fr">
-          <button class="search-button blu-button" @click="loadCarDatas()">搜索</button>
           <button class="clear-button bluborder-button" @click="searchParams = {}, searchTimes = []">清除</button>
           <button class="ss transf-button" v-bind:class="{hide:!searchDivShow}" v-on:click="searchDivShow=!searchDivShow">
             <i><img src="../../assets/images/icon_t_arrow2.png" alt=""></i>

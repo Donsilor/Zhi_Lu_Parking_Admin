@@ -65,8 +65,13 @@ export const array2Descendants = function (arr = [], idKey = "id", pidKey = "pid
   return type ? resultArr : results;
 }
 
+/**
+ * 判断是否是下级或者自己
+ * @param {*} obj 
+ * @param {*} id 
+ */
 export const isChildrensId = function(obj, id){
-  return obj.children && obj.children.some(o=>{
+  return obj.id == id || obj.children && obj.children.some(o=>{
     if(o.id == id){
       return true;
     }
@@ -106,24 +111,3 @@ export const User = new class User {
     this.info = this.info;
   }
 };
-
-
-var a = [
-  {id:1,pid:0},
-  {id:2,pid:1},
-  {id:3,pid:2},
-  {id:4,pid:2},
-  {id:5,pid:2},
-  {id:6,pid:3},
-  {id:7,pid:3},
-  {id:8,pid:3},
-  {id:9,pid:4},
-  {id:10,pid:1},
-  {id:12,pid:2},
-  {id:13,pid:3},
-  {id:14,pid:1},
-  {id:16,pid:2},
-  {id:17,pid:5},
-  {id:18,pid:6},
-  {id:19,pid:7},
-];

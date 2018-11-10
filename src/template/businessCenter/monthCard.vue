@@ -52,7 +52,8 @@
         <div class="fr">
           <button class="search-button blu-button">搜索</button>
           <button class="clear-button bluborder-button">清除</button>
-          <button class="ss transf-button"  v-bind:class="{hide:searchDivShow}" v-on:click="searchDivShow=!searchDivShow">
+          <button class="ss transf-button"  v-bind:class="{hide:!searchDivShow}"
+                  v-on:click="searchDivShow=!searchDivShow">
             <i><img src="../../assets/images/icon_t_arrow2.png" alt=""></i>
             <span>{{searchDivShow === true ? "收起搜索" : "展开搜索"}}</span>
           </button>
@@ -96,7 +97,7 @@
         </table>
       </div>
       <Pagination
-        :previousPage="loadDelayDatas" 
+        :previousPage="loadDelayDatas"
         :nextPage="loadDelayDatas"
         :skipPage="loadDelayDatas"
         :pageIndex="delayDatas.attributes.page_index"
@@ -186,7 +187,7 @@ import moment from "moment";
             total_pages: 10 //条页数
           },
           dataItems: {
-            
+
           },
         },
         pickerOptions: {
@@ -223,7 +224,7 @@ import moment from "moment";
       Pagination
     },
     methods: {
-      
+
       /**加载车辆区域列表数据 */
       loadDelayDatas(pageNum = 1, params = {}) {
         let searchTimes = this.searchTimes.map(o=>moment(o).format("YYYY-MM-DD HH:mm:ss"))
@@ -235,7 +236,7 @@ import moment from "moment";
           .addAttribute("end_time", searchTimes[1])
           .addAttribute("page_index", pageNum))
           .then(response => {
-            
+
             this.delayDatas.attributes = response.attributes;
             this.delayDatas.dataItems = response.dataItems.map(o => o.attributes);
           })

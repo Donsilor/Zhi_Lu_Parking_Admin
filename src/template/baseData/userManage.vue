@@ -22,7 +22,8 @@
         <div class="fr">
           <button class="search-button blu-button" v-on:click="loadUserDatas(1, {key:searchParam})">搜索</button>
           <button class="clear-button bluborder-button" v-on:click="searchParam = null">清除</button>
-          <button class="ss transf-button" v-bind:class="{hide:searchDivShow}" v-on:click="searchDivShow=!searchDivShow">
+          <button class="ss transf-button" v-bind:class="{hide:!searchDivShow}"
+                  v-on:click="searchDivShow=!searchDivShow">
             <i><img src="../../assets/images/icon_t_arrow2.png" alt=""></i>
             <span>{{searchDivShow === true ? "收起搜索" : "展开搜索"}}</span>
           </button>
@@ -67,7 +68,7 @@
         </table>
       </div>
       <Pagination
-        :previousPage="loadUserDatas" 
+        :previousPage="loadUserDatas"
         :nextPage="loadUserDatas"
         :skipPage="loadUserDatas"
         :pageIndex="users.attributes.page_index"
@@ -107,7 +108,7 @@
                 <span class="telremind remind">请输入正确信息</span>
               </p>
               <p class="clf upload"><span class="fl">头像：</span>
-              
+
               <el-upload
                 class="up fl"
                 action="http://localhost:8080/server_file/file/fileUpload?folder=user"
@@ -117,7 +118,7 @@
                 <img v-if="userData.photo" :src="userData.photo" class="up fl">
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
               </el-upload>
-              
+
               <span class="fl r-text">只能上传jpg/png文件</span>
               </p>
               <p class="bz clf"><span class="fl">备注：</span><input class="fl" type="text"  v-model="userData.remark" placeholder="请输入备注" id="inp">
