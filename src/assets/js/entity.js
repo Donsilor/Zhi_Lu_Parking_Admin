@@ -11,8 +11,17 @@ export const RequestDataItem = class RequestDataItem {
     $.extend(this, obj);
   }
 
+  addAttributes(objs){
+    for(let key in objs){
+      this.addAttribute(key, objs[key]);
+    }
+    return this;
+  }
+
   addAttribute(name, value) {
-    this.attributes[name] = value;
+    if (!!value || typeof value == "number") {
+      this.attributes[name] = value;
+    }
     return this;
   }
 
@@ -44,7 +53,7 @@ export const RequestParams = class RequestParams {
   }
 
   addAttribute(name, value) {
-    if (value) {
+    if (!!value || typeof value == "number") {
       this.attributes[name] = value;
     }
     return this;
