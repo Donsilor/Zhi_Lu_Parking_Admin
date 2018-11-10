@@ -169,22 +169,20 @@ import moment from "moment";
     methods: {
 
       editRes(){
-        if(this.selectedParentIndex >= 0)
-        if(!isChildrensId(this.resData, this.ress.dataItems[this.selectedParentIndex].id)){
-          this.$api.menu
-          .editor(new RequestParams()
-          .addAttributes(this.resData)
-          .addAttribute("pid", this.ress.dataItems[this.selectedParentIndex].id)
-          .addAttribute("resource_icon", this.resData.relativepath))
-          .then(response=>{
-            this.$message.success(response.message)
-            this.loadResDatas();
-          })
-          .catch(({message}) => this.$message.error(message))
+        
+        if(this.ress.dataItems[this.selectedParentIndex] && isChildrensId(this.resData, this.ress.dataItems[this.selectedParentIndex].id)){
+          return this.$message.error("不能选择自己/下级元素")
         }
-        else this.$message.error("不能选择自己/下级元素")
-        else this.$message.error("请选择父级")
-
+        this.$api.menu
+        .editor(new RequestParams()
+        .addAttributes(this.resData)
+        .addAttribute("pid", this.ress.dataItems[this.selectedParentIndex].id)
+        .addAttribute("resource_icon", this.resData.relativepath))
+        .then(response=>{
+          this.$message.success(response.message)
+          this.loadResDatas();
+        })
+        .catch(({message}) => this.$message.error(message))
       },
 
       delRes(id, name){

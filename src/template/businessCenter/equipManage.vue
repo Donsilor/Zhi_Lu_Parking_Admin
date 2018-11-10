@@ -6,7 +6,7 @@
       </div>
       <div class="clf top toggleDiv" v-show="searchDivShow">
         <div class="cominput fl">
-          <span class="conditions-text">车场区域：</span>
+          <span class="conditions-text" >车场区域：</span>
           <input type="text" placeholder="请输入" v-model="searchParam">
           <button @click="loadDeviceDatas()" class="search-button blu-button fl">搜索</button>
         </div>
@@ -29,7 +29,7 @@
           </div>
           <div class="level1_item" v-for="(device, index) in devices.tree" v-bind:key="index">
             <div class="tr level1_itemTable">
-              <div class="td"><a href="javascript:" class="toggleBtn" @click="device.isShowChildren = !device.isShowChildren">+</a></div>
+              <div class="td"><a href="javascript:" class="toggleBtn" @click="device.isShowChildren = !device.isShowChildren, pucker = !pucker" :pucker="pucker" >+</a></div>
               <div class="td">
                 <div class="tr level1_dataItem">
                   <div class="td">{{device.device_code}}</div>
@@ -44,10 +44,10 @@
                   <div class="td">{{device.user_name}}</div>
                   <div class="td">
                     <a href="javascript:" @click="showEditDevice(device)">编辑</a>
-                    <a href="javascript:">删除</a>
+                    <a href="javascript:" @click="delDevice(device)">删除</a>
                   </div>
                 </div>
-                <div class="tr level1_toggleTable" v-if="device.isShowChildren && device.children.length">
+                <div class="tr level1_toggleTable" v-if="device.isShowChildren">
                   <div class="tr level2_ths">
                     <div class="th"></div>
                     <div class="th">设备编号</div>
@@ -64,26 +64,26 @@
                   <div class="tr level2_item" v-for="(device_, index_) in device.children" v-bind:key="index_">
                     <div class="tr level2_itemTable">
                       <div
-                        class="td"><a href="javascript:" class="toggleBtn" @click="device_.isShowChildren = !device_.isShowChildren">+</a></div>
+                        class="td"><a href="javascript:" class="toggleBtn" @click="device_.isShowChildren = !device_.isShowChildren, pucker = !pucker" :pucker="pucker">+</a></div>
                       <div class="td">
                         <div class="tr level2_dataItem">
                           <div class="td">{{device_.device_code}}</div>
                           <div class="td">{{device_.device_name}}</div>
                           <div class="td">{{/*设备类型(WORKS：工作站 INLET：入口　OUTLET：出口 CAMERA：摄像头 LED：LED显示屏 HORN：喇叭 BARRIERGATE：道闸,从数据字典获取，有层级关系，工作站为第一层，出入口为第二层，其他设备为第三层)*/
-                            {WORKS:"工作站",INLET:"入口",OUTLET:"出口",CAMERA:"摄像头",LED:"LED显示屏",HORN:"喇叭",BARRIERGATE:"道闸"}[device.device_type]
+                            {WORKS:"工作站",INLET:"入口",OUTLET:"出口",CAMERA:"摄像头",LED:"LED显示屏",HORN:"喇叭",BARRIERGATE:"道闸"}[device_.device_type]
                           }}</div>
                           <div class="td">{{device.device_ip}}</div>
-                          <div class="td">{{[/*开闸方式(0无1自动开闸2确认开闸)*/"无","自动开闸","确认开闸"][device.cut_off_mode]}}</div>
+                          <div class="td">{{[/*开闸方式(0无1自动开闸2确认开闸)*/"无","自动开闸","确认开闸"][device_.cut_off_mode]}}</div>
                           <div class="td">{{device_.load_para}}</div>
                           <div class="td">{{device_.create_time}}</div>
                           <div class="td">{{device_.update_time}}</div>
                           <div class="td">{{device_.user_name}}</div>
                           <div class="td">
                             <a href="javascript:" @click="showEditDevice(device_)">编辑</a>
-                            <a href="javascript:">删除</a>
+                            <a href="javascript:" @click="delDevice(device_)">删除</a>
                           </div>
                         </div>
-                        <div class="tr level2_toggleTable" v-if="device_.isShowChildren && device_.children.length">
+                        <div class="tr level2_toggleTable" v-show="device_.isShowChildren && device_.children.length">
                           <div class="tr level3_ths">
                             <div class="th">设备编号</div>
                             <div class="th">设备名称</div>
@@ -99,19 +99,19 @@
                             <div class="tr level3_itemTable">
                               <div class="td">
                                 <div class="tr level3_dataItem">
-                                  <div class="td">{{device_.device_code}}</div>
-                                  <div class="td">{{device_.device_name}}</div>
+                                  <div class="td">{{device__.device_code}}</div>
+                                  <div class="td">{{device__.device_name}}</div>
                                   <div class="td">{{/*设备类型(WORKS：工作站 INLET：入口　OUTLET：出口 CAMERA：摄像头 LED：LED显示屏 HORN：喇叭 BARRIERGATE：道闸,从数据字典获取，有层级关系，工作站为第一层，出入口为第二层，其他设备为第三层)*/
-                                    {WORKS:"工作站",INLET:"入口",OUTLET:"出口",CAMERA:"摄像头",LED:"LED显示屏",HORN:"喇叭",BARRIERGATE:"道闸"}[device.device_type]
+                                    {WORKS:"工作站",INLET:"入口",OUTLET:"出口",CAMERA:"摄像头",LED:"LED显示屏",HORN:"喇叭",BARRIERGATE:"道闸"}[device__.device_type]
                                   }}</div>
-                                  <div class="td">{{device.device_ip}}</div>
-                                  <div class="td">{{device_.load_para}}</div>
-                                  <div class="td">{{device_.create_time}}</div>
-                                  <div class="td">{{device_.update_time}}</div>
-                                  <div class="td">{{device_.user_name}}</div>
+                                  <div class="td">{{device__.device_ip}}</div>
+                                  <div class="td">{{device__.load_para}}</div>
+                                  <div class="td">{{device__.create_time}}</div>
+                                  <div class="td">{{device__.update_time}}</div>
+                                  <div class="td">{{device__.user_name}}</div>
                                   <div class="td">
-                                    <a href="javascript:" @click="showEditDevice(device_)">编辑</a>
-                                    <a href="javascript:">删除</a>
+                                    <a href="javascript:" @click="showEditDevice(device__)">编辑</a>
+                                    <a href="javascript:" @click="delDevice(device__)">删除</a>
                                   </div>
                                 </div>
                               </div>
@@ -164,8 +164,13 @@
                 </select>
               </p>
               <p class="clf"><span class="fl">所属区域：</span>
+                <select v-model="deviceData.cut_off_mode">
+                  <option v-for='(device, index) in ["无","自动开闸","确认开闸"]' v-bind:key="index" :value="index">{{device}}</option>
+                </select>
+              </p>
+              <p class="clf"><span class="fl">所属区域：</span>
                 <select v-model="deviceData.area_id">
-                  <option value="a70150f317554385934d84dcffd7b73d">选择2</option>
+                  <option v-for='(area) in areas.dataItems' v-bind:key="area.id" :value="area.id">{{area.area_name}}</option>
                 </select>
               </p>
               <p class="clf"><span class="fl">IP地址或机号：</span><input class="fl" type="text" placeholder="请输入" v-model="deviceData.device_ip"></p>
@@ -204,20 +209,21 @@ export default {
       ifEditInfo: false,
       ifDel: false,
       selectedParentIndex:-1,
+      pucker:false,
       /**搜索参数 */
       searchParam: "",
       deviceData:{
         id:null,//          	Y	String	ID
         project_id:null,//  	Y	String	项目ID
         area_id:null,//     	Y	String	区域ID
-        pid:null,//         	Y	String	设备父级ID
+        pid:0,//         	Y	String	设备父级ID
         device_code:null,// 	Y	String	设备编号
         device_name:null,// 	Y	String	设备名称
-        device_type:null,// 	Y	String	设备类型(WORKS：工作站 INLET：入口　OUTLET：出口 CAMERA：摄像头 LED：LED显示屏 HORN：喇叭 BARRIERGATE：道闸,从数据字典获取，有层级关系，工作站为第一层，出入口为第二层，其他设备为第三层)
-        cut_off_mode:null,//	Y	Int	    开闸方式(0无1自动开闸2确认开闸)
+        device_type:"WORKS",// 	Y	String	设备类型(WORKS：工作站 INLET：入口　OUTLET：出口 CAMERA：摄像头 LED：LED显示屏 HORN：喇叭 BARRIERGATE：道闸,从数据字典获取，有层级关系，工作站为第一层，出入口为第二层，其他设备为第三层)
+        cut_off_mode:0,//	Y	Int	    开闸方式(0无1自动开闸2确认开闸)
         device_ip:null,//   	Y	String	IP地址
         load_para:null,//   	N	String	加载参数
-        isfee_zero:null,//  	Y	Int	    收费0元自动开闸（0：否1是；设备类型为出口时使用）
+        isfee_zero:0,//  	Y	Int	    收费0元自动开闸（0：否1是；设备类型为出口时使用）
         operator_id:null,// 	Y	String	操作员ID
         user_name:null,//	    Y	String	操作员
         remark:null,//      	N	String	备注
@@ -233,6 +239,17 @@ export default {
           total_pages: 10 //条页数
         },
         tree:[],
+        dataItems: {
+
+        },
+      },
+      areas:{
+        attributes: {
+          page_index: 1, //当前页码
+          page_size: 2, //当前页数
+          tatal: 10, //总条目数
+          total_pages: 10 //条页数
+        },
         dataItems: {
 
         },
@@ -279,17 +296,20 @@ export default {
   methods: {
 
     showEditDevice(data){
-      this.deviceData = data || {};
+      if(data){
+        this.deviceData = data
+      };
       this.ifEditInfo = true;
     },
 
     editDevice(){
 
-      if(this.selectedParentIndex >= 0)
-      if(!isChildrensId(this.deviceData, this.devices.dataItems[this.selectedParentIndex].id)){
-        this.$api.device.editor(new RequestParams()
+      if(this.devices.dataItems[this.selectedParentIndex] && isChildrensId(this.deviceData, this.devices.dataItems[this.selectedParentIndex].id)){
+        return this.$message.error("不能选择自己/下级元素")
+      }
+      this.$api.device.editor(new RequestParams()
         .addAttributes(this.deviceData)
-        .addAttribute("pid", this.devices.dataItems[this.selectedParentIndex].id)
+        .addAttribute("pid", this.devices.dataItems[this.selectedParentIndex] && this.devices.dataItems[this.selectedParentIndex].id)
         .addAttribute("operator_id", User.info.id))
         .then(response=>{
           this.$message.success(response.message)
@@ -297,31 +317,23 @@ export default {
           this.loadDeviceDatas();
         })
         .catch(({message}) => this.$message.error(message))
-        }
-      else this.$message.error("不能选择自己/下级元素")
-      else this.$message.error("请选择父级")
     },
 
-    delProject(id){
-
-      let datas = id != null ? [this.projects.dataItems[id]] : this.selectedProjects.map(o=>this.projects.dataItems[o]);
-      if(datas.length){
-        this.$confirm(`确定要删除[${datas.map(o=>o.project_name)}]吗?`, '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        })
-        .then(() => this.$api.project.delete(new RequestParams().addDataItems(datas.map(o=>new RequestDataItem().addAttribute("id", o.id)))))
-        .then(response=>{
-          this.$message.success("删除成功");
-          this.loadProjectDatas();
-        })
-        .catch(({message}) => this.$message.error(message))
-        .catch(() => {
-          this.$message.info("已取消删除");
-        });
-      }
-      else this.$message.info("请选择要删除的项目");
+    delDevice(data){
+      this.$confirm(`确定要删除[${data.device_name}]吗?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+      .then(() => this.$api.device.delete(new RequestParams().addDataItemAttr("id", data.id)))
+      .then(response=>{
+        this.$message.success("删除成功");
+        this.loadDeviceDatas();
+      })
+      .catch(({message}) => this.$message.error(message))
+      .catch(() => {
+        this.$message.info("已取消删除");
+      });
     },
 
     /**加载车辆区域列表数据 */
@@ -334,17 +346,34 @@ export default {
         .addAttribute("page_size", 100000)
         )
         .then(response => {
-
           this.devices.attributes = response.attributes;
-          this.devices.dataItems = response.dataItems.map(o => o.attributes);
-          this.devices.tree = array2Descendants(response.dataItems.map((o,i) => (o.attributes.isShowChildren = false,o.attributes.index = i,o.attributes)));
-          console.log(this.devices.tree)
+          this.devices.dataItems = response.dataItems.map(o => o.attributes).filter(o=>[
+            "a7ea85cb7ef74d9891d6bd6e3debe9b6",
+            "9ffc6dd4ebee4316bab1d291ed39e5e6",
+            "588d423f294443a89d493144b1096b37",
+            "f5747c324c9e48cf8c80f115b7ae9207",
+          ].indexOf(o.id) < 0);
+          this.devices.tree = array2Descendants(this.devices.dataItems.map((o,i) => (o.isShowChildren = false,o.index = i,o)));
         })
         .catch(response => this.$message.error(response.message));
-    }
+    },
+    /**加载车辆区域列表数据 */
+    loadAreaDatas(pageNum = 1, params = {}) {
+      this.$api.area
+        .getlist(new RequestParams()
+        .addAttribute("page_index", pageNum)
+        .addAttribute("page_size", 100000)
+        )
+        .then(response => {
+          this.areas.attributes = response.attributes;
+          this.areas.dataItems = response.dataItems.map(o => o.attributes)
+        })
+        .catch(response => this.$message.error(response.message));
+    },
   },
   mounted() {
     this.loadDeviceDatas(1, {});
+    this.loadAreaDatas();
   }
 }
 </script>

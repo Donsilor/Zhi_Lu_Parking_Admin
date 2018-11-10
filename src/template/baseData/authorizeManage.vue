@@ -204,7 +204,8 @@ import moment from "moment";
 
         this.$api.oauth.editor(new RequestParams()
         .addAttributes(this.authorizeData)
-        .addAttribute("project_id", User.info.project_id))
+        .addAttribute("project_id", User.info.project_id)
+        )
         .then(response=>{
           this.$message.success(response.message)
           this.ifAuthorize = false;

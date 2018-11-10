@@ -1,5 +1,5 @@
 
-import {HTTP_REQUEST_METHOD, UPDATE_FILE_HOST} from "./constants";
+import { HTTP_REQUEST_METHOD, UPDATE_FILE_HOST } from "./constants";
 
 export default {
   /**
@@ -41,7 +41,7 @@ export default {
         serviceId: 'operator.delete'
       }
     },
-    resetpwd:{
+    resetpwd: {
       url: "/operator/resetpwd",
       method: HTTP_REQUEST_METHOD.POST,
       param: {
@@ -77,7 +77,7 @@ export default {
         serviceId: 'project.delete'
       }
     },
-    resetpwd:{
+    resetpwd: {
       url: "/project/resetpwd",
       method: HTTP_REQUEST_METHOD.POST,
       param: {
@@ -95,7 +95,7 @@ export default {
         serviceId: 'dept.editor'
       }
     },
-    delete:{
+    delete: {
       url: '/dept/delete',
       method: HTTP_REQUEST_METHOD.POST,
       param: {
@@ -121,7 +121,7 @@ export default {
         serviceId: 'role.editor'
       }
     },
-    delete:{
+    delete: {
       url: '/role/delete',
       method: HTTP_REQUEST_METHOD.POST,
       param: {
@@ -136,7 +136,7 @@ export default {
         serviceId: 'role.getlist'
       }
     },
-    assign:{
+    assign: {
       url: '/role/assign',
       method: HTTP_REQUEST_METHOD.POST,
       param: {
@@ -146,18 +146,18 @@ export default {
   },
   /**资源管理 */
   menu: {
-    getlist:{
-        url:"/menu/getlist",
-        method: HTTP_REQUEST_METHOD.POST,
-        param:{
-            serviceId:"menu.getlist",
-        }
-    },
-    delete:{
-      url:"/menu/delete",
+    getlist: {
+      url: "/menu/getlist",
       method: HTTP_REQUEST_METHOD.POST,
-      param:{
-          serviceId:"menu.delete",
+      param: {
+        serviceId: "menu.getlist",
+      }
+    },
+    delete: {
+      url: "/menu/delete",
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: "menu.delete",
       }
     },
     /**新增或者修改资源 */
@@ -216,21 +216,45 @@ export default {
       param: {
         serviceId: 'sysconfig.getbyid'
       }
+    },
+    /**修改配置信息 */
+    editor: {
+      url: '/sysconfig/editor',
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: 'sysconfig.editor'
+      }
+    },
+    /**获取支付配置参数 */
+    getpay: {
+      url: '/sysconfig/getpay',
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: 'sysconfig.getpay'
+      }
+    },
+    /**修改支付配置参数 */
+    editorpay: {
+      url: '/sysconfig/editorpay',
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: 'sysconfig.editorpay'
+      }
     }
   },
-  car:{
-    getlist:{
-        url:"/car/getlist",
-        method: HTTP_REQUEST_METHOD.POST,
-        param:{
-            serviceId:"car.getlist",
-        }
-    },
-    delete:{
-      url:"/car/delete",
+  car: {
+    getlist: {
+      url: "/car/getlist",
       method: HTTP_REQUEST_METHOD.POST,
-      param:{
-          serviceId:"car.delete",
+      param: {
+        serviceId: "car.getlist",
+      }
+    },
+    delete: {
+      url: "/car/delete",
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: "car.delete",
       }
     },
     /** */
@@ -269,80 +293,87 @@ export default {
       param: {
         serviceId: 'delay.getlist'
       }
+    },
+    charge:{
+      url: '/delay/charge',
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: 'delay.charge'
+      }
     }
   },
   //**设备管理 */
-  device:{
-      delete:{
-        url:"/device/delete",
-        method: HTTP_REQUEST_METHOD.POST,
-        param:{
-            serviceId:"device.delete",
-        }
-      },
-      /** */
-      editor: {
-        url: "/device/editor",
-        method: HTTP_REQUEST_METHOD.POST,
-        param: {
-          serviceId: "device.editor"
-        }
-      },
-      /**获取设备列表 */
-      getlist:{
-          url:"/device/getlist",
-          method: HTTP_REQUEST_METHOD.POST,
-          param:{
-              serviceId:"device.getlist",
-          }
+  device: {
+    delete: {
+      url: "/device/delete",
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: "device.delete",
       }
+    },
+    /** */
+    editor: {
+      url: "/device/editor",
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: "device.editor"
+      }
+    },
+    /**获取设备列表 */
+    getlist: {
+      url: "/device/getlist",
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: "device.getlist",
+      }
+    }
   },
   /**文件管理 */
-  file:{
-      fileUpload:{
-          url:"/file/fileUpload?folder=$folder&filename=$filename",
-          method: HTTP_REQUEST_METHOD.POSTURL,
-          config:{
-              baseURL:UPDATE_FILE_HOST,
-              headers: {"Accept": "multipart/form-data"}
-          }
+  file: {
+    fileUpload: {
+      url: "/file/fileUpload?folder=$folder&filename=$filename",
+      method: HTTP_REQUEST_METHOD.POSTURL,
+      config: {
+        baseURL: UPDATE_FILE_HOST,
+        headers: { "Accept": "multipart/form-data" }
       }
+    }
   },
   /**数据字典管理 */
-  dictionary:{
-      /**获取数据字典列表 */
-      getlist:{
-          url:"/dictionary/getlist",
-          method: HTTP_REQUEST_METHOD.POST,
-          param:{
-              serviceId:"dictionary.getlist",
-          }
-      },
-      /**删除字典记录 */
-      delete:{
-        url:"/dictionary/delete",
-        method: HTTP_REQUEST_METHOD.POST,
-        param:{
-            serviceId:"dictionary.delete",
-        }
+  dictionary: {
+    /**获取数据字典列表 */
+    getlist: {
+      url: "/dictionary/getlist",
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: "dictionary.getlist",
       }
+    },
+    /**删除字典记录 */
+    delete: {
+      url: "/dictionary/delete",
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: "dictionary.delete",
+      }
+    }
   },
   /**授权管理 */
-  oauth:{
+  oauth: {
     /**获取列表 */
-    getlist:{
-        url:"/oauth/getlist",
-        method: HTTP_REQUEST_METHOD.POST,
-        param:{
-            serviceId:"oauth.getlist",
-        }
+    getlist: {
+      url: "/oauth/getlist",
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: "oauth.getlist",
+      }
     },
     /**授权记录 */
-    delete:{
-      url:"/oauth/delete",
+    delete: {
+      url: "/oauth/delete",
       method: HTTP_REQUEST_METHOD.POST,
-      param:{
-          serviceId:"oauth.delete",
+      param: {
+        serviceId: "oauth.delete",
       }
     },
     /** */
@@ -353,7 +384,7 @@ export default {
         serviceId: "oauth.editor"
       }
     },
-    resetpwd:{
+    resetpwd: {
       url: "/oauth/resetpwd",
       method: HTTP_REQUEST_METHOD.POST,
       param: {
@@ -361,43 +392,43 @@ export default {
       }
     }
   },
-  house:{
-      getlist:{
-        url:"/house/getlist",
-        method: HTTP_REQUEST_METHOD.POST,
-        param:{
-            serviceId:"house.getlist",
-        }
-      },
-      delete:{
-        url:"/house/delete",
-        method: HTTP_REQUEST_METHOD.POST,
-        param:{
-            serviceId:"house.delete",
-        }
-      },
-      /** */
-      editor: {
-        url: "/house/editor",
-        method: HTTP_REQUEST_METHOD.POST,
-        param: {
-          serviceId: "house.editor"
-        }
-      }
-  },
-  household:{
-    getlist:{
-      url:"/household/getlist",
+  house: {
+    getlist: {
+      url: "/house/getlist",
       method: HTTP_REQUEST_METHOD.POST,
-      param:{
-          serviceId:"household.getlist",
+      param: {
+        serviceId: "house.getlist",
       }
     },
-    delete:{
-      url:"/household/delete",
+    delete: {
+      url: "/house/delete",
       method: HTTP_REQUEST_METHOD.POST,
-      param:{
-          serviceId:"household.delete",
+      param: {
+        serviceId: "house.delete",
+      }
+    },
+    /** */
+    editor: {
+      url: "/house/editor",
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: "house.editor"
+      }
+    }
+  },
+  household: {
+    getlist: {
+      url: "/household/getlist",
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: "household.getlist",
+      }
+    },
+    delete: {
+      url: "/household/delete",
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: "household.delete",
       }
     },
     /** */
@@ -410,19 +441,19 @@ export default {
     }
   },
   /**车场管理 */
-  place:{
-    getlist:{
-      url:"/place/getlist",
+  place: {
+    getlist: {
+      url: "/place/getlist",
       method: HTTP_REQUEST_METHOD.POST,
-      param:{
-          serviceId:"place.getlist",
+      param: {
+        serviceId: "place.getlist",
       }
     },
-    delete:{
-      url:"/place/delete",
+    delete: {
+      url: "/place/delete",
       method: HTTP_REQUEST_METHOD.POST,
-      param:{
-          serviceId:"place.delete",
+      param: {
+        serviceId: "place.delete",
       }
     },
     /** */
@@ -433,6 +464,6 @@ export default {
         serviceId: "place.editor"
       }
     }
-  }
-  
+  },
+
 }

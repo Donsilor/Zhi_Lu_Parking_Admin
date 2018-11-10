@@ -160,21 +160,19 @@ export default {
     },
 
     editRole(){
-      if(this.selectedParentIndex >= 0)
-      if(!isChildrensId(this.roleData, this.roles.dataItems[this.selectedParentIndex].id)){
-        this.$api.role
-        .editor(new RequestParams()
-        .addAttributes(this.roleData)
-        .addAttribute("project_id", User.info.project_id)
-        .addAttribute("pid", this.roles.dataItems[this.selectedParentIndex].id))
-        .then(response=>{
-          this.$message.success(response.message)
-          this.loadRoleDatas();
-        })
-        .catch(({message}) => this.$message.error(message))
+      if(this.roles.dataItems[this.selectedParentIndex] && isChildrensId(this.roleData, this.roles.dataItems[this.selectedParentIndex].id)){
+        return this.$message.error("不能选择自己/下级元素")
       }
-      else this.$message.error("不能选择自己/下级元素")
-      else this.$message.error("请选择父级")
+      this.$api.role
+      .editor(new RequestParams()
+      .addAttributes(this.roleData)
+      .addAttribute("project_id", User.info.project_id)
+      .addAttribute("pid", this.roles.dataItems[this.selectedParentIndex].id))
+      .then(response=>{
+        this.$message.success(response.message)
+        this.loadRoleDatas();
+      })
+      .catch(({message}) => this.$message.error(message))
 
     },
 

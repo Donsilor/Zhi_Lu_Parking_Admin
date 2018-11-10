@@ -7,7 +7,7 @@
       </div>
       <div class="clf top toggleDiv" v-show="searchDivShow">
         <div class="cominput fl">
-          <span class="conditions-text">庭院：</span>
+          <span class="conditions-text" >庭院：</span>
           <input type="text" placeholder="请输入" v-model="searchParams.courtyard">
         </div>
         <div class="cominput fl">
@@ -273,6 +273,7 @@ import moment from "moment";
 export default {
   data () {
     return {
+      asd:false,
       searchDivShow: true,
       ifEditInfo: false,
       ifImportAuthorize: false,
@@ -396,9 +397,11 @@ export default {
 
     editHouses(){
       this.$api.house.editor(new RequestParams()
+      .addDataItem(new RequestDataItem()
+      .addAttributes(this.houseData)
       .addAttribute("project_id", User.info.project_id)
       .addAttribute("operator_id", User.info.id)
-      .addAttributes(this.houseData))
+      ))
       .then(response=>{
         this.$message.success(response.message)
         this.ifEditInfo = false;
@@ -409,10 +412,11 @@ export default {
 
     editHouseHlolds(){
       this.$api.household.editor(new RequestParams()
+      .addDataItem(new RequestDataItem()
       .addAttributes(this.houseHoldData)
       .addAttribute("project_id", User.info.project_id)
       .addAttribute("house_id", this.searchHouseHlodId)
-      )
+      ))
       .then(response=>{
         this.$message.success(response.message)
         this.ifAddInhabitant = false;

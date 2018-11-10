@@ -61,7 +61,7 @@
       </div>
     </div>
     <div class="result clf">
-      <div class="selected">已选 <span>{{Object.values(delayDatas.dataItems).filter(o=>o.selected).length}}</span> 项数据</div>
+      <div class="selected" v-show="selectedDelays.length">已选 <span>{{selectedDelays.length}}</span> 项数据</div>
       <div class="tab">
         <table class="monthcard-table">
           <tr>
@@ -78,8 +78,8 @@
             <th>操作员</th>
             <th>操作</th>
           </tr>
-          <tr v-for="(delay, id) in delayDatas.dataItems" v-bind:key="id">
-            <td><input type="checkbox" v-model="delay.selected"></td>
+          <tr v-for="(delay, id) in carDelays.dataItems" v-bind:key="id">
+            <td><input type="checkbox" :value="index" v-model="selectedDelays"></td>
             <td>{{delay.car_no}}</td>
             <td>{{delay.household_name}}</td>
             <td>{{delay.room_no}}</td>
@@ -91,19 +91,19 @@
             <td>{{delay.update_time}}</td>
             <td>{{delay.user_name}}</td>
             <td>
-              <a href="javascript:" class="RenewalExtension">延期续费</a>
+              <a href="javascript:" class="RenewalExtension" @click="showPostponedRenewal(delay)">延期续费</a>
             </td>
           </tr>
         </table>
       </div>
       <Pagination
-        :previousPage="loadDelayDatas"
-        :nextPage="loadDelayDatas"
-        :skipPage="loadDelayDatas"
-        :pageIndex="delayDatas.attributes.page_index"
-        :totalPages="delayDatas.attributes.total_pages"
-        :pageSize="delayDatas.attributes.page_size"
-        :tatal="delayDatas.attributes.tatal"
+        :previousPage="loadCarDelaysDatas"
+        :nextPage="loadCarDelaysDatas"
+        :skipPage="loadCarDelaysDatas"
+        :pageIndex="carDelays.attributes.page_index"
+        :totalPages="carDelays.attributes.total_pages"
+        :pageSize="carDelays.attributes.page_size"
+        :tatal="carDelays.attributes.tatal"
       ></Pagination>
     </div>
     <!--弹窗-->
@@ -115,7 +115,7 @@
         </div>
 
         <div class="bot">
-          <p class="red"><i class="iconfont icon-jian-tianchong"></i>错误提示的文案<span>x</span></p>
+          <p class="red" hidden><i class="iconfont icon-jian-tianchong"></i>错误提示的文案<span>x</span></p>
           <div class="cet">
             <div class="clf">
 
@@ -179,7 +179,20 @@ import moment from "moment";
           
         },
         ifImportAuthorize: false,
-        delayDatas:{
+        selectedDelays:[],
+        carDelayData:{
+          car_auth_id:null,//	Y	String	授权ID
+          project_id:null,//	N	String	项目ID 
+          car_id:null,//	Y	String	车辆ID
+          amount:null,//	Y	decimal(10,2)	收费金额
+          pay_mode:null,//	Y	int	支付方式(0：现金1：微信公众号支付2：微信刷卡支付3：支付宝网页支付4：支付宝刷卡支付)
+          old_end_time:null,//	Y	String	旧有效期至(格式：yyyy-MM-dd HH:mm:ss)
+          new_end_time:null,//	Y	String	新有效期至(格式：yyyy-MM-dd HH:mm:ss)
+          source:null,//	Y	String	来源：cloud(平台)、app(移动端)
+          operator_id:null,//	Y	String	操作员ID
+          remark:null,//	N	String	备注
+        },
+        carDelays:{
           attributes: {
             page_index: 1, //当前页码
             page_size: 2, //当前页数
@@ -225,8 +238,15 @@ import moment from "moment";
     },
     methods: {
 
+      showPostponedRenewal(data){
+        if(data){
+          this.carDelayData = data;
+        }
+        this.ifRegister = true;
+      },
+
       /**加载车辆区域列表数据 */
-      loadDelayDatas(pageNum = 1, params = {}) {
+      loadCarDelaysDatas(pageNum = 1, params = {}) {
         let searchTimes = this.searchTimes.map(o=>moment(o).format("YYYY-MM-DD HH:mm:ss"))
         this.$api.delay
           .getlist(new RequestParams()
@@ -237,14 +257,14 @@ import moment from "moment";
           .addAttribute("page_index", pageNum))
           .then(response => {
 
-            this.delayDatas.attributes = response.attributes;
-            this.delayDatas.dataItems = response.dataItems.map(o => o.attributes);
+            this.carDelays.attributes = response.attributes;
+            this.carDelays.dataItems = response.dataItems.map(o => o.attributes);
           })
           .catch(response => this.$message.error(response.message));
       },
     },
     mounted () {
-      this.loadDelayDatas(1);
+      this.loadCarDelaysDatas(1);
     }
   };
 </script>

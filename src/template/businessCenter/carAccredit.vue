@@ -183,7 +183,7 @@
                 </select>
               </p>
               <p class="clf"><span class="fl">授权车位：</span><span class="p-text fl">{{placeData.car_group_id || placeData.car_place_no}}<span hidden class="red-text">为车位组时显示车位组名称，并修改标题为授权车位组</span></span>
-                <a class="ap-choose" href="javascript:" @click="ifAuthorizedParking = true">请选择</a>
+                <a class="ap-choose" href="javascript:" @click="ifAuthorizedParking = true, loadPlaceDatas()">请选择</a>
               </p>
               <p class="clf">
                 <span class="fl">授权月份：</span>
@@ -199,7 +199,7 @@
                 <input class="fl" type="text" v-model="caraccreditData.amount" placeholder="请输入备注" >
               </p>
               <p class="clf"><span class="fl">可通行的设备：</span><span class="p-text">{{selecredDevices.map(o=>o.device_name)}}<a
-                class="choose-equ" @click="ifTraffic = true" href="javascript:;">请选择</a></span></p>
+                class="choose-equ" @click="ifTraffic = true,loadDeviceDatas()" href="javascript:;">请选择</a></span></p>
               <p class="bz clf"><span class="fl">备注：</span><input class="fl" type="text" placeholder="请输入备注"></p>
             </div>
             <div class="button clf">
@@ -279,7 +279,7 @@
         </div>
       </div>
     </div>
-    <div class="traffic-main" v-if="ifTraffic" @load="ifTraffic && loadDeviceDatas()" >
+    <div class="traffic-main" v-if="ifTraffic"  >
       <div class="depwd" v-drag.cursor="'#Traffic'">
         <div class="top-nav" id="Traffic">
           <p class="t-text fl">可通行设备</p>
@@ -291,9 +291,10 @@
               <p class="clf"><span class="fl">设备编号：</span><input type="text" v-model="searchDevices.device_code" placeholder="请输入"></p>
               <p class="clf"><input type="text" v-model="searchDevices.device_name" placeholder="请输入"><span class="fr">设备名称：</span></p>
               <p class="clf"><span class="fl">设备类型：</span>
-                <select>
-                  <option>选择1</option>
-                  <option>选择2</option>
+                <select v-model="searchDevices.device_type">
+                  <option  v-for='(device, index) in {
+                    WORKS:"工作站",INLET:"入口",OUTLET:"出口",CAMERA:"摄像头",LED:"LED显示屏",HORN:"喇叭",BARRIERGATE:"道闸"
+                  }' v-bind:key="index" :value="index">{{device}}</option>
                 </select>
               </p>
               <p class="button clf">
@@ -332,7 +333,7 @@
         </div>
       </div>
     </div>
-    <div class="ap-main" v-if="ifAuthorizedParking" @load="ifAuthorizedParking && loadPlaceDatas()">
+    <div class="ap-main" v-if="ifAuthorizedParking" >
       <div class="depwd" v-drag.cursor="'#AuthorizedParking'">
         <div class="top-nav" id="AuthorizedParking">
           <p class="t-text fl">授权车位</p>
@@ -685,7 +686,7 @@ import moment from "moment";
           .addAttributes(params)
           .addAttribute("page_index", pageNum)
           .addAttribute("page_size", 100000)
-          .addAttribute("key", `device_type in ("INLET","OUTLET")`)
+          // .addAttribute("key", `device_type in ("INLET","OUTLET")`)
           )
           .then(response => {
 
