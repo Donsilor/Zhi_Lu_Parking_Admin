@@ -363,7 +363,23 @@ export default {
       param: {
         serviceId: "dictionary.delete",
       }
-    }
+    },
+    /** */
+    editor: {
+      url: "/dictionary/editor",
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: "dictionary.editor"
+      }
+    },
+    /**授权记录 */
+    delete: {
+      url: "/dictionary/delete",
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: "dictionary.delete",
+      }
+    },
   },
   /**授权管理 */
   oauth: {

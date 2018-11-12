@@ -171,7 +171,7 @@ import moment from "moment";
 
       editDictionary(){
 
-        this.$api.project.editor(new RequestParams()
+        this.$api.dictionary.editor(new RequestParams()
         .addAttributes(this.dictionaryData)
         .addAttribute("project_id", User.info.project_id))
         .then(response=>{

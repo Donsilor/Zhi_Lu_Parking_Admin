@@ -198,7 +198,7 @@
               <p class="clf"><span class="fl">收费金额：</span>
                 <input class="fl" type="text" v-model="caraccreditData.amount" placeholder="请输入备注" >
               </p>
-              <p class="clf"><span class="fl">可通行的设备：</span><span class="p-text">{{selecredDevices.map(o=>o.device_name)}}<a
+              <p class="clf"><span class="fl">可通行的设备：</span><span class="p-text">{{selecredDevices.map(o=>devices.dataItems[o].device_name)}}<a
                 class="choose-equ" @click="ifTraffic = true,loadDeviceDatas()" href="javascript:;">请选择</a></span></p>
               <p class="bz clf"><span class="fl">备注：</span><input class="fl" type="text" placeholder="请输入备注"></p>
             </div>
@@ -316,7 +316,10 @@
             <div class="scrollDiv">
               <table>
                 <tr v-for="(device, index) in devices.dataItems" v-bind:key="index">
-                  <td class="traffic-ckb"><input class="check" type="checkbox" :value="index" v-model="selecredDevices" ></td>
+                  <td class="traffic-ckb">
+                    <input class="check" type="checkbox" :id="index" :value="index" v-model="selecredDevices" >
+                    <label :for="index"></label>
+                  </td>
                   <td>{{device.device_code}}</td>
                   <td>{{device.device_name}}</td>
                   <td>{{/*设备类型(WORKS：工作站 INLET：入口　OUTLET：出口 CAMERA：摄像头 LED：LED显示屏 HORN：喇叭 BARRIERGATE：道闸,从数据字典获取，有层级关系，工作站为第一层，出入口为第二层，其他设备为第三层)*/
