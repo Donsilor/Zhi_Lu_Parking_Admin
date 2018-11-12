@@ -44,16 +44,15 @@
       </div>
       <div class="clf bottom">
         <div class="fl">
-          <button class="plechoose fl">请选择 <img src="../../assets/images/icon_9.png" alt=""></button>
+          <button class="plechoose fl" @click="selectedAll()">请选择 <img src="../../assets/images/icon_9.png" alt=""></button>
           <button class="batchdel fl">批量删除</button>
           <button class="greenbut fl">配置车场收费标准</button>
-          <div>共搜索到 <span>{{delayDatas.attributes.tatal || 0}}</span> 条数据</div>
+          <div>共搜索到 <span>{{carDelays.attributes.tatal || 0}}</span> 条数据</div>
         </div>
         <div class="fr">
           <button class="search-button blu-button">搜索</button>
           <button class="clear-button bluborder-button">清除</button>
-          <button class="ss transf-button"  v-bind:class="{hide:!searchDivShow}"
-                  v-on:click="searchDivShow=!searchDivShow">
+          <button class="ss transf-button"  v-bind:class="{hide:!searchDivShow}" v-on:click="searchDivShow=!searchDivShow">
             <i><img src="../../assets/images/icon_t_arrow2.png" alt=""></i>
             <span>{{searchDivShow === true ? "收起搜索" : "展开搜索"}}</span>
           </button>
@@ -78,20 +77,20 @@
             <th>操作员</th>
             <th>操作</th>
           </tr>
-          <tr v-for="(delay, id) in carDelays.dataItems" v-bind:key="id">
+          <tr v-for="(car, index) in carDelays.dataItems" v-bind:key="index">
             <td><input type="checkbox" :value="index" v-model="selectedDelays"></td>
-            <td>{{delay.car_no}}</td>
-            <td>{{delay.household_name}}</td>
-            <td>{{delay.room_no}}</td>
-            <td>{{delay.tel}}</td>
-            <td>{{/*车辆类型(通过授权确认车辆类型，此类型由数据字典提供，选择输入，不能手动录入)*/delay.car_type}}</td>
-            <td>{{delay.car_place_no}}</td>
-            <td>{{delay.end_time}}</td>
-            <td>{{["已过期","正常"][delay.status]}}</td>
-            <td>{{delay.update_time}}</td>
-            <td>{{delay.user_name}}</td>
+            <td>{{car.car_no}}</td>
+            <td>{{car.household_name}}</td>
+            <td>{{car.room_no}}</td>
+            <td>{{car.tel}}</td>
+            <td>{{/*车辆类型(通过授权确认车辆类型，此类型由数据字典提供，选择输入，不能手动录入)*/car.car_type}}</td>
+            <td>{{car.car_place_no}}</td>
+            <td>{{car.end_time}}</td>
+            <td>{{["已过期","正常"][car.status]}}</td>
+            <td>{{car.update_time}}</td>
+            <td>{{car.user_name}}</td>
             <td>
-              <a href="javascript:" class="RenewalExtension" @click="showPostponedRenewal(delay)">延期续费</a>
+              <a href="javascript:" class="RenewalExtension" @click="showPostponedRenewal(car)">延期续费</a>
             </td>
           </tr>
         </table>
@@ -119,12 +118,12 @@
           <div class="cet">
             <div class="clf">
 
-              <p class="clf"><span class="fl">车牌号码：</span><span class="p-text">粤B123456</span></p>
-              <p class="clf"><span class="fl">原有效期至：</span><span class="p-text">2015-09-09</span></p>
-              <p class="clf"><span class="fl">新有效期至：</span><span class="p-text">2015-09-09</span></p>
+              <p class="clf"><span class="fl">车牌号码：</span><span class="p-text">{{carDelayData.car_no}}</span></p>
+              <p class="clf"><span class="fl">原有效期至：</span><span class="p-text">{{carDelayData.car_no}}</span></p>
+              <p class="clf"><span class="fl">新有效期至：</span><span class="p-text">{{carDelayData.car_no}}</span></p>
               <p class="clf"><span class="fl">授权月份：</span>
-                <select name="" value="">
-                  <option value="">请选择,根据车辆类型及授权车位自动关联收费标准</option>
+                <select aria-placeholder="">
+                  <option value="" disabled selected>请选择,根据车辆类型及授权车位自动关联收费标准</option>
                   <option value="">选择1</option>
                 </select>
               </p>
@@ -132,8 +131,8 @@
               <p class="bz clf"><span class="fl">备注：</span><input class="fl" type="text" value="请输入备注" id="inp"></p>
             </div>
             <div class="button clf">
-              <a class="qr fr">确定</a>
-              <a class="qx fr">取消</a>
+              <a class="qr fr" @click="postponedRenewal()">确定</a>
+              <a class="qx fr" @click="ifRegister = false">取消</a>
             </div>
           </div>
         </div>
@@ -181,7 +180,7 @@ import moment from "moment";
         },
         ifImportAuthorize: false,
         selectedDelays:[],
-        carDelayData:{
+        delayData:{
           car_auth_id:null,//	Y	String	授权ID
           project_id:null,//	N	String	项目ID 
           car_id:null,//	Y	String	车辆ID
@@ -192,6 +191,20 @@ import moment from "moment";
           source:null,//	Y	String	来源：cloud(平台)、app(移动端)
           operator_id:null,//	Y	String	操作员ID
           remark:null,//	N	String	备注
+        },
+        carDelayData:{
+          id:null,//        	Y	String	ID
+          household_id:null,//	Y	String	住户ID
+          household_name:null,//	N	String	住户姓名
+          room_no:null,//	N	String	房号（房屋信息内的庭院、楼栋、单元、房号组合返回）
+          tel:null,//	N	String	电话
+          car_no:null,//      	Y	String	车牌号码
+          car_type:null,//	Y	String	车辆类型(通过授权确认车辆类型，此类型由数据字典提供，选择输入，不能手动录入)
+          car_place_no:null,//	Y	string	车位号或车位组编号
+          end_time:null,//	Y	String	有效期至(格式：yyyy-MM-dd HH:mm:ss)
+          status:null,//	Y	String	状态（正常、已过期，通过有效期判断）
+          update_time:null,//	Y	String	最后延期时间(格式：yyyy-MM-dd HH:mm:ss)
+          user_name:null,//	Y	String	操作员
         },
         carDelays:{
           attributes: {
@@ -239,11 +252,33 @@ import moment from "moment";
     },
     methods: {
 
+      selectedAll(){
+        if(this.selectedDelays.length){
+          this.selectedDelays = [];
+        }
+        else this.selectedDelays = this.carDelays.dataItems.map((o,i)=>i);
+      },
+
       showPostponedRenewal(data){
         if(data){
           this.carDelayData = data;
         }
         this.ifRegister = true;
+      },
+
+      postponedRenewal(){
+        this.$api.delay.charge(new RequestParams()
+          .addDataItem(new RequestDataItem()
+          .addAttributes(this.delayData)
+          .addAttribute("project_id", User.info.project_id)
+          .addAttribute("household_id", this.carDelayData.household_id)
+          ))
+          .then(response=>{
+            this.$message.success(response.message)
+            this.ifRegister = false;
+            this.loadCarDelaysDatas();
+          })
+          .catch(({message}) => this.$message.error(message))
       },
 
       /**加载车辆区域列表数据 */

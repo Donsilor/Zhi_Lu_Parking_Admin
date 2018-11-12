@@ -8,7 +8,7 @@
             <div class="closed" @click="equip_entry = false">关闸</div>
             <div class="watch_video" @click="equip_entry = false">观看视频</div>
           </div>
-          <p class="p1"><span class="sptop" @click="equip_entry_toggle">...</span></p>
+          <p class="p1"><span class="sptop" @click="this.equip_entry = !this.equip_entry">...</span></p>
           <section class="secl fl"><img src="../../assets/images/secl.png"></section>
           <section class="secr fr">
             <b>东门入口</b>
@@ -21,7 +21,7 @@
             <div class="closed" @click="equip_output = false">关闸</div>
             <div class="watch_video" @click="equip_output = false">观看视频</div>
           </div>
-          <p class="p1"><span class="spbot" @click="equip_output_toggle">...</span></p>
+          <p class="p1"><span class="spbot" @click="this.equip_output = !this.equip_output">...</span></p>
           <section class="secl fl" style="padding-top:6%;"><img src="../../assets/images/secr.png"></section>
           <section class="secr fr">
             <b>东门出口</b>
@@ -64,60 +64,11 @@
               <td>L0678</td>
               <td>币种</td>
               <td>离散条件</td>
-              <td><p>2015-09-26</p>
-                <p>08：50：08</p></td>
+              <td><p>2015-09-26</p><p>08：50：08</p></td>
               <td><a href="/">已配置，已生效</a></td>
               <td>灵惜</td>
               <td><i class="iconfont icon-yanjing"></i><i class="iconfont icon-edit"></i><i
                 class="iconfont icon-shanchu" @click="ifDel = true"></i></td>
-            </tr>
-            <tr>
-              <td><input class="rad" type="radio" id="deo2"><label for="deo2" name="radio" value="1"></label></td>
-              <td>L0678</td>
-              <td>币种</td>
-              <td>离散条件</td>
-              <td><p>2015-09-26</p>
-                <p>08：50：08</p></td>
-              <td><a href="/">已配置，已生效</a></td>
-              <td>灵惜</td>
-              <td><i class="iconfont icon-yanjing"></i><i class="iconfont icon-edit"></i><i
-                class="iconfont icon-shanchu"></i></td>
-            </tr>
-            <tr>
-              <td><input class="rad" type="radio" id="deo3"><label for="deo3" name="radio" value="1"></label></td>
-              <td>L0678</td>
-              <td>币种</td>
-              <td>离散条件</td>
-              <td><p>2015-09-26</p>
-                <p>08：50：08</p></td>
-              <td><a class="red-text" href="/">未配置</a></td>
-              <td>灵惜</td>
-              <td><i class="iconfont icon-yanjing"></i><i class="iconfont icon-edit"></i><i
-                class="iconfont icon-shanchu"></i></td>
-            </tr>
-            <tr>
-              <td><input class="rad" type="radio" id="deo4"><label for="deo4" name="radio" value="1"></label></td>
-              <td>L0678</td>
-              <td>币种</td>
-              <td>离散条件</td>
-              <td><p>2015-09-26</p>
-                <p>08：50：08</p></td>
-              <td><a href="/">已配置，已生效</a></td>
-              <td>灵惜</td>
-              <td><i class="iconfont icon-yanjing"></i><i class="iconfont icon-edit"></i><i
-                class="iconfont icon-shanchu"></i></td>
-            </tr>
-            <tr>
-              <td><input class="rad" type="radio" id="deo5"><label for="deo5" name="radio" value="1"></label></td>
-              <td>L0678</td>
-              <td>币种</td>
-              <td>离散条件</td>
-              <td><p>2015-09-26</p>
-                <p>08：50：08</p></td>
-              <td><a href="/">已配置，已生效</a></td>
-              <td>灵惜</td>
-              <td><i class="iconfont icon-yanjing"></i><i class="iconfont icon-edit"></i><i
-                class="iconfont icon-shanchu"></i></td>
             </tr>
             </tbody>
           </table>
@@ -158,7 +109,7 @@
       </div>
     </div>
     <!--弹窗-->
-    <div class="delete_prompt" v-if="ifDel">
+    <!-- <div class="delete_prompt" v-if="ifDel">
       <div class="depwd">
         <div class="text">你是否确认删除选中的记录</div>
         <div class="button clf">
@@ -166,7 +117,7 @@
           <a class="qx fr" @click="ifDel = false">取消</a>
         </div>
       </div>
-    </div>
+    </div> -->
     <!--弹窗-->
   </div>
 </template>
@@ -181,14 +132,6 @@
       };
     },
     methods: {
-      equip_entry_toggle () {
-        this.equip_entry = !this.equip_entry;
-        console.log(this.equip_entry);
-      },
-      equip_output_toggle () {
-        this.equip_output = !this.equip_output;
-        console.log(this.equip_output);
-      }
     }
   };
 </script>

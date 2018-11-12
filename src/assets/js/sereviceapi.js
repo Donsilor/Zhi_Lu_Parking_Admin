@@ -4,6 +4,7 @@
 import { HOST, HTTP_REQUEST_METHOD, CLIENT_SIDE_TIMESTAMP } from "./constants";
 import APIS from "./serviceurls";
 import axion from "axios";
+import {queryParams} from "./common";
 import { ResponseBody, RequestParams } from "./entity";
 
 const axion_instance = axion.create({
@@ -150,16 +151,7 @@ export default (function createApis(apis) {
     return new Promise(function (resolve, reject) {
       let { url, method, param = {}, config = {} } = $.extend(true, {}, api);
       if (method == HTTP_REQUEST_METHOD.GETURL || method == HTTP_REQUEST_METHOD.POSTURL) {
-        url = url.replace(/[?&][\w]+=[$!][\w]+/ig, function(key){
-          let __key = key.match(/[$!][\w]+/ig)[0].substr(1);
-          let value = params[__key];
-          if (params instanceof FormData) {
-            value = params.get(__key)
-            params.delete(__key)
-          }
-          else delete params[__key];
-          return (key[0] == "?" ? `?v=${CLIENT_SIDE_TIMESTAMP}` : "") + (value ? "&" + key.substr(1).replace(/[$][!]*[\w]+/ig, value) : "");
-        });
+        url = queryParams(url, params);
       }
       const axion_method = axion_instance_method[method];
       if (axion_method) {

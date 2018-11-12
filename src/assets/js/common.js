@@ -78,6 +78,23 @@ export const isChildrensId = function(obj, id){
     else return isChildrensId(o, id)
   })
 }
+/**
+ * 根据[params]生成一个新的[url]字符串
+ * @param {*} url 
+ * @param {*} params 
+ */
+export const queryParams = function(url = "", params = {}){
+  return url.replace(/[?&][\w]+=[$!][\w]+/ig, function(key){
+    let __key = key.match(/[$!][\w]+/ig)[0].substr(1);
+    let value = params[__key];
+    if (params instanceof FormData) {
+      value = params.get(__key)
+      params.delete(__key)
+    }
+    else delete params[__key];
+    return (key[0] == "?" ? `?v=${new Date().getTime()}` : "") + (value ? "&" + key.substr(1).replace(/[$][!]*[\w]+/ig, value) : "");
+  });
+}
 
 /**用户数据管理 */
 export const User = new class User {
