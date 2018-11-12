@@ -2,10 +2,9 @@
   <div class="content clf">
     <div class="search ">
       <div class="add">
-        <button class="add-department blu-button" @click="showEditDictionary()">+新增</button>
+        <button class="add-department blu-button" @click="showEditDictionary(null)">+新增</button>
       </div>
       <div class="clf top toggleDiv" v-show="searchDivShow">
-
         <div class="condition">
           <span class="conditions-text">搜索条件：</span>
           <div class="custom-input">
@@ -54,7 +53,7 @@
             <td>{{dictionary.depict}}</td>
             <td>{{dictionary.remark}}</td>
             <td>
-              <a href="javascript:" class="edit" @click="showEditDictionary(index)">编辑</a>
+              <a href="javascript:" class="edit" @click="showEditDictionary(dictionary)">编辑</a>
               <a href="javascript:" class="delete" @click="delDictionary(index)">删除</a>
             </td>
           </tr>
@@ -110,7 +109,7 @@
 
 <script>
 import { User } from "../../assets/js/common";
-import { RequestParams } from "../../assets/js/entity";
+import { RequestParams ,RequestDataItem} from "../../assets/js/entity";
 import Pagination from "../Pagination";
 import moment from "moment";
   export default {
@@ -134,7 +133,7 @@ import moment from "moment";
           /**参数值 */
           dic_key:null,
           /**参数类型 */
-          dic_type:null,
+          dic_type:["PARK","PARK","PARK","SYS"][User.info.user_type],
           /**描述 */
           depict:null,
           /**备注 */
@@ -164,8 +163,10 @@ import moment from "moment";
         else this.selectedDictionarys = this.dictionarys.dataItems.map((o,i)=>i);
       },
 
-      showEditDictionary(id){
-        this.dictionaryData = this.dictionarys.dataItems[id] || {};
+      showEditDictionary(data){
+        if(data){
+          this.dictionaryData = data;
+        }
         this.ifEditDict = true;
       },
 
@@ -175,7 +176,7 @@ import moment from "moment";
         .addAttributes(this.dictionaryData)
         .addAttribute("project_id", User.info.project_id))
         .then(response=>{
-          this.$message.error(response.message)
+          this.$message.success(response.message)
           this.ifEditDict = false;
           this.loadDictionarysDatas();
         })
@@ -209,6 +210,7 @@ import moment from "moment";
         this.$api.dictionary
           .getlist(new RequestParams()
           .addAttributes(params)
+          .addAttribute("project_id", User.info.project_id)
           .addAttribute("page_index", pageNum))
           .then(response => {
             this.dictionarys.attributes = response.attributes;

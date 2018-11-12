@@ -318,7 +318,7 @@
                 <tr v-for="(device, index) in devices.dataItems" v-bind:key="index">
                   <td class="traffic-ckb">
                     <input class="check" type="checkbox" :id="index" :value="index" v-model="selecredDevices" >
-                    <label :for="index"></label>
+                    <!-- <label :for="index"></label> -->
                   </td>
                   <td>{{device.device_code}}</td>
                   <td>{{device.device_name}}</td>

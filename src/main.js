@@ -12,6 +12,11 @@ import api from "./assets/js/sereviceapi";
 import './assets/iconfont/iconfont.css';
 import { User } from "./assets/js/common";
 import vueDrag from 'vue-dragging';
+import VueVideoPlayer from 'vue-video-player'
+import 'video.js/dist/video-js.css'
+import 'vue-video-player/src/custom-theme.css'
+import 'videojs-flash'
+// import 'videojs-contrib-hls/dist/videojs-contrib-hls'
 
 Vue.prototype.$echarts = echarts;
 Vue.prototype.$api = api;
@@ -19,6 +24,7 @@ Vue.config.productionTip = false;
 
 Vue.use(ElementUI);
 Vue.use(vueDrag);
+Vue.use(VueVideoPlayer);
 
 router.beforeEach((to, from, next) => {
   if (to.meta.title) {

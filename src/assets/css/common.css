@@ -203,3 +203,6 @@ input[type=checkbox]{cursor: pointer;}
 
 .nonreg-main .cet p .el-input__icon{line-height: 25px;}
 .nonreg-main .cet p input[type=text]{padding-left: 10%;}
+
+.cet p .p-text .el-input__inner{padding-left: 30px;}
+.cet p .p-text .el-input__icon{line-height: 1;}

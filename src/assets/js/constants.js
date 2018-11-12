@@ -13,5 +13,3 @@ export const HTTP_REQUEST_METHOD = {
 };
 /**直接URL文件访问路径前缀,访问需要拼接文件夹和文件名 */
 export const GET_FILE_URL = "server_file/file/viewFile?relativePath=";
-/**客户端时间戳 */
-export const CLIENT_SIDE_TIMESTAMP = new Date().getTime();

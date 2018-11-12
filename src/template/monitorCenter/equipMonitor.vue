@@ -31,8 +31,23 @@
       </div>
       <div class="wrap-right fr">
         <ul>
-          <li></li>
-          <li></li>
+          <li>
+            <video-player class="vjs-custom-skin" ref="videoPlayer" :options="{
+              overNative: true,
+              autoplay: true,
+              controls: false,
+              techOrder: ['html5'],
+              sourceOrder: true,
+              html5: { hls: { withCredentials: false } },
+              sources: [{
+                type: 'video/mp4',
+                src: 'https://cdn.theguardian.tv/webM/2015/07/20/150716YesMen_synd_768k_vp8.webm'
+              }]
+            }"></video-player>
+          </li>
+          <li>
+            <video src="https://cdn.theguardian.tv/webM/2015/07/20/150716YesMen_synd_768k_vp8.webm" autoplay> </video>
+          </li>
         </ul>
       </div>
     </div>
@@ -132,6 +147,9 @@
       };
     },
     methods: {
+      player() {
+        return this.$refs.videoPlayer.player
+      },
     }
   };
 </script>

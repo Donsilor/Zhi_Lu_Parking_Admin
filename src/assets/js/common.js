@@ -113,8 +113,13 @@ export const User = new class User {
       tel: null,
       update_time: null,
       user_name: null,
+      /**((0普通账号1项目管理员2系统普通账号3系统管理员) 由系统自动生成，不能手工选择) */
       user_type: null
     }, JSON.parse(localStorage.getItem("UserInfo") || "{}"));
+  }
+
+  get isSystemAdmin(){
+    return 3 == this.__info.user_type;
   }
 
   get info() {
@@ -128,3 +133,35 @@ export const User = new class User {
     this.info = this.info;
   }
 };
+
+/**
+ * 数据字典
+ * @param {*} api 
+ */
+export const DATA_DICTIONARY = class DATA_DICTIONARY {
+  constructor(api){
+    this.$api = api;
+  }
+  async ins(){
+    await this.$api.dictionary
+    .getlist(new RequestParams()
+    .addAttribute("page_size", 10000000)
+    .addAttribute("page_index", 1))
+    .then(response => {
+      for(let item of response.dataItems.map(o => o.attributes)){
+        if(!this[item.dic_code]){
+          this[item.dic_code] = {};
+        }
+        this[item.dic_code][item.dic_key] = item;
+      }
+    })
+    .catch(response => console.log(response.message));
+    return this;
+  }
+}
+
+
+
+// car_type  车辆类型 G-A:月卡A  G-B:月卡B   L-A:临时车A  L-B:临时车B  L-C:临时车C
+// standard_type  收费标准类型(数据 从字典表来,0:有位 月卡 1:无位月卡 2:有位年卡 3:无 位年卡 4:深圳住 宅 5、通用1(按小 时) 6、通用 2(按 次) 7、通用 3(自 定义))
+// device_type  设备类型(WORKS: 工作站 INLET:入口 OUTLET : 出 口 CAMERA:摄像头 LED:LED 显示屏 HORN : 喇 叭 BARRIERGATE : 道 闸
