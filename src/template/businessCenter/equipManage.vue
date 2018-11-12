@@ -47,7 +47,7 @@
                     <a href="javascript:" @click="delDevice(device)">删除</a>
                   </div>
                 </div>
-                <div class="tr level1_toggleTable" v-if="device.isShowChildren">
+                <div class="tr level1_toggleTable" v-show="device.isShowChildren">
                   <div class="tr level2_ths">
                     <div class="th"></div>
                     <div class="th">设备编号</div>
@@ -72,9 +72,9 @@
                           <div class="td">{{/*设备类型(WORKS：工作站 INLET：入口　OUTLET：出口 CAMERA：摄像头 LED：LED显示屏 HORN：喇叭 BARRIERGATE：道闸,从数据字典获取，有层级关系，工作站为第一层，出入口为第二层，其他设备为第三层)*/
                             {WORKS:"工作站",INLET:"入口",OUTLET:"出口",CAMERA:"摄像头",LED:"LED显示屏",HORN:"喇叭",BARRIERGATE:"道闸"}[device_.device_type]
                           }}</div>
-                          <div class="td">{{device.device_ip}}</div>
+                          <div class="td">{{device_.device_ip}}</div>
                           <div class="td">{{[/*开闸方式(0无1自动开闸2确认开闸)*/"无","自动开闸","确认开闸"][device_.cut_off_mode]}}</div>
-                          <div class="td">{{device_.load_para}}</div>
+                          <div class="td">{{device_.load_para || "无"}}</div>
                           <div class="td">{{device_.create_time}}</div>
                           <div class="td">{{device_.update_time}}</div>
                           <div class="td">{{device_.user_name}}</div>
@@ -303,13 +303,15 @@ export default {
     },
 
     editDevice(){
-
-      if(this.devices.dataItems[this.selectedParentIndex] && isChildrensId(this.deviceData, this.devices.dataItems[this.selectedParentIndex].id)){
-        return this.$message.error("不能选择自己/下级元素")
+      let data = this.devices.dataItems[this.selectedParentIndex];
+      if(data){
+        if(isChildrensId(this.deviceData, data.id)){
+          return this.$message.error("不能选择自己/下级元素")
+        }
       }
       this.$api.device.editor(new RequestParams()
         .addAttributes(this.deviceData)
-        .addAttribute("pid", this.devices.dataItems[this.selectedParentIndex] && this.devices.dataItems[this.selectedParentIndex].id)
+        .addAttribute("pid", data ? data.id : 0)
         .addAttribute("operator_id", User.info.id))
         .then(response=>{
           this.$message.success(response.message)

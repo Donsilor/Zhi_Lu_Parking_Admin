@@ -160,14 +160,17 @@ export default {
     },
 
     editRole(){
-      if(this.roles.dataItems[this.selectedParentIndex] && isChildrensId(this.roleData, this.roles.dataItems[this.selectedParentIndex].id)){
-        return this.$message.error("不能选择自己/下级元素")
+      let data = this.roles.dataItems[this.selectedParentIndex];
+      if(data){
+        if(isChildrensId(this.roleData, data.id)){
+          return this.$message.error("不能选择自己/下级元素")
+        }
       }
       this.$api.role
       .editor(new RequestParams()
       .addAttributes(this.roleData)
       .addAttribute("project_id", User.info.project_id)
-      .addAttribute("pid", this.roles.dataItems[this.selectedParentIndex].id))
+      .addAttribute("pid", data ? data.id : 0))
       .then(response=>{
         this.$message.success(response.message)
         this.loadRoleDatas();

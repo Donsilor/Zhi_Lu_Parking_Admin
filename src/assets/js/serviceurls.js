@@ -47,6 +47,13 @@ export default {
       param: {
         serviceId: "operator.resetpwd"
       }
+    },
+    assign:{
+      url: "/operator/assign",
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: "operator.assign"
+      }
     }
   },
   /**

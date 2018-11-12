@@ -28,7 +28,7 @@
       </div>
     </div>
     <div class="bottom">
-      <div class="title">基础环境</div>
+      <div class="title">车场变量</div>
       <div class="c_box">
         <div>
           <span>总车位数：<i>1000</i></span>

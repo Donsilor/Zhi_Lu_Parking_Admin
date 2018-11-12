@@ -67,7 +67,6 @@
           <span class="fl r-text">只能上传jpg/png文件</span>
         </div>
       </div>
-
       <div>
         <div class="name">排序：</div>
         <div class="role">
@@ -169,14 +168,16 @@ import moment from "moment";
     methods: {
 
       editRes(){
-        
-        if(this.ress.dataItems[this.selectedParentIndex] && isChildrensId(this.resData, this.ress.dataItems[this.selectedParentIndex].id)){
-          return this.$message.error("不能选择自己/下级元素")
+        let data = this.ress.dataItems[this.selectedParentIndex];
+        if(data){
+          if(isChildrensId(this.resData, data.id)){
+            return this.$message.error("不能选择自己/下级元素")
+          }
         }
         this.$api.menu
         .editor(new RequestParams()
         .addAttributes(this.resData)
-        .addAttribute("pid", this.ress.dataItems[this.selectedParentIndex].id)
+        .addAttribute("pid", data ? data.id : 0)
         .addAttribute("resource_icon", this.resData.relativepath))
         .then(response=>{
           this.$message.success(response.message)

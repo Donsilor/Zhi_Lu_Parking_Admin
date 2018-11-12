@@ -61,7 +61,7 @@
                 <a href="javascript:" class="edit" @click="showEditUser(index)">编辑</a>
                 <a href="javascript:" class="delete" v-on:click="delUser(index)">删除</a>
                 <a href="javascript:" @click="resetPassword(user.id, user.user_name)">重置密码</a>
-                <a href="javascript:">角色</a>
+                <a href="javascript:" @click="ifAssignRoles = true">角色</a>
               </td>
             </tr>
           </tbody>
@@ -132,6 +132,30 @@
         </div>
       </div>
     </div>
+    <div class="assignRoles" v-if="ifAssignRoles">
+      <div class="depwd" v-drag.cursor="'#AssignRoles'">
+        <div class="top-nav" id="AssignRoles">
+          <p class="t-text fl">分配角色</p >
+          <p class="close fr" @click="ifAssignRoles = false">x</p >
+        </div>
+        <div class="bot">
+          <div class="cet">
+            <el-tree
+              :data="roles.tree"
+              :props="{
+                children: 'children',
+                label: 'role_name'
+              }"
+              @node-click="data=>selectedRoleData=data">
+            </el-tree>
+            <div class="button clf">
+              <a class="qx" @click="ifAssignRoles = false">取消</a>
+              <a class="qr" @click="selectedRole()">确定</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <!-- <div class="delete_prompt" v-bind:style="{display:delUserWindow?'block':'none'}">
       <div class="depwd">
         <div class="text">你是否确认删除选中的记录</div>
@@ -146,13 +170,14 @@
 </template>
 
 <script>
-import { User } from "../../assets/js/common";
+import { User ,array2Descendants} from "../../assets/js/common";
 import { RequestParams, RequestDataItem } from "../../assets/js/entity";
 import Pagination from "../Pagination";
 
 export default {
   data() {
     return {
+      ifAssignRoles:false,
       /**是否显示搜索输入框 */
       searchDivShow: true,
       /**搜索参数 */
@@ -187,7 +212,18 @@ export default {
           total_pages: 10 //条页数
         },
         dataItems: []
-      }
+      },
+      selectedRoleData:{},
+      roles:{
+        attributes: {
+          page_index: 1, //当前页码
+          page_size: 2, //当前页数
+          tatal: 10, //总条目数
+          total_pages: 10 //条页数
+        },
+        tree:[],
+        dataItems: []
+      },
     };
   },
   components: {
@@ -255,6 +291,18 @@ export default {
       .catch(({message}) => this.$message.error(message))
     },
 
+    selectedRole(){
+      console.log(this.selectedRoleData)
+      // this.$api.operator.assign(new RequestParams()
+      //   .addDataItemAttr(0, "id", "")
+      //   .addDataItemAttr(0, "user_id", "")
+      //   .addDataItemAttr(0, "role_id", this.selectedRoleData.id)
+      // ).then(response=>{
+      //   this.$message.success(response.message)
+      //   this.ifAssignRoles = false;
+      // }).catch(({message}) => this.$message.error(message))
+    },
+
     delUser(id){
         
       let datas = id != null ? [this.users.dataItems[id]] : this.selectedUsers.map(o=>this.users.dataItems[o]);
@@ -276,6 +324,21 @@ export default {
       }
       else this.$message.info("请选择要删除的用户");
     },
+    /**加载项目列表数据 */
+    loadRoleDatas(pageNum = 1, params = {}) {
+      this.$api.role
+        .getlist(new RequestParams()
+        .addAttributes(params)
+        .addAttribute("page_index", pageNum)
+        .addAttribute("page_size", 1000000)
+        )
+        .then(response => {
+          this.roles.attributes = response.attributes;
+          this.roles.tree = array2Descendants(response.dataItems.map((o,i) => (o.attributes.index = i,o.attributes)));
+          this.roles.dataItems = response.dataItems.map(o => o.attributes);
+        })
+        .catch(({message}) => this.$message.error(message));
+    },
     /**加载用户列表数据 */
     loadUserDatas(pageNum = 1, params = {}) {
       this.$api.operator
@@ -291,6 +354,7 @@ export default {
   },
   mounted() {
     this.loadUserDatas(1, {});
+    this.loadRoleDatas();
   }
 };
 </script>

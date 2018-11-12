@@ -119,8 +119,14 @@
             <div class="clf">
 
               <p class="clf"><span class="fl">车牌号码：</span><span class="p-text">{{carDelayData.car_no}}</span></p>
-              <p class="clf"><span class="fl">原有效期至：</span><span class="p-text">{{carDelayData.car_no}}</span></p>
-              <p class="clf"><span class="fl">新有效期至：</span><span class="p-text">{{carDelayData.car_no}}</span></p>
+              <p class="clf"><span class="fl">原有效期至：</span><span class="p-text">{{delayData.old_end_time = carDelayData.end_time}}</span></p>
+              <p class="clf"><span class="fl">新有效期至：</span><span class="p-text">
+                <el-date-picker
+                  v-model="delayData.new_end_time"
+                  type="date"
+                  placeholder="选择日期">
+                </el-date-picker>  
+              </span></p>
               <p class="clf"><span class="fl">授权月份：</span>
                 <select aria-placeholder="">
                   <option value="" disabled selected>请选择,根据车辆类型及授权车位自动关联收费标准</option>

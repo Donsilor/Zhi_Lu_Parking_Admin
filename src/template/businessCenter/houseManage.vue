@@ -416,6 +416,7 @@ export default {
       .addAttributes(this.houseHoldData)
       .addAttribute("project_id", User.info.project_id)
       .addAttribute("house_id", this.searchHouseHlodId)
+      .addAttribute("operator_id", User.info.id)
       ))
       .then(response=>{
         this.$message.success(response.message)
