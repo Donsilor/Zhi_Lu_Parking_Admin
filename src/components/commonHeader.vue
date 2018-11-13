@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import { User } from "../assets/js/common";
+import { User } from "../assets/js/entity";
   export default {
     data () {
       return {

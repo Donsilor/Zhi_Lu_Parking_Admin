@@ -10,7 +10,7 @@ import $ from 'jquery';
 import echarts from 'echarts';
 import api from "./assets/js/sereviceapi";
 import './assets/iconfont/iconfont.css';
-import { User } from "./assets/js/common";
+import { User } from "./assets/js/entity";
 import vueDrag from 'vue-dragging';
 import VueVideoPlayer from 'vue-video-player'
 import 'video.js/dist/video-js.css'

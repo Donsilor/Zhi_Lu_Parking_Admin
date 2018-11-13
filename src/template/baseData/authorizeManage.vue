@@ -136,8 +136,7 @@
 
 <script>
 
-import { User } from "../../assets/js/common";
-import { RequestParams, RequestDataItem } from "../../assets/js/entity";
+import { RequestParams, RequestDataItem,User } from "../../assets/js/entity";
 import Pagination from "../Pagination";
 import moment from "moment";
   export default {

@@ -24,8 +24,7 @@
 </template>
 
 <script>
-import {RequestParams} from "../assets/js/entity";
-import { User } from "../assets/js/common";
+import {RequestParams,User} from "../assets/js/entity";
 
 export default {
   data() {

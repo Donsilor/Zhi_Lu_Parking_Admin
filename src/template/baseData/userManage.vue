@@ -170,8 +170,8 @@
 </template>
 
 <script>
-import { User ,array2Descendants} from "../../assets/js/common";
-import { RequestParams, RequestDataItem } from "../../assets/js/entity";
+import {array2Descendants} from "../../assets/js/common";
+import {  User ,RequestParams, RequestDataItem } from "../../assets/js/entity";
 import Pagination from "../Pagination";
 
 export default {

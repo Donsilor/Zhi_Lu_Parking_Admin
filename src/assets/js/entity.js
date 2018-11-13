@@ -170,3 +170,67 @@ export const MrLIWebSocket = class MrLIWebSocket {
 }
 
 
+/**用户数据管理 */
+export const User = new class User {
+
+  constructor() {
+    this.__info = $.extend({
+      create_time: null,
+      dept_id: null,
+      full_name: null,
+      id: null,
+      password: null,
+      photo: null,
+      project_id: null,
+      remark: null,
+      status: null,
+      tel: null,
+      update_time: null,
+      user_name: null,
+      /**((0普通账号1项目管理员2系统普通账号3系统管理员) 由系统自动生成，不能手工选择) */
+      user_type: null
+    }, JSON.parse(localStorage.getItem("UserInfo") || "{}"));
+  }
+
+  get isSystemAdmin(){
+    return 3 == this.__info.user_type;
+  }
+
+  get info() {
+    return this.__info;
+  }
+  set info(v) {
+    localStorage.setItem("UserInfo", JSON.stringify(this.__info = v));
+  }
+  empty() {
+    this.info.id = null;
+    this.info = this.info;
+  }
+};
+
+/**
+ * 数据字典
+ * @param {*} api 
+ */
+export const DATA_DICTIONARY = class DATA_DICTIONARY {
+  constructor(api){
+    this.$api = api;
+  }
+  async ins(){
+    await this.$api.dictionary
+    .getlist(new RequestParams()
+    .addAttribute("page_size", 10000000)
+    .addAttribute("page_index", 1))
+    .then(response => {
+      for(let item of response.dataItems.map(o => o.attributes)){
+        if(!this[item.dic_code]){
+          this[item.dic_code] = {};
+        }
+        this[item.dic_code][item.dic_key] = item;
+      }
+    })
+    .catch(response => console.log(response.message));
+    return this;
+  }
+}
+

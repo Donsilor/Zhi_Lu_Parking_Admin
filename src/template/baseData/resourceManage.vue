@@ -117,8 +117,8 @@
 </template>
 
 <script>
-import { RequestParams,RequestDataItem } from "../../assets/js/entity";
-import { array2Descendants , User, isChildrensId} from "../../assets/js/common";
+import { RequestParams,RequestDataItem, User } from "../../assets/js/entity";
+import { array2Descendants , isChildrensId} from "../../assets/js/common";
 import Pagination from "../Pagination";
 import moment from "moment";
   export default {

@@ -171,8 +171,7 @@
 </template>
 
 <script>
-import { User } from "../../assets/js/common";
-import { RequestParams, RequestDataItem } from "../../assets/js/entity";
+import { RequestParams, RequestDataItem,DATA_DICTIONARY,User } from "../../assets/js/entity";
 import Pagination from "../Pagination";
 import moment from "moment";
   export default {
@@ -307,6 +306,7 @@ import moment from "moment";
     },
     mounted () {
       this.loadCarDelaysDatas(1);
+      console.log(new DATA_DICTIONARY(this))
     }
   };
 </script>
