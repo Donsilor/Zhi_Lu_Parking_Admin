@@ -102,27 +102,24 @@ export const queryParams = function(url = "", params = {}){
  * @param {*} file 文件
  * @param {*} header 要获取列标识
  */
-export const exportExcel = async function(file, header){
-  
-  let binary = await new Promise(resolve => {
+export const exportExcel = function(file, header){
+  return new Promise(resolve => {
     let reader = new FileReader();
     reader.onload = function (e) {
-      let binarys = "";
+      let binary = "";
       let bytes = new Uint8Array(e.target.result);
       let length = bytes.byteLength;
       for (let i = 0; i < length; i++) {
-        binarys += String.fromCharCode(bytes[i]);
+        binary += String.fromCharCode(bytes[i]);
       }
-      resolve(binarys);
+      /* read workbook */
+      var wb = XLSX.read(binary, {type: 'binary'});
+      let data = {};
+      for(let name of wb.SheetNames){
+        data[name] = XLSX.utils.sheet_to_json(wb.Sheets[name], {header:header});
+      }
+      resolve(data);
     }
     reader.readAsArrayBuffer(file);
   });
-
-  /* read workbook */
-  var wb = XLSX.read(binary, {type: 'binary'});
-  let data = {};
-  for(let name of wb.SheetNames){
-    data[name] = XLSX.utils.sheet_to_json(wb.Sheets[name], {header:header});
-  }
-  return data;
 }

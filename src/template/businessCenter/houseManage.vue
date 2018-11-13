@@ -271,6 +271,7 @@ import { RequestParams, RequestDataItem,User, DATA_DICTIONARY } from "../../asse
 import Pagination from "../Pagination";
 import moment from "moment";
 import {exportExcel} from "../../assets/js/common";
+import XLSX from 'xlsx';
 export default {
   data () {
     return {
@@ -378,7 +379,18 @@ export default {
   methods: {
 
     abc(file){
-      console.log(exportExcel((file.target.files[0]), ["name", "sex"]))
+      exportExcel((file.target.files[0]), ["name", "sex"]).then(data => {
+        
+        for(let row in data){
+          console.log(row, data[row])
+        }
+        const ws = XLSX.utils.aoa_to_sheet(data);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "SheetJS");
+        /* generate file and send to client */
+        XLSX.writeFile(wb, "sheetjs.xlsx");
+        });
+      
     },
 
     selectedAll(){
