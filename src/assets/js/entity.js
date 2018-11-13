@@ -217,13 +217,15 @@ export const DATA_DICTIONARY = class DATA_DICTIONARY {
     this.$api = api;
     this.dictionary = {};
   }
-  async ins(){
-    await this.$api.dictionary
+  async loadData(){
+    return await this.$api.dictionary
     .getlist(new RequestParams()
     .addAttribute("project_id", User.info.project_id)
     .addAttribute("page_size", 10000000)
     .addAttribute("page_index", 1))
-    .then(response => {
+  }
+  async ins(){
+    await this.loadData().then(response => {
       for(let item of response.dataItems.map(o => o.attributes)){
         if(!this.dictionary[item.dic_key]){
           this.dictionary[item.dic_key] = {};
