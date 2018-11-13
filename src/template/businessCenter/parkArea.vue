@@ -2,7 +2,7 @@
   <div class="content clf">
     <div class="search ">
       <div class="add">
-        <button class="add-department blu-button" @click="ifRenew = true">+新增</button>
+        <button class="add-department blu-button" @click="showEditParkArea()">+新增</button>
       </div>
       <div class="clf top toggleDiv" v-show="searchDivShow">
         <div class="cominput fl">
@@ -107,7 +107,7 @@
         :tatal="areas.attributes.tatal"
       ></Pagination>
     </div>
-    <!--新增和编辑弹窗-->
+    <!--新增和编辑车场弹窗-->
     <div class="main" v-if="ifRenew">
       <div class="depwd" v-drag.cursor="'#Renew'">
         <div class="top-nav" id="Renew">
@@ -231,15 +231,15 @@
             <div class="clf">
               <p class="clf">
                 <span class="fl">车场区域：</span>
-                <input type="text">
+                <input type="text" v-model="placeDatas.parkArea">
               </p>
               <p class="clf">
                 <span class="fl">车位号：</span>
-                <input type="text" >
+                <input type="text" v-model="placeDatas.car_place_no">
               </p>
               <p class="button clf">
-                <a class="v-qr fl">添加车位</a>
-                <a class="v-qr fl">导入车位</a>
+                <a class="v-qr fl" @click="editCarsDatas()">添加车位</a>
+                <a class="v-qr fl" @click="ifImportAuthorize = true">导入车位</a>
               </p>
             </div>
           </div>
@@ -247,13 +247,13 @@
             <div class="fl">
               <button class="plechoose fl" @click="selectedCarAll()">{{selectedCar.length>0?"全不选":"全选"}}  <img src="../../assets/images/icon_9.png" alt=""></button>
               <button class="batchdel fl" @click="delCar(null)">批量删除</button>
-              <button class="greenbut fl">合并到车位组</button>
+              <button class="greenbut fl" @click="mergeCar(null)">合并到车位组</button>
               <div class="fl">共搜索到 <span >{{cars.attributes.tatal}}</span> 条数据</div>
             </div>
             <div class="fr ParkingSpotSearch clf">
               <span class="fl">车位号：</span>
               <input type="search" placeholder="请输入车位号" v-model="searchCars.key">
-              <button class="v-qr fr">搜索</button>
+              <button class="v-qr fr" @click="loadCarsDatas()">搜索</button>
             </div>
           </div>
           <div class="selected" v-show="selectedCar.length">已选 <span>{{selectedCar.length}}</span> 项数据</div>
@@ -270,13 +270,13 @@
               </tr>
                <tr v-for="(car, index) in cars.dataItems" v-bind:key="index">
             <td><input type="checkbox" :value="index" v-model="selectedCar"></td>
-            <td>{{placeDatas.car_group_id}}</td>
-            <td>{{placeDatas.car_place_no}}</td>
-            <td>{{placeDatas.create_time}}</td>
-            <td>{{placeDatas.update_time}}</td>
-            <td>{{placeDatas.operator_id}}</td>
+            <td>{{car.car_group_id}}</td>
+            <td>{{car.car_place_no}}</td>
+            <td>{{car.create_time}}</td>
+            <td>{{car.update_time}}</td>
+            <td>{{car.operator_id}}</td>
             <td>
-              <a href="javascript:" class="bj" @click="aa">编辑</a>
+              <a href="javascript:" class="bj" @click="editPlace(index)">编辑</a>
               <a href="javascript:" class='delete' @click="delCar(index)">删除</a>
             </td>
           </tr>
@@ -291,6 +291,25 @@
             :pageSize="cars.attributes.page_size"
             :tatal="cars.attributes.tatal"
           ></Pagination>
+        </div>
+      </div>
+    </div> 
+    <!-- 导入车位 -->
+    <div class="import-main" v-if="ifImportAuthorize">
+      <div class="depwd" v-drag.cursor="'#ImportAuthorize'">
+        <div class="top-nav" id="ImportAuthorize">
+          <p class="t-text fl">导入车位</p>
+          <p class="close fr" @click="ifImportAuthorize = false">x</p>
+        </div>
+        <div class="bot">
+          <div class="cet clf">
+            <div class="fl choose-file">选择文件<input type="file" accept=".xls,.xlsx"  /></div>
+            <a class="fr downloadtemp" href="javascript:">下载模板</a>
+            <p>支持扩展名：.xls .xlsx</p>
+          </div>
+          <div class="button clf">
+            <a class="upload fr" href="javascript:">上传</a>
+          </div>
         </div>
       </div>
     </div>
@@ -310,9 +329,11 @@
 
 <script>
 // import { User } from "../../assets/js/common";
-import { RequestParams, RequestDataItem ,User } from "../../assets/js/entity";
+import { RequestParams, RequestDataItem, User } from "../../assets/js/entity";
 import Pagination from "../Pagination";
 import moment from "moment";
+import { importExcel } from "../../assets/js/common";
+import XLSX from "xlsx";
 export default {
   data() {
     return {
@@ -354,6 +375,7 @@ export default {
       ifConfig: false,
       ifRenew: false,
       ifVehreg: false,
+      ifImportAuthorize: false,
       ifDel: false,
       areas: {
         attributes: {
@@ -410,13 +432,14 @@ export default {
       // 车位数据
       placeDatas: {
         id: null,
-        project_id: null,
+        project_id: User.info.project_id,
         area_id: null,
         car_place_no: null,
         car_group_id: null,
         create_time: null,
         update_time: null,
-        operator_id: null,
+        operator_id: User.info.id,
+        parkArea: null,
         remark: null
       },
       // 车位查询
@@ -438,7 +461,10 @@ export default {
     },
     /**显示编辑 */
     showEditParkArea(id) {
-      this.areaDatas = this.areas.dataItems[id] || {};
+      this.areaDatas = this.areas.dataItems[id] || {
+        park_type: 0,
+        area_type: 0
+      };
       this.ifRenew = true;
       this.searchAreaHlodId = this.areaDatas.id;
       this.loadAreasDatas();
@@ -448,8 +474,11 @@ export default {
       this.ifConfig = true;
     },
     /**显示车位管理 */
-    showCarManager() {
+    showCarManager(index) {
       this.ifVehreg = true;
+      let data = this.areas.dataItems[index];
+      this.placeDatas.parkArea = data ? data.area_name : "未选择";
+      this.placeDatas.area_id = data ? data.id : null;
       this.loadCarsDatas();
     },
     /**新增或编辑车场区域数据 */
@@ -489,7 +518,7 @@ export default {
         })
         .catch(response => this.$message.error(response.message));
     },
-    // 删除
+    // 删除车场数据
     delPark(id) {
       let datas =
         id != null
@@ -514,6 +543,7 @@ export default {
           )
           .then(response => {
             this.$message.success("删除成功");
+            this.selectedArea = [];
             this.loadAreasDatas();
           })
           .catch(({ message }) => this.$message.error(message))
@@ -544,23 +574,73 @@ export default {
         })
         .catch(response => this.$message.error(response.message));
     },
+    // 编辑车位信息,将选中的车位号显示到上方车位号栏中
+    editPlace(id) {
+      let data = this.cars.dataItems[id];
+      if (data) {
+        this.placeDatas.car_place_no = data.car_place_no;
+        this.placeDatas.id = data.id;
+      } else {
+        this.$message.error("所选车位不存在！");
+      }
+    },
     // 编辑或新建车位信息
     editCarsDatas() {
+      this.placeDatas.car_group_id =
+        this.placeDatas.car_place_no + new Date().getTime();
       this.$api.place
         .editor(
-          new RequestParams()
-            .addAttributes(this.areaDatas)
-            .addAttribute("project_id", User.info.project_id)
-            .addAttribute("operator_id", User.info.id)
+          new RequestParams().addDataItem(
+            new RequestDataItem().addAttributes(this.placeDatas)
+          )
         )
         .then(response => {
           this.$message.success(response.message);
-          this.ifRenew = false;
+          this.placeDatas.car_place_no = null;
+          this.placeDatas.car_group_id = null;
+          this.placeDatas.id=null;
           this.loadCarsDatas();
         })
         .catch(({ message }) => this.$message.error(message));
     },
-    // 删除
+    // 合并车位组
+    mergeCar(id) {
+      let datas =
+        id != null
+          ? [this.cars.dataItems[id]]
+          : this.selectedCar.map(o => this.cars.dataItems[o]);
+      if (datas.length) {
+        this.$confirm(
+          `确定要合并车位号[${datas.map(o => o.car_place_no)}]吗?`,
+          "提示",
+          {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning"
+          }
+        )
+          .then(() =>
+            this.$api.place.merge(
+              new RequestParams()
+                .addDataItems(datas.map(o => new RequestDataItem()
+                .addAttribute("id", o.id)
+                .addAttribute("car_group_id",o.car_group_id)
+                )               
+              )
+            )
+          )
+          .then(response => {
+            this.$message.success("合并成功");
+            this.selectedCar = [];
+            this.loadCarsDatas();
+          })
+          .catch(({ message }) => this.$message.error(message))
+          .catch(() => {
+            this.$message.info("已取消合并");
+          });
+      } else this.$message.info("请选择要合并的车位数据");
+    },
+    // 删除车位数据
     delCar(id) {
       let datas =
         id != null
@@ -577,7 +657,7 @@ export default {
           }
         )
           .then(() =>
-            this.$api.area.delete(
+            this.$api.place.delete(
               new RequestParams().addDataItems(
                 datas.map(o => new RequestDataItem().addAttribute("id", o.id))
               )
@@ -585,7 +665,8 @@ export default {
           )
           .then(response => {
             this.$message.success("删除成功");
-            this.loadAreasDatas();
+            this.selectedCar = [];
+            this.loadCarsDatas();
           })
           .catch(({ message }) => this.$message.error(message))
           .catch(() => {

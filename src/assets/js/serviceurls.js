@@ -514,30 +514,5 @@ export default {
       }
     }
   },
-  /**车场管理 */
-  place: {
-    getlist: {
-      url: "/place/getlist",
-      method: HTTP_REQUEST_METHOD.POST,
-      param: {
-        serviceId: "place.getlist",
-      }
-    },
-    delete: {
-      url: "/place/delete",
-      method: HTTP_REQUEST_METHOD.POST,
-      param: {
-        serviceId: "place.delete",
-      }
-    },
-    /** */
-    editor: {
-      url: "/place/editor",
-      method: HTTP_REQUEST_METHOD.POST,
-      param: {
-        serviceId: "place.editor"
-      }
-    }
-  },
 
 }
