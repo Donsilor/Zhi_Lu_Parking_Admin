@@ -100,9 +100,9 @@ export const queryParams = function(url = "", params = {}){
 /**
  * 解析 Excel 表格文件
  * @param {*} file 文件
- * @param {*} header 要获取列标识
+ * @param {*} header 要获取列标识，字段数组
  */
-export const exportExcel = function(file, header){
+export const importExcel = function(file, header){
   return new Promise(resolve => {
     let reader = new FileReader();
     reader.onload = function (e) {
@@ -123,3 +123,5 @@ export const exportExcel = function(file, header){
     reader.readAsArrayBuffer(file);
   });
 }
+
+

@@ -267,10 +267,10 @@
 </template>
 
 <script>
-import { RequestParams, RequestDataItem,User, DATA_DICTIONARY } from "../../assets/js/entity";
+import { RequestParams, RequestDataItem,User, DATA_DICTIONARY,ExcelSheets } from "../../assets/js/entity";
 import Pagination from "../Pagination";
 import moment from "moment";
-import {exportExcel} from "../../assets/js/common";
+import {importExcel} from "../../assets/js/common";
 import XLSX from 'xlsx';
 export default {
   data () {
@@ -379,18 +379,16 @@ export default {
   methods: {
 
     abc(file){
-      exportExcel((file.target.files[0]), ["name", "sex"]).then(data => {
+      importExcel((file.target.files[0]), 2).then(data => {
         
-        for(let row in data){
-          console.log(row, data[row])
+        console.log(data)
+        let excelSheets = new ExcelSheets();
+        for(let name in data){
+          excelSheets.addSheet(name);
+          excelSheets.addRows(name, data[name]);
         }
-        const ws = XLSX.utils.aoa_to_sheet(data);
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "SheetJS");
-        /* generate file and send to client */
-        XLSX.writeFile(wb, "sheetjs.xlsx");
-        });
-      
+        excelSheets.exportExcel("textetxt");
+      });
     },
 
     selectedAll(){

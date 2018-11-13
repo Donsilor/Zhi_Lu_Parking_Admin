@@ -1,5 +1,6 @@
 
 import {queryParams} from "./common";
+import XLSX from 'xlsx';
 
 export const RequestDataItem = class RequestDataItem {
 
@@ -238,3 +239,57 @@ export const DATA_DICTIONARY = class DATA_DICTIONARY {
   }
 }
 
+
+/**
+ * 导出 Excel 表格数据到文件
+ */
+export const ExcelSheets = class ExcelSheets {
+  
+  constructor(){
+    this.sheets = {};
+  }
+  /**
+   * 添加工作蒲
+   * @param {*} name 工作铺名称
+   */
+  addSheet(name){
+    if(!this.sheets[name]){
+      this.sheets[name] = [];
+    }
+    return this;
+  }
+
+  /**
+   * 添加表格一行数据
+   * @param {*} sheetName 添加到哪个工作簿下
+   * @param {*} row 数据对象，以[KEY]作为标题
+   */
+  addRow(sheetName, row){
+    this.sheets[sheetName].push(row);
+    return this;
+  }
+  /**
+   * 批量添加数据行
+   * @param {*} sheetName 工作部名称
+   * @param {*} rows 数据列表
+   */
+  addRows(sheetName, rows){
+    this.sheets[sheetName] = this.sheets[sheetName].concat(rows);
+    return this;
+  }
+
+  /**
+   * 导出数据到文件
+   * @param {*} filename 文件名称不带后缀
+   */
+  exportExcel(filename){
+    console.log(this.sheets)
+    const wb = XLSX.utils.book_new();
+    for(let sheetName in this.sheets){
+      const ws = XLSX.utils.json_to_sheet(this.sheets[sheetName]);
+      XLSX.utils.book_append_sheet(wb, ws, sheetName);
+    }
+    XLSX.writeFile(wb, filename + ".xlsx");
+  }
+
+}
