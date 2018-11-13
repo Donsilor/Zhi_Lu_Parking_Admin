@@ -215,22 +215,24 @@ export const User = new class User {
 export const DATA_DICTIONARY = class DATA_DICTIONARY {
   constructor(api){
     this.$api = api;
+    this.dictionary = {};
   }
   async ins(){
     await this.$api.dictionary
     .getlist(new RequestParams()
+    .addAttribute("project_id", User.info.project_id)
     .addAttribute("page_size", 10000000)
     .addAttribute("page_index", 1))
     .then(response => {
       for(let item of response.dataItems.map(o => o.attributes)){
-        if(!this[item.dic_code]){
-          this[item.dic_code] = {};
+        if(!this.dictionary[item.dic_key]){
+          this.dictionary[item.dic_key] = {};
         }
-        this[item.dic_code][item.dic_key] = item;
+        this.dictionary[item.dic_key][item.dic_code] = item;
       }
     })
     .catch(response => console.log(response.message));
-    return this;
+    return this.dictionary;
   }
 }
 

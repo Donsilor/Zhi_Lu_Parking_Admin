@@ -306,7 +306,7 @@ import moment from "moment";
     },
     mounted () {
       this.loadCarDelaysDatas(1);
-      console.log(new DATA_DICTIONARY(this))
+      console.log(new DATA_DICTIONARY(this.$api).ins())
     }
   };
 </script>
