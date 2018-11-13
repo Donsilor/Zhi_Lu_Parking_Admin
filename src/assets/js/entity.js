@@ -1,5 +1,6 @@
 
 import {queryParams} from "./common";
+import XLSX from 'xlsx';
 
 export const RequestDataItem = class RequestDataItem {
 
@@ -221,24 +222,80 @@ export const DATA_DICTIONARY = class DATA_DICTIONARY {
     this.$api = api;
     this.dictionary = {};
   }
-  async loadData(){
-    return await this.$api.dictionary
+  async ins(){
+    let response = await this.$api.dictionary
     .getlist(new RequestParams()
     .addAttribute("project_id", User.info.project_id)
     .addAttribute("page_size", 10000000)
-    .addAttribute("page_index", 1))
-  }
-  async ins(){
-    await this.loadData().then(response => {
-      for(let item of response.dataItems.map(o => o.attributes)){
-        if(!this.dictionary[item.dic_key]){
-          this.dictionary[item.dic_key] = {};
-        }
-        this.dictionary[item.dic_key][item.dic_code] = item;
+    .addAttribute("page_index", 1));
+    
+    for(let item of response.dataItems.map(o => o.attributes)){
+      if(!this.dictionary[item.dic_key]){
+        this.dictionary[item.dic_key] = {};
       }
-    })
-    .catch(response => console.log(response.message));
+      this.dictionary[item.dic_key][item.dic_code] = item;
+    }
     return this.dictionary;
   }
 }
 
+
+/**
+ * 导出 Excel 表格数据到文件
+ */
+export const ExcelSheets = class ExcelSheets {
+  
+  constructor(){
+    this.sheets = {};
+  }
+  /**
+   * 添加工作蒲
+   * @param {*} name 工作铺名称
+   */
+  addSheet(name){
+    if(!this.sheets[name]){
+      this.sheets[name] = [];
+    }
+    return this;
+  }
+
+  /**
+   * 添加表格一行数据
+   * @param {*} sheetName 添加到哪个工作簿下
+   * @param {*} row 数据对象，以[KEY]作为标题
+   */
+  addRow(sheetName, row){
+    this.sheets[sheetName].push(row);
+    return this;
+  }
+  /**
+   * 批量添加数据行
+   * @param {*} sheetName 工作部名称
+   * @param {*} rows 数据列表
+   */
+  addRows(sheetName, rows){
+    this.sheets[sheetName] = this.sheets[sheetName].concat(rows);
+    return this;
+  }
+
+  /**
+   * 导出数据到文件
+   * 导出数据会自动以对象的[Key]为标题
+   * 导出直接下载
+   * @param {*} filename 文件名称不带后缀
+   */
+  exportExcel(filename){
+    const wb = XLSX.utils.book_new();
+    for(let sheetName in this.sheets){
+      const ws = XLSX.utils.json_to_sheet(this.sheets[sheetName]);
+      XLSX.utils.book_append_sheet(wb, ws, sheetName);
+    }
+    XLSX.writeFile(wb, filename + ".xlsx");
+  }
+  
+  empty(){
+    this.sheets = {};
+    return this;
+  }
+
+}
