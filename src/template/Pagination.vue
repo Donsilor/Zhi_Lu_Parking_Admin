@@ -42,16 +42,16 @@ export default {
   methods: {
     __previousPage() {
       if (this.currentPage <= 1) return;
-      this.$props.previousPage(--this.currentPage, this.currentMeshNumber);
+      this.$props.previousPage(--this.currentPage);
     },
     __nextPage() {
       if (this.currentPage >= this.$props.totalPages) return;
-      this.$props.nextPage(++this.currentPage, this.currentMeshNumber);
+      this.$props.nextPage(++this.currentPage);
     },
     __skipPage(v) {
       if (this.currentPage < 1) return;
       if (this.currentPage > this.$props.totalPages) return;
-      this.$props.nextPage((this.currentPage = v, this.currentMeshNumber));
+      this.$props.nextPage((this.currentPage = v));
     }
   },
   props: {
