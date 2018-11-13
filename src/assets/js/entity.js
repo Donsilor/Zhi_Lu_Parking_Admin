@@ -221,23 +221,19 @@ export const DATA_DICTIONARY = class DATA_DICTIONARY {
     this.$api = api;
     this.dictionary = {};
   }
-  async loadData(){
-    return await this.$api.dictionary
+  async ins(){
+    let response = await this.$api.dictionary
     .getlist(new RequestParams()
     .addAttribute("project_id", User.info.project_id)
     .addAttribute("page_size", 10000000)
-    .addAttribute("page_index", 1))
-  }
-  async ins(){
-    await this.loadData().then(response => {
-      for(let item of response.dataItems.map(o => o.attributes)){
-        if(!this.dictionary[item.dic_key]){
-          this.dictionary[item.dic_key] = {};
-        }
-        this.dictionary[item.dic_key][item.dic_code] = item;
+    .addAttribute("page_index", 1));
+    
+    for(let item of response.dataItems.map(o => o.attributes)){
+      if(!this.dictionary[item.dic_key]){
+        this.dictionary[item.dic_key] = {};
       }
-    })
-    .catch(response => console.log(response.message));
+      this.dictionary[item.dic_key][item.dic_code] = item;
+    }
     return this.dictionary;
   }
 }

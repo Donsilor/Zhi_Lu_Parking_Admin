@@ -192,7 +192,7 @@
         </div>
         <div class="bot">
           <div class="cet clf">
-            <div class="fl choose-file">选择文件<input type="file" accept=".xls,.xlsx" /></div>
+            <div class="fl choose-file">选择文件<input type="file" accept=".xls,.xlsx" @change="abc" /></div>
             <a class="fr downloadtemp" href="javascript:">下载模板</a>
             <p>支持扩展名：.xls .xlsx</p>
           </div>
@@ -267,9 +267,10 @@
 </template>
 
 <script>
-import { RequestParams, RequestDataItem,User } from "../../assets/js/entity";
+import { RequestParams, RequestDataItem,User, DATA_DICTIONARY } from "../../assets/js/entity";
 import Pagination from "../Pagination";
 import moment from "moment";
+import {exportExcel} from "../../assets/js/common";
 export default {
   data () {
     return {
@@ -375,6 +376,11 @@ export default {
     Pagination
   },
   methods: {
+
+    abc(file){
+      console.log(exportExcel((file.target.files[0]), ["name", "sex"]))
+    },
+
     selectedAll(){
       if(this.selectedHouses.length){
         this.selectedHouses = [];
@@ -500,6 +506,7 @@ export default {
     }
   },
   mounted () {
+    console.log(new DATA_DICTIONARY(this.$api).ins())
     this.loadHousesDatas(1);
   }
 }

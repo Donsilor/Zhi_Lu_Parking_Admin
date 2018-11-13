@@ -1,6 +1,7 @@
 
 
 import $ from 'jquery';
+import XLSX from 'xlsx';
 /**
  * 数组转对象
  * @param {*} arr 
@@ -96,7 +97,32 @@ export const queryParams = function(url = "", params = {}){
   });
 }
 
+/**
+ * 解析 Excel 表格文件
+ * @param {*} file 文件
+ * @param {*} header 要获取列标识
+ */
+export const exportExcel = async function(file, header){
+  
+  let binary = await new Promise(resolve => {
+    let reader = new FileReader();
+    reader.onload = function (e) {
+      let binarys = "";
+      let bytes = new Uint8Array(e.target.result);
+      let length = bytes.byteLength;
+      for (let i = 0; i < length; i++) {
+        binarys += String.fromCharCode(bytes[i]);
+      }
+      resolve(binarys);
+    }
+    reader.readAsArrayBuffer(file);
+  });
 
-// car_type  车辆类型 G-A:月卡A  G-B:月卡B   L-A:临时车A  L-B:临时车B  L-C:临时车C
-// standard_type  收费标准类型(数据 从字典表来,0:有位 月卡 1:无位月卡 2:有位年卡 3:无 位年卡 4:深圳住 宅 5、通用1(按小 时) 6、通用 2(按 次) 7、通用 3(自 定义))
-// device_type  设备类型(WORKS: 工作站 INLET:入口 OUTLET : 出 口 CAMERA:摄像头 LED:LED 显示屏 HORN : 喇 叭 BARRIERGATE : 道 闸
+  /* read workbook */
+  var wb = XLSX.read(binary, {type: 'binary'});
+  let data = {};
+  for(let name of wb.SheetNames){
+    data[name] = XLSX.utils.sheet_to_json(wb.Sheets[name], {header:header});
+  }
+  return data;
+}
