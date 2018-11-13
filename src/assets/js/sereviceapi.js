@@ -5,7 +5,7 @@ import { HOST, HTTP_REQUEST_METHOD, CLIENT_SIDE_TIMESTAMP } from "./constants";
 import APIS from "./serviceurls";
 import axion from "axios";
 import {queryParams} from "./common";
-import { ResponseBody, RequestParams } from "./entity";
+import { ResponseBody, RequestParams , User} from "./entity";
 
 const axion_instance = axion.create({
   // `baseURL` 将自动加在 `url` 前面，除非 `url` 是一个绝对 URL。
@@ -16,8 +16,12 @@ const axion_instance = axion.create({
   // 只能用在 'PUT', 'POST' 和 'PATCH' 这几个请求方法
   // 后面数组中的函数必须返回一个字符串，或 ArrayBuffer，或 Stream
   // transformRequest: [function (data) {
+  //   let dataFrom = new FormData();
+  //   for(let key in data){
+  //     dataFrom.append(key, data[key]);
+  //   }
   //   // 对 data 进行任意转换处理
-
+  //   console.log(data/*, new RequestParams(data).addAttribute("project_id", User.project_id)*/)
   //   return data;
   // }],
 
@@ -148,6 +152,10 @@ export default (function createApis(apis) {
    * @param 接口入参
    */
   else apis = function (params = new RequestParams()) {
+    /////////////////////////////////////////////////////
+    /**为了运行时植入，只能这样了 */
+    params.addAttribute("project_id", User.project_id);
+    ///////////////////////////////////////////////////////
     return new Promise(function (resolve, reject) {
       let { url, method, param = {}, config = {} } = $.extend(true, {}, api);
       if (method == HTTP_REQUEST_METHOD.GETURL || method == HTTP_REQUEST_METHOD.POSTURL) {

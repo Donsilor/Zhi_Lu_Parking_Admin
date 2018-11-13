@@ -192,6 +192,10 @@ export const User = new class User {
     }, JSON.parse(localStorage.getItem("UserInfo") || "{}"));
   }
 
+  get project_id(){
+    return this.__info.project_id;
+  }
+
   get isSystemAdmin(){
     return 3 == this.__info.user_type;
   }

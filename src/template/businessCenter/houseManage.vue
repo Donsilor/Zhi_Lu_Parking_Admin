@@ -192,7 +192,7 @@
         </div>
         <div class="bot">
           <div class="cet clf">
-            <div class="fl choose-file">选择文件<input type="file"/></div>
+            <div class="fl choose-file">选择文件<input type="file" accept=".xls,.xlsx" /></div>
             <a class="fr downloadtemp" href="javascript:">下载模板</a>
             <p>支持扩展名：.xls .xlsx</p>
           </div>
@@ -218,7 +218,7 @@
               </div>
               <div class="clf">
                 <span class="fl">性别：</span>
-                <input class="fl" type="text" value="19000124000" v-model="houseHoldData.sex">
+                <input class="fl" type="text" placeholder="19000124000" v-model="houseHoldData.sex">
               </div>
               <div class="clf">
                 <span class="fl">住户类型：</span>
