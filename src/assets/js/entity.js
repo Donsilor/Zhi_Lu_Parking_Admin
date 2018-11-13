@@ -280,16 +280,22 @@ export const ExcelSheets = class ExcelSheets {
 
   /**
    * 导出数据到文件
+   * 导出数据会自动以对象的[Key]为标题
+   * 导出直接下载
    * @param {*} filename 文件名称不带后缀
    */
   exportExcel(filename){
-    console.log(this.sheets)
     const wb = XLSX.utils.book_new();
     for(let sheetName in this.sheets){
       const ws = XLSX.utils.json_to_sheet(this.sheets[sheetName]);
       XLSX.utils.book_append_sheet(wb, ws, sheetName);
     }
     XLSX.writeFile(wb, filename + ".xlsx");
+  }
+  
+  empty(){
+    this.sheets = {};
+    return this;
   }
 
 }
