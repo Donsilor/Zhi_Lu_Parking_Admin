@@ -163,6 +163,7 @@ import moment from "moment";
       },
 
       showEditDictionary(data){
+        this.dictionaryData.id = null;
         if(data){
           this.dictionaryData = data;
         }

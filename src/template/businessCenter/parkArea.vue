@@ -31,6 +31,7 @@
                 align="right"
                 unlink-panels
                 range-separator="至"
+                value-format="yyyy-MM-DD HH:mm:ss"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
                 :picker-options="pickerOptions">
@@ -417,13 +418,12 @@ import moment from "moment";
 
       /**加载车辆区域列表数据 */
       loadAreasDatas(pageNum, params = {}) {
-      let searchTimes = this.searchTimes.map(o=>moment().format("yyyy-MM-dd HH:mm:ss"))
         this.$api.area
           .getlist({
             attributes: $.extend({
                 page_index: pageNum ,//当前页码,
               },
-              new RequestParams(params).addAttribute("begin_time", searchTimes[0]).addAttribute("end_time", searchTimes[1])
+              new RequestParams(params).addAttribute("begin_time", this.searchTimes[0]).addAttribute("end_time", this.searchTimes[1])
             )
           })
           .then(response => {

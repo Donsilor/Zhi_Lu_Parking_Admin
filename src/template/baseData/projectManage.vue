@@ -21,6 +21,7 @@
                 type="daterange"
                 align="right"
                 unlink-panels
+                value-format="yyyy-MM-DD HH:mm:ss"
                 range-separator="至"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
@@ -304,13 +305,12 @@ export default {
 
     /**加载项目列表数据 */
     loadProjectDatas (pageNum = 1, params = {}) {
-      let searchTimes = this.searchTimes.map(o => moment(o).format('YYYY-MM-DD HH:mm:ss'))
       this.$api.project
       .getlist(new RequestParams()
       .addAttributes(params)
       .addAttribute('page_index', pageNum)
-      .addAttribute('begin_time', searchTimes[0])
-      .addAttribute('end_time', searchTimes[1]))
+      .addAttribute('begin_time', this.searchTimes[0])
+      .addAttribute('end_time', this.searchTimes[1]))
       .then(response => {
         this.projects.attributes = response.attributes
         this.projects.dataItems = response.dataItems.map(o => o.attributes)

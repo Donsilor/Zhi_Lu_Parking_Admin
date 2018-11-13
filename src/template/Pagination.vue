@@ -49,8 +49,8 @@ export default {
       this.$props.nextPage(++this.currentPage, this.currentMeshNumber);
     },
     __skipPage(v) {
-      if (this.currentPage <= 1) return;
-      if (this.currentPage >= this.$props.totalPages) return;
+      if (this.currentPage < 1) return;
+      if (this.currentPage > this.$props.totalPages) return;
       this.$props.nextPage((this.currentPage = v, this.currentMeshNumber));
     }
   },

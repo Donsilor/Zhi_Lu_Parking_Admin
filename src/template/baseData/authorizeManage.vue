@@ -95,6 +95,51 @@
                 <input class="fl ppsw" v-model="authorizeData.oauth_key2" name="ppsw" type="text" placeholder="请输入6-8位数字密码，必填">
                 <span class="ppswremind remind">请输入正确信息</span>
               </p>
+              <p>
+                <span class="fl"><span class='red-text'>*</span>授权时间：</span>
+                <el-date-picker
+                  class="fl"
+                  v-model="authorizeData.authorizeTimes"
+                  type="daterange"
+                  align="right"
+                  unlink-panels
+                  value-format="yyyy-MM-DD HH:mm:ss"
+                  range-separator="至"
+                  start-placeholder="授权起始日期"
+                  end-placeholder="授权结束日期"
+                  :picker-options="{
+                    shortcuts: [
+                      {
+                        text: '最近一周',
+                        onClick (picker) {
+                          const end = new Date()
+                          const start = new Date()
+                          start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+                          picker.$emit('pick', [start, end])
+                        }
+                      },
+                      {
+                        text: '最近一个月',
+                        onClick (picker) {
+                          const end = new Date()
+                          const start = new Date()
+                          start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+                          picker.$emit('pick', [start, end])
+                        }
+                      },
+                      {
+                        text: '最近三个月',
+                        onClick (picker) {
+                          const end = new Date()
+                          const start = new Date()
+                          start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+                          picker.$emit('pick', [start, end])
+                        }
+                      }
+                    ]
+                  }">
+                </el-date-picker>
+              </p>
               <p class="clf"><span class="fl"><span class='red-text'>*</span>客户名称：</span><input class="fl" v-model="authorizeData.client_name" type="text" placeholder="请输入姓名，必填"> </p>
               <p class="clf">
                 <span class="fl"><span class='red-text'>*</span>电话：</span>
@@ -147,6 +192,7 @@ import moment from "moment";
         ifDel: false,
         searchParam:"",
         selectedAthorizes:[],
+        authorizeTimes:[],
         authorizeData:{
           /**ID */
           id:null,

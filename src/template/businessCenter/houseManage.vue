@@ -33,6 +33,7 @@
                 type="daterange"
                 align="right"
                 unlink-panels
+                value-format="yyyy-MM-DD HH:mm:ss"
                 range-separator="至"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
@@ -471,14 +472,13 @@ export default {
     },
     /**加载车辆区域列表数据 */
     loadHousesDatas(pageNum = 1, params = {}) {
-      let searchTimes = this.searchTimes.map(o=>moment(o).format("YYYY-MM-DD HH:mm:ss"))
       this.$api.house
         .getlist(new RequestParams()
         .addAttributes(params)
         .addAttributes(this.searchParams)
         .addAttribute("page_index", pageNum)
-        .addAttribute("begin_time", searchTimes[0])
-        .addAttribute("end_time", searchTimes[1]))
+        .addAttribute("begin_time", this.searchTimes[0])
+        .addAttribute("end_time", this.searchTimes[1]))
         .then(response => {
           this.houses.attributes = response.attributes;
           this.houses.dataItems = response.dataItems.map(o => o.attributes);

@@ -33,6 +33,7 @@
                 type="daterange"
                 align="right"
                 unlink-panels
+                value-format="yyyy-MM-DD HH:mm:ss"
                 range-separator="至"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
@@ -288,14 +289,13 @@ import moment from "moment";
 
       /**加载车辆区域列表数据 */
       loadCarDelaysDatas(pageNum = 1, params = {}) {
-        let searchTimes = this.searchTimes.map(o=>moment(o).format("YYYY-MM-DD HH:mm:ss"))
         this.$api.delay
           .getlist(new RequestParams()
           .addAttributes(this.searchParams)
           .addAttributes(params)
-          .addAttribute("begin_time", searchTimes[0])
-          .addAttribute("end_time", searchTimes[1])
-          .addAttribute("page_index", pageNum))
+          .addAttribute("begin_time", this.searchTimes[0])
+          .addAttribute("end_time", this.searchTimes[1])
+          .addAttribute("page_index", this.pageNum))
           .then(response => {
 
             this.carDelays.attributes = response.attributes;
