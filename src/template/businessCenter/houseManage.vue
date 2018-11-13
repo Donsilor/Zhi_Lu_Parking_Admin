@@ -192,7 +192,7 @@
         </div>
         <div class="bot">
           <div class="cet clf">
-            <div class="fl choose-file">选择文件<input type="file" accept=".xls,.xlsx" @change="abc" /></div>
+            <div class="fl choose-file">选择文件<input type="file" accept=".xls,.xlsx"  /></div>
             <a class="fr downloadtemp" href="javascript:">下载模板</a>
             <p>支持扩展名：.xls .xlsx</p>
           </div>
@@ -377,19 +377,6 @@ export default {
     Pagination
   },
   methods: {
-
-    abc(file){
-      importExcel((file.target.files[0]), 2).then(data => {
-        
-        console.log(data)
-        let excelSheets = new ExcelSheets();
-        for(let name in data){
-          excelSheets.addSheet(name);
-          excelSheets.addRows(name, data[name]);
-        }
-        excelSheets.exportExcel("textetxt");
-      });
-    },
 
     selectedAll(){
       if(this.selectedHouses.length){
