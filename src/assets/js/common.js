@@ -124,4 +124,44 @@ export const importExcel = function(file, header){
   });
 }
 
+/**
+ * 正则检查对象
+ */
+export const RegExpCheck = new class RegExpCheck {
+  /**
+   * 是否是正常电话号码
+   * @param {*} tel 
+   */
+  isTel(tel){
+    return /^(13[0-9]|14[0-9]|15[0-9]|166|17[0-9]|18[0-9]|19[8|9])\d{8}$/ig.test(tel);
+  }
+  /**
+   * 是否是常规的URL
+   * @param {*} url 
+   */
+  isInternetURL(url){
+    return /^[a-zA-z]+:\/\/[^\s]*$/ig.test(url) || /^http:\/\/([\w-]+\.)+[\w-]+(\/[\w-./?%&=]*)?$/ig.test(url)
+  }
+  /**
+   * 是否是常规的菜单跳转链接
+   * @param {*} link 
+   */
+  isMenuLink(link){
+    return /^(\/\w+)+$/ig.test(link);
+  }
+  /**
+   * 是否是中文字符
+   * @param {*} str 
+   */
+  isChineseStr(str){
+    return /^[\u4e00-\u9fa5]$/ig.test(str);
+  }
+  /**
+   * 是否是IP地址
+   * @param {*} ip 
+   */
+  isIp(ip){
+    return /^\d+\.\d+\.\d+\.\d+$/ig.test(ip);
+  }
 
+}

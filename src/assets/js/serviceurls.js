@@ -48,7 +48,7 @@ export default {
         serviceId: "operator.resetpwd"
       }
     },
-    assign:{
+    assign: {
       url: "/operator/assign",
       method: HTTP_REQUEST_METHOD.POST,
       param: {
@@ -176,17 +176,6 @@ export default {
       }
     }
   },
-  /**车辆区域管理 */
-  area: {
-    /**获取车辆区域列表 */
-    getlist: {
-      url: '/area/getlist',
-      method: HTTP_REQUEST_METHOD.POST,
-      param: {
-        serviceId: 'area.getlist'
-      }
-    }
-  },
   /* 日志管理 */
   log: {
     /* 删除日志 */
@@ -301,7 +290,7 @@ export default {
         serviceId: 'delay.getlist'
       }
     },
-    charge:{
+    charge: {
       url: '/delay/charge',
       method: HTTP_REQUEST_METHOD.POST,
       param: {
@@ -463,30 +452,94 @@ export default {
       }
     }
   },
-  /**车场管理 */
-  place: {
+  /**车辆区域管理 */
+  area: {
+    /**获取车辆区域列表 */
     getlist: {
-      url: "/place/getlist",
+      url: '/area/getlist',
       method: HTTP_REQUEST_METHOD.POST,
       param: {
-        serviceId: "place.getlist",
+        serviceId: 'area.getlist'
       }
     },
-    delete: {
-      url: "/place/delete",
-      method: HTTP_REQUEST_METHOD.POST,
-      param: {
-        serviceId: "place.delete",
-      }
-    },
-    /** */
+    /**新增/修改车场区域 */
     editor: {
-      url: "/place/editor",
+      url: '/area/editor',
       method: HTTP_REQUEST_METHOD.POST,
       param: {
-        serviceId: "place.editor"
+        serviceId: 'area.editor'
+      }
+    },
+    /**删除车辆区域 */
+    delete: {
+      url: '/area/delete',
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: 'area.delete'
       }
     }
   },
+  // 车位数据管理
+  place: {
+    /**获取车位列表 */
+    getlist: {
+      url: '/place/getlist',
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: 'place.getlist'
+      }
+    },
+    /**新增编辑车位信息 */
+    editor: {
+      url: '/place/editor',
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: 'place.editor'
+      }
+    },
+    /**删除车位 */
+    delete: {
+      url: '/place/delete',
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: 'place.delete'
+      }
+    },
+    /**合并到车位组 */
+    merge: {
+      url: '/place/merge',
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: 'place.merge'
+      }
+    }
+  },
+  
+  /**收费标准 */
+  standard:{
+    getlist: {
+      url: '/standard/getlist',
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: 'standard.getlist'
+      }
+    },
+    /**新增编辑车位信息 */
+    editor: {
+      url: '/standard/editor',
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: 'standard.editor'
+      }
+    },
+    /**删除车位 */
+    delete: {
+      url: '/standard/delete',
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: 'standard.delete'
+      }
+    },
+  }
 
 }

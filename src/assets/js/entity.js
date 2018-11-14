@@ -1,5 +1,5 @@
 
-import {queryParams} from "./common";
+import {queryParams,array2Descendants} from "./common";
 import XLSX from 'xlsx';
 
 export const RequestDataItem = class RequestDataItem {
@@ -217,7 +217,7 @@ export const User = new class User {
  * 数据字典
  * @param {*} api 
  */
-export const DATA_DICTIONARY = class DATA_DICTIONARY {
+export const DataDictionary = class DataDictionary {
   constructor(api){
     this.$api = api;
     this.dictionary = {};
@@ -239,6 +239,26 @@ export const DATA_DICTIONARY = class DATA_DICTIONARY {
   }
 }
 
+/**
+ * 菜单资源对象
+ * @param {*} api 
+ */
+export const ResourceMenu = class ResourceMenu {
+  
+  constructor(api){
+    this.$api = api;
+    this.resourceMenus = [];
+  }
+
+  async ins(){
+    let response = await this.$api.menu
+    .getlist(new RequestParams()
+    .addAttribute("page_index", 1)
+    .addAttribute("page_size", 1000000));
+    return this.resourceMenus = array2Descendants(response.dataItems.map((o,i) => (o.attributes.index = i,o.attributes)));
+  }
+
+}
 
 /**
  * 导出 Excel 表格数据到文件
@@ -298,4 +318,76 @@ export const ExcelSheets = class ExcelSheets {
     return this;
   }
 
+}
+/**
+ * 网络对象
+ * 目前可以获取本地的网络IP地址
+ * ips[0]
+ */
+export const Network = new class Network {
+  constructor(){
+    function loadNetworkIps(){
+      return new Promise(resolve=>{
+          var ip_dups = {};    
+          //compatibility for firefox and chrome    
+          var RTCPeerConnection = window.RTCPeerConnection    
+              || window.mozRTCPeerConnection    
+              || window.webkitRTCPeerConnection;    
+          var useWebKit = !!window.webkitRTCPeerConnection;    
+          //bypass naive webrtc blocking using an iframe    
+          if(!RTCPeerConnection){    
+              //NOTE: you need to have an iframe in the page right above the script tag    
+              //    
+              //<iframe id="iframe" sandbox="allow-same-origin" style="display: none"></iframe>    
+              //<script>...getIPs called in here...    
+              var iframe = document.createElement("iframe");
+              iframe.sandbox = "allow-same-origin";
+              var win = iframe.contentWindow;    
+              RTCPeerConnection = win.RTCPeerConnection    
+                  || win.mozRTCPeerConnection    
+                  || win.webkitRTCPeerConnection;    
+              useWebKit = !!win.webkitRTCPeerConnection;    
+          }    
+          //minimal requirements for data connection    
+          var mediaConstraints = {    
+              optional: [{RtpDataChannels: true}]    
+          };    
+          var servers = {iceServers: [{urls: "stun:stun.services.mozilla.com"}]};    
+          //construct a new RTCPeerConnection    
+          var pc = new RTCPeerConnection(servers, mediaConstraints);    
+          function handleCandidate(candidate){    
+              //match just the IP address    
+              var ip_regex = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/    
+              var ip_addr = ip_regex.exec(candidate)[1];    
+              //remove duplicates    
+              ip_dups[ip_addr] = true;
+          }
+          //listen for candidate events    
+          pc.onicecandidate = function(ice){    
+              //skip non-candidate events    
+              if(ice.candidate)    
+                  handleCandidate(ice.candidate.candidate);    
+          };    
+          //create a bogus data channel    
+          pc.createDataChannel("");    
+          //create an offer sdp    
+          pc.createOffer(function(result){    
+              //trigger the stun server request    
+              pc.setLocalDescription(result, function(){}, function(){});    
+          }, function(){});    
+          //wait for a while to let everything done    
+          setTimeout(function(){    
+              //read candidate info from local description    
+              var lines = pc.localDescription.sdp.split('\n');    
+              lines.forEach(function(line){
+                  if(line.indexOf('a=candidate:') === 0)    
+                      handleCandidate(line);    
+              });
+              resolve(Object.keys(ip_dups));
+          }, 1000);    
+      });
+    }
+    
+    loadNetworkIps().then(ips=>this.ips = ips);
+  }
 }

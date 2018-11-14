@@ -112,14 +112,11 @@ import moment from "moment";
         searchParam: "",
         selectedDepts:[],
         deptData:{
-          /**ID  */
-          id:null,
-          /**部门编号 */
-          dept_code:null,
-          /**部门名称 */
-          dept_name:null,
-          /**部门备注 */
-          remark:null,
+          id:null,//         	Y	String	ID
+          project_id:null,// 	Y	String	项目ID
+          dept_code:null,//  	Y	String	编号
+          dept_name:null,//  	Y	String	名称
+          remark:null,//     	N	String	备注
         },
         depts: {
           attributes: {
@@ -151,10 +148,14 @@ import moment from "moment";
       },
 
       editDept(){
+        
+        let adopt = null;
+        if(String(this.deptData.dept_code).trim() == "") adopt = "请填写部门编号";
+        if(String(this.deptData.dept_name).trim() == "") adopt = "请填写部门名称";
+        if(adopt) return this.$message.error(adopt);
 
         this.$api.dept.editor(new RequestParams()
-        .addAttributes(this.deptData)
-        .addAttribute("project_id", User.info.project_id))
+        .addAttributes(this.deptData))
         .then(response=>{
           this.$message.success(response.message)
           this.ifEditDepartment = false;

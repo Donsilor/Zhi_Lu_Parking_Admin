@@ -103,14 +103,14 @@ export default {
       addRole: false,
       selectedParentIndex:-1,
       roleData:{
-        id:null,
-        project_id:null,
-        pid:null,
-        role_name:null,
-        role_abb:null,
-        sorting:0,
-        status:0,
-        remark:null,
+        id:null,//        	Y	String	ID
+        project_id:null,//	Y	String	项目ID
+        pid:null,//       	Y	String	父级角色
+        role_name:null,// 	Y	String	角色名称
+        role_abb:null,//  	Y	String	角色标识
+        sorting:null,//   	Y	Int	排序
+        status:null,//    	Y	Int	状态（0：正常1：停用）
+        remark:null,//    	N	String	备注
       },
       selectedRess:[],
       ress: {
@@ -160,6 +160,14 @@ export default {
     },
 
     editRole(){
+
+      let adopt = null;
+      if(String(this.roleData.role_name).trim() == "") adopt = "请填写角色名称";
+      if(String(this.roleData.role_abb).trim() == "") adopt = "请填写角色标识";
+      if(String(this.roleData.status).trim() == "") adopt = "请选择角色状态";
+      if(String(this.roleData.sorting).trim() == "") adopt = "请设置角色序号";
+      if(adopt) return this.$message.error(adopt);
+
       let data = this.roles.dataItems[this.selectedParentIndex];
       if(data){
         if(isChildrensId(this.roleData, data.id)){

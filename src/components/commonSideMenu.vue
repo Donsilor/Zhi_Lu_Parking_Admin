@@ -1,7 +1,13 @@
 <template>
   <div class="left_column">
     <ul id="sideMenuUl" ref="sideMenuUl">
-      <li class=''>
+      <!-- <li :class="{current:currentLi==index}" @click="currentLi = index" v-for="(menus, index) in resourceMenus" :key="index">
+        <div class="title">{{menus.resource_name}}</div>
+        <div class="menu">
+          <router-link v-for="(menu, index) in menus.children" :key="index" :to="menu.resource_url">{{menu.resource_name}}</router-link>
+        </div>
+      </li> -->
+      <li class='' >
         <div class="title">基础资料</div>
         <div class="menu">
           <router-link to="/resourceManage">资源管理</router-link>
@@ -14,7 +20,8 @@
           <router-link to="/handleLog">操作日志</router-link>
           <router-link to="/systemConfig">系统配置</router-link>
         </div>
-      </li>
+      </li>  
+        
       <li>
         <div class="title">业务中心</div>
         <div class="menu">
@@ -43,10 +50,36 @@
 </template>
 
 <script>
+import { ResourceMenu } from "../assets/js/entity";
 export default {
   data() {
     return {
-      currentMenu:0
+      currentLi:false,
+      currentMenu:0,
+      resourceData:{
+          id:null,
+          pid:null,
+          /**资源编码 */
+          resource_code:null,
+          /**资源名称 */
+          resource_name:null,
+          /**资源类型 */
+          resource_type:null,
+          /**资源地址 */
+          resource_url:null,
+          /**层级 */
+          layer:null,
+          /**是否显示 */
+          isshow:1,
+          /**资源图标 */
+          resource_icon:null,
+          relativepath:null,
+          /**排序 */
+          sorting:0,
+          // 备注
+          remark:null
+      },
+      resourceMenus:[]
     };
   },
   methods: {
@@ -66,21 +99,25 @@ export default {
           .addClass("current")
       : $(this.$refs.sideMenuUl.children[0]).addClass("current");
 
-    function initSideMenuTab(id) {
-      let ul = document.getElementById(id);
-      let lis = ul.children;
-      for (let i = 0; i < lis.length; i++) {
-        lis[i].onclick = function() {
-          for (let i = 0; i < lis.length; i++) {
-            lis[i].className = "";
-          }
-          this.className = "current";
-          localStorage.setItem('currentMenu', i)
-        };
+      function initSideMenuTab(id) {
+        let ul = document.getElementById(id);
+        let lis = ul.children;
+        for (let i = 0; i < lis.length; i++) {
+          lis[i].onclick = function() {
+            for (let i = 0; i < lis.length; i++) {
+              lis[i].className = "";
+            }
+            this.className = "current";
+            localStorage.setItem('currentMenu', i)
+          };
+        }
       }
-    }
 
-    initSideMenuTab("sideMenuUl");
+      initSideMenuTab("sideMenuUl");
+
+
+    new ResourceMenu(this.$api).ins().then(resourceMenus => this.resourceMenus = resourceMenus);
+    console.log(this.resourceMenus)
   }
 };
 </script>

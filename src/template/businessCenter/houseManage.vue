@@ -267,7 +267,7 @@
 </template>
 
 <script>
-import { RequestParams, RequestDataItem,User, DATA_DICTIONARY,ExcelSheets } from "../../assets/js/entity";
+import { RequestParams, RequestDataItem,User, ExcelSheets } from "../../assets/js/entity";
 import Pagination from "../Pagination";
 import moment from "moment";
 import {importExcel} from "../../assets/js/common";
@@ -503,7 +503,6 @@ export default {
     }
   },
   mounted () {
-    console.log(new DATA_DICTIONARY(this.$api).ins())
     this.loadHousesDatas(1);
   }
 }

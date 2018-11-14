@@ -28,7 +28,7 @@
 .box .bottom .title{font-size:1.125rem;color:#333;padding-left:5%;}
 .box .bottom .c_box{width:95%;height:auto;padding:1.25rem 0 1.25rem 5%;background:#f7f8fb;margin:1.25rem 0 0 3%;}
 .box .bottom .c_box > div{margin-bottom:.625rem;}
-.box .bottom .c_box > div span{font-size:.875rem;color:#929394;display:inline-block;width:17.5rem;}
+.box .bottom .c_box > div span{font-size:.875rem;color:#929394;display:inline-block;width:25rem;text-overflow:ellipsis;white-space:nowrap;overflow:hidden;}
 .box .bottom .c_box > div span i{font-style:inherit;color:#333;}
 .box .bottom .c_box > div a{font-size:.875rem;color:#1c7dfa;}
 .box .bottom .c_box > div .time{margin-left:5%;color:#666;}

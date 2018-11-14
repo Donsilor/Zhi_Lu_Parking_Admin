@@ -156,6 +156,7 @@
 
 <script>
 import { RequestParams, RequestDataItem, User } from '../../assets/js/entity'
+import {RegExpCheck} from "../../assets/js/common";
 import Pagination from '../Pagination'
 import moment from 'moment'
 
@@ -172,24 +173,15 @@ export default {
       selectedProjects: [],
       /**项目列表的数据 */
       projectData: {
-        /**ID */
-        id: null,
-        /**项目编号 */
-        project_code: null,
-        /**项目名称 */
-        project_name: null,
-        /**项目地址 */
-        addr: null,
-        /**联系人 */
-        linkman: null,
-        /**联系电话 */
-        tel: null,
-        /**总车位数 */
-        total_place: null,
-        /**操作员ID */
-        operator_id: User.info.id,
-        /**备注 */
-        remark: null,
+        id: null,//          	Y	String	ID
+        project_code: null,//	Y	String	项目编号
+        project_name: null,//	Y	String	项目名称
+        addr: null,//        	N	String	项目地址
+        linkman: null,//     	Y	String	联系人
+        tel: null,//         	Y	String	联系电话
+        total_place: null,// 	Y	Int	总车位数
+        operator_id: User.info.id,// 	Y	String	操作员ID
+        remark: null,//      	N	String	备注
         resetPW: false
       },
       projects: {
@@ -254,6 +246,17 @@ export default {
     },
 
     editProject () {
+      
+      let adopt = null;
+      if(String(this.projectData.project_code).trim() == "") adopt = "请填写项目编号";
+      if(String(this.projectData.project_name).trim() == "") adopt = "请填写项目名称";
+      if(String(this.projectData.linkman).trim() == "") adopt = "请填写联系人";
+      if(String(this.projectData.tel).trim() == "") adopt = "请填写联系方式";
+      if(String(this.projectData.total_place).trim() == "") adopt = "请填写总车位数";
+      
+      if(!RegExpCheck.isTel(String(this.projectData.tel).trim())) adopt = "请填写正确的联系方式";
+
+      if(adopt) return this.$message.error(adopt);
 
       this.$api.project.editor(new RequestParams().addAttributes(this.projectData).addAttribute("operator_id", User.info.id))
       .then(response=>{
@@ -308,6 +311,7 @@ export default {
       this.$api.project
       .getlist(new RequestParams()
       .addAttributes(params)
+      .addAttribute("key", "and id = '0c9f01a22d284ad2871f50557098def1'")
       .addAttribute('page_index', pageNum)
       .addAttribute('begin_time', this.searchTimes[0])
       .addAttribute('end_time', this.searchTimes[1]))

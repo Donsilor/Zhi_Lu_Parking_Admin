@@ -121,22 +121,14 @@ import moment from "moment";
         selectedDictionarys:[],
         ifEditDict: false,
         dictionaryData:{
-          /**ID */
-          id:null,
-          /**项目ID */
-          project_id:null,
-          /**参数编号 */
-          dic_code:null,
-          /**参数名称 */
-          dic_name:null,
-          /**参数值 */
-          dic_key:null,
-          /**参数类型 */
-          dic_type:["PARK","PARK","PARK","SYS"][User.info.user_type],
-          /**描述 */
-          depict:null,
-          /**备注 */
-          remark:null
+          id:null,//        	Y	String	ID
+          project_id:null,//	Y	String	项目ID(系统用户使用时使用的全是项目ID为NULL的，项目用户使用时使用的是项目ID为NULL和当前用户对应的项目ID的)
+          dic_code:null,//  	Y	String	参数编号
+          dic_name:null,//  	Y	String	参数名称
+          dic_key:null,//   	Y	String	参数值
+          dic_type:["PARK","PARK","PARK","SYS"][User.info.user_type],//  	Y	String	参数类型(SYS：系统参数PARK：项目参数)
+          depict:null,//    	N	String	参数描述
+          remark:null,//    	N	String	备注
         },
         dictionarys: {
           attributes: {
@@ -171,6 +163,14 @@ import moment from "moment";
       },
 
       editDictionary(){
+        
+        let adopt = null;
+
+        if(String(this.dictionaryData.dic_code).trim() == "") adopt = "请填写参数编码";
+        if(String(this.dictionaryData.dic_name).trim() == "") adopt = "请填写参数名称";
+        if(String(this.dictionaryData.dic_key).trim() == "") adopt = "请填写参数值";
+        
+        if(adopt) return this.$message.error(adopt);
 
         this.$api.dictionary.editor(new RequestParams()
         .addAttributes(this.dictionaryData)
@@ -186,7 +186,6 @@ import moment from "moment";
       delDictionary(id){
 
         let datas = id != null ? [this.dictionarys.dataItems[id]] : this.selectedDictionarys.map(o=>this.dictionarys.dataItems[o]);
-        console.log(datas)
         if(datas.length){
           this.$confirm(`确定要删除[${datas.map(o=>o.dic_name)}]吗?`, '提示', {
             confirmButtonText: '确定',

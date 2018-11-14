@@ -61,7 +61,7 @@
                 <a href="javascript:" class="edit" @click="showEditUser(index)">编辑</a>
                 <a href="javascript:" class="delete" v-on:click="delUser(index)">删除</a>
                 <a href="javascript:" @click="resetPassword(user.id, user.user_name)">重置密码</a>
-                <a href="javascript:" @click="ifAssignRoles = true">角色</a>
+                <a href="javascript:" @click="userData = user,ifAssignRoles = true">角色</a>
               </td>
             </tr>
           </tbody>
@@ -87,6 +87,17 @@
         <div class="bot">
           <div class="cet">
             <div class="clf">
+              <p class="clf">
+                <span class="fl"><span class='red-text'>*</span>部门：</span>
+                <el-select v-model="userData.dept_id" placeholder="请选择">
+                  <el-option
+                    v-for="item in this.depts"
+                    :key="item.id"
+                    :label="item.dept_name"
+                    :value="item.id">
+                  </el-option>
+                </el-select>
+              </p>
               <!-- <p class="red" v-if="addErrorDesc!=''" ><i class="iconfont icon-jian-tianchong"></i>{{addErrorDesc}}</p> -->
               <p class="clf"><span class="fl"><span class='red-text'>*</span>用户名：</span><input class="fl user" v-model="userData.user_name" name="user" type="text" placeholder="请输入编号，必填">
               </p>
@@ -170,7 +181,7 @@
 </template>
 
 <script>
-import {array2Descendants} from "../../assets/js/common";
+import {array2Descendants, array2Object,RegExpCheck} from "../../assets/js/common";
 import {  User ,RequestParams, RequestDataItem } from "../../assets/js/entity";
 import Pagination from "../Pagination";
 
@@ -190,18 +201,18 @@ export default {
       selectedUsers:[],
       /**新增用户的数据 */
       userData: {
-        user_name: null,
-        full_name: null,
-        password: null,
-        password2:null,
-        remark: null,
-        status: 1,
-        user_type: null,
-        photo: null,
+        id:null,//         	Y	String	ID
+        project_id:null,// 	Y	String	项目ID
+        dept_id:null,//    	Y	String	部门ID
+        user_name:null,//  	Y	String	用户名
+        full_name:null,//  	Y	String	姓名
+        tel:null,//        	Y	String	手机号码
+        photo:null,//      	N	String	照片
         relativepath:null,
-        dept_id: null,
-        tel: null,
-        project_id: null
+        password:null,//   	Y	String	密码
+        user_type:null,//  	Y	Int	账号类型((0普通账号1项目管理员2系统普通账号3系统管理员) 由系统自动生成，不能手工选择)
+        status:0,//     	Y	Int	状态(0正常1停用2注销)
+        remark:null,//     	N	String	备注
       },
       /**用户列表的数据 */
       users: {
@@ -213,7 +224,16 @@ export default {
         },
         dataItems: []
       },
-      selectedRoleData:{},
+      selectedRoleData:{
+        id:null,//        	Y	String	ID
+        project_id:null,//	Y	String	项目ID
+        pid:null,//       	Y	String	父级角色
+        role_name:null,// 	Y	String	角色名称
+        role_abb:null,//  	Y	String	角色标识
+        sorting:null,//   	Y	Int	排序
+        status:null,//    	Y	Int	状态（0：正常1：停用）
+        remark:null,//    	N	String	备注
+      },
       roles:{
         attributes: {
           page_index: 1, //当前页码
@@ -224,6 +244,7 @@ export default {
         tree:[],
         dataItems: []
       },
+      depts:[]
     };
   },
   components: {
@@ -255,6 +276,19 @@ export default {
     },
 
     showEditUser(id){
+      if(this.depts.length < 0){
+        return this.$confirm(`暂时没有部门，确定前往添加？`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+        .then(() => {
+          this.$router.push("/departmentManage");
+        })
+        .catch(() => {
+          this.$message.info("已取消添加");
+        });
+      }
       this.userData = this.users.dataItems[id] || {};
       this.addUserWindow = true;
     },
@@ -276,6 +310,20 @@ export default {
     },
     
     editUser(){
+      
+      let adopt = null;
+
+      if(String(this.userData.dept_id).trim() == "") adopt = "请选择部门";
+      if(String(this.userData.user_name).trim() == "") adopt = "请填写用户名";
+      if(String(this.userData.full_name).trim() == "") adopt = "请填写姓名";
+      if(String(this.userData.tel).trim() == "") adopt = "请填写电话号码";
+      if(String(this.userData.relativepath).trim() == "") adopt = "请选择用户头像";
+      if(String(this.userData.password).trim() == "") adopt = "请填写密码";
+      
+      if(!RegExpCheck.isTel(String(this.userData.tel).trim())) adopt = "请填写正确的客户联系电话";
+
+      if(adopt) return this.$message.error(adopt);
+
       this.$api.operator.editor(new RequestParams()
       .addAttributes(this.userData)
       .addAttribute("photo", this.userData.relativepath)
@@ -292,15 +340,14 @@ export default {
     },
 
     selectedRole(){
-      console.log(this.selectedRoleData)
-      // this.$api.operator.assign(new RequestParams()
-      //   .addDataItemAttr(0, "id", "")
-      //   .addDataItemAttr(0, "user_id", "")
-      //   .addDataItemAttr(0, "role_id", this.selectedRoleData.id)
-      // ).then(response=>{
-      //   this.$message.success(response.message)
-      //   this.ifAssignRoles = false;
-      // }).catch(({message}) => this.$message.error(message))
+      this.$api.operator.assign(new RequestParams()
+        .addDataItemAttr(0, "id", "0")
+        .addDataItemAttr(0, "user_id", userData.id)
+        .addDataItemAttr(0, "role_id", this.selectedRoleData.id)
+      ).then(response=>{
+        this.$message.success(response.message)
+        this.ifAssignRoles = false;
+      }).catch(({message}) => this.$message.error(message))
     },
 
     delUser(id){
@@ -350,11 +397,25 @@ export default {
         this.users.dataItems = response.dataItems.map(o => o.attributes);
       })
       .catch(response => this.$message.error(response.message));
+    },
+  
+    /**加载用户列表数据 */
+    loadDeptsDatas(pageNum = 1, params = {}) {
+      this.$api.dept
+        .getlist(new RequestParams()
+        .addAttributes(params)
+        .addAttribute("page_index", pageNum)
+        .addAttribute("page_size", 10000000))
+        .then(response => {
+          this.depts = array2Object(response.dataItems.map(o => o.attributes));
+        })
+        .catch(response => this.$message.error(response.message));
     }
   },
   mounted() {
     this.loadUserDatas(1, {});
     this.loadRoleDatas();
+    this.loadDeptsDatas();
   }
 };
 </script>

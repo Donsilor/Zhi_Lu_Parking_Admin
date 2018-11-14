@@ -206,3 +206,16 @@ input[type=checkbox]{cursor: pointer;}
 
 .cet p .p-text .el-input__inner{padding-left: 30px;}
 .cet p .p-text .el-input__icon{line-height: 1;}
+
+.el-tabs__header{margin-bottom: 0;}
+.el-tabs__item{background-color: #fff;}
+
+.cet p .p-text .el-input__icon,
+.bot .bot-right .nav-choose .el-input__icon{line-height: 1;}
+.bot .bot-right .nav-choose .el-input__inner{width: 250px;border-color: #aaa;color: #333;padding: 0 10px;}
+
+.cet p span + .el-select{float: right;width: 330px;}
+.cet p span + .el-select .el-input__inner{border-color: #333;}
+.cet p span + .el-select .el-input__icon{line-height: 1;}
+
+.el-cascader-menu svg{display: none !important;}

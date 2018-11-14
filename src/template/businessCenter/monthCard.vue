@@ -172,7 +172,7 @@
 </template>
 
 <script>
-import { RequestParams, RequestDataItem,DATA_DICTIONARY,User } from "../../assets/js/entity";
+import { RequestParams, RequestDataItem,User } from "../../assets/js/entity";
 import Pagination from "../Pagination";
 import moment from "moment";
   export default {
@@ -222,6 +222,9 @@ import moment from "moment";
           dataItems: {
 
           },
+        },
+        standards:{
+          
         },
         pickerOptions: {
           shortcuts: [{
@@ -303,10 +306,18 @@ import moment from "moment";
           })
           .catch(response => this.$message.error(response.message));
       },
+      loadStandards(){
+        this.$api.standard.getlist()
+        .then(response => {
+          this.carDelays.attributes = response.attributes;
+          this.carDelays.dataItems = response.dataItems.map(o => o.attributes);
+        })
+        .catch(response => this.$message.error(response.message));
+
+      }
     },
     mounted () {
       this.loadCarDelaysDatas(1);
-      console.log(new DATA_DICTIONARY(this.$api).ins())
     }
   };
 </script>

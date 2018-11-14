@@ -182,6 +182,7 @@
 <script>
 
 import { RequestParams, RequestDataItem,User } from "../../assets/js/entity";
+import {RegExpCheck} from "../../assets/js/common";
 import Pagination from "../Pagination";
 import moment from "moment";
   export default {
@@ -194,27 +195,17 @@ import moment from "moment";
         selectedAthorizes:[],
         authorizeTimes:[],
         authorizeData:{
-          /**ID */
-          id:null,
-          /**授权名称 */
-          oauth_name:null,
-          /**授权KEY */
-          oauth_key:null,
+          id:null,//         	Y	String	ID
+          oauth_name:null,// 	Y	String	授权名称
+          oauth_key:null,//  	Y	String	授权KEY
           oauth_key2:null,
-          /**客户 */
-          client_name:null,
-          /**电话 */
-          tel:null,
-          /**地址 */
-          addr:null,
-          /**有效期开始时间(格式：yyyy-MM-dd HH:mm:ss) */
-          begin_time:null,
-          /**有效期结束时间(格式：yyyy-MM-dd HH:mm:ss) */
-          end_time:null,
-          /**操作员ID */
-          operator_id:null,
-          /**备注 */
-          remark:null
+          client_name:null,//	Y	String	客户
+          tel:null,//        	Y	String	电话
+          addr:null,//       	N	String	地址
+          begin_time:null,// 	Y	String	有效期开始时间(格式：yyyy-MM-dd HH:mm:ss)
+          end_time:null,//   	Y	String	有效期结束时间(格式：yyyy-MM-dd HH:mm:ss)
+          operator_id:null,//	Y	String	操作员ID
+          remark:null,//     	N	String	备注
         },
         authorizes:{
           attributes: {
@@ -247,9 +238,24 @@ import moment from "moment";
       
       editAuthorize(){
 
+        this.authorizeData.begin_time = this.authorizeTimes[0];
+        this.authorizeData.end_time = this.authorizeTimes[1];
+        
+        let adopt = null;
+
+        if(String(this.authorizeData.oauth_name).trim() == "") adopt = "请填写授权名称";
+        if(String(this.authorizeData.oauth_key).trim() == "") adopt = "请填写授权KEY";
+        if(String(this.authorizeData.oauth_key2).trim() == "") adopt = "请再次填写授权KEY";
+        if(String(this.authorizeData.client_name).trim() == "") adopt = "请填写客户名称";
+        if(String(this.authorizeData.begin_time).trim() == "") adopt = "请填写授权始终时间";
+        if(String(this.authorizeData.tel).trim() == "") adopt = "请填写客户联系电话";
+        
+        if(!RegExpCheck.isTel(String(this.authorizeData.tel).trim())) adopt = "请填写正确的客户联系电话";
+        
+        if(adopt) return this.$message.error(adopt);
+
         this.$api.oauth.editor(new RequestParams()
         .addAttributes(this.authorizeData)
-        .addAttribute("project_id", User.info.project_id)
         )
         .then(response=>{
           this.$message.success(response.message)

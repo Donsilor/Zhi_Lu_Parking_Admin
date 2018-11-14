@@ -1,7 +1,7 @@
 <template>
   <div class="content">
     <div class="left">
-      <div class="add"><a href="javascript:" class="add_child" @click="resData = {}">+新增</a></div>
+      <div class="add"><a href="javascript:" class="add_child" @click="resData = {},selectedParentIndex =-1">+新增</a></div>
       <div class="clf btns">
         <el-tree
           :data="ress.tree"
@@ -126,27 +126,18 @@ import moment from "moment";
       return {
         ifAllotPopup: false,
         resData:{
-          id:null,
-          pid:null,
-          /**资源编码 */
-          resource_code:null,
-          /**资源名称 */
-          resource_name:null,
-          /**资源类型 */
-          resource_type:null,
-          /**资源地址 */
-          resource_url:null,
-          /**层级 */
-          layer:null,
-          /**是否显示 */
-          isshow:1,
-          /**资源图标 */
-          resource_icon:null,
+          id:null,//           	Y	string	ID
+          pid:null,//          	Y	string	父ID
+          resource_code:null,//	Y	string	资源编号
+          resource_name:null,//	Y	string	资源名称
+          resource_type:null,//	Y	int	功能类型(menu：菜单 button：按钮)
+          resource_url:null,// 	Y	String	链接地址
+          layer:null,//        	Y	Int	层级
+          isshow:null,//       	Y	Int	是否显示（0：不显示1显示）
+          resource_icon:null,//	Y	String	图标
+          sorting:null,//      	Y	Int	排序
+          remark:null,//       	N	string	备注
           relativepath:null,
-          /**排序 */
-          sorting:0,
-          // 备注
-          remark:null
         },
         selectedParentIndex:-1,
         ress: {
@@ -168,6 +159,16 @@ import moment from "moment";
     methods: {
 
       editRes(){
+        let adopt = null;
+        if(String(this.resData.relativepath).trim() == "") adopt = "请选择资源图标";
+        if(String(this.resData.resource_code).trim() == "") adopt = "请填写资源编码";
+        if(String(this.resData.resource_name).trim() == "") adopt = "请填写资源名称";
+        if(String(this.resData.resource_type).trim() == "") adopt = "请选择资源类型";
+        if(String(this.resData.resource_url).trim() == "") adopt = "请填写资源链接";
+        if(String(this.resData.isshow).trim() == "") adopt = "请选择资源是否显示";
+        if(String(this.resData.sorting).trim() == "") adopt = "请设置资源序号";
+        if(adopt) return this.$message.error(adopt);
+
         let data = this.ress.dataItems[this.selectedParentIndex];
         if(data){
           if(isChildrensId(this.resData, data.id)){
@@ -175,15 +176,15 @@ import moment from "moment";
           }
         }
         this.$api.menu
-        .editor(new RequestParams()
-        .addAttributes(this.resData)
-        .addAttribute("pid", data ? data.id : 0)
-        .addAttribute("resource_icon", this.resData.relativepath))
-        .then(response=>{
-          this.$message.success(response.message)
-          this.loadResDatas();
-        })
-        .catch(({message}) => this.$message.error(message))
+          .editor(new RequestParams()
+          .addAttributes(this.resData)
+          .addAttribute("pid", data ? data.id : 0)
+          .addAttribute("resource_icon", this.resData.relativepath))
+          .then(response=>{
+            this.$message.success(response.message)
+            this.loadResDatas();
+          })
+          .catch(({message}) => this.$message.error(message))
       },
 
       delRes(id, name){
