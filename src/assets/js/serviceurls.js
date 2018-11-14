@@ -176,6 +176,71 @@ export default {
       }
     }
   },
+<<<<<<< HEAD
+=======
+  /**车辆区域管理 */
+  area: {
+    /**获取车辆区域列表 */
+    getlist: {
+      url: '/area/getlist',
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: 'area.getlist'
+      }
+    },
+    /**新增/修改车场区域 */
+    editor: {
+      url: '/area/editor',
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: 'area.editor'
+      }
+    },
+    /**删除车辆区域 */
+    delete: {
+      url: '/area/delete',
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: 'area.delete'
+      }
+    }
+  },
+  // 车位数据管理
+  place: {
+    /**获取车位列表 */
+    getlist: {
+      url: '/place/getlist',
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: 'place.getlist'
+      }
+    },
+    /**新增编辑车位信息 */
+    editor: {
+      url: '/place/editor',
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: 'place.editor'
+      }
+    },
+    /**删除车位 */
+    delete: {
+      url: '/place/delete',
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: 'place.delete'
+      }
+    },
+    /**合并到车位组 */
+    merge: {
+      url: '/place/merge',
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: 'place.merge'
+      }
+    }
+  },
+>>>>>>> 9038d9816d579e1a54c59330eb201316fb43cf0c
   /* 日志管理 */
   log: {
     /* 删除日志 */
@@ -452,6 +517,7 @@ export default {
       }
     }
   },
+<<<<<<< HEAD
   /**车辆区域管理 */
   area: {
     /**获取车辆区域列表 */
@@ -541,5 +607,7 @@ export default {
       }
     },
   }
+=======
+>>>>>>> 9038d9816d579e1a54c59330eb201316fb43cf0c
 
 }

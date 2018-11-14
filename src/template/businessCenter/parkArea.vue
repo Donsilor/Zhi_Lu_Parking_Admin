@@ -92,7 +92,11 @@
               <a href="javascript:" class="bj" @click="showEditParkArea(index)">编辑</a>
               <a href="javascript:" class='delete' @click="delPark(index)">删除</a>
               <a href="javascript:" @click="showCarManager(index)">管理车位</a>
+<<<<<<< HEAD
               <a href="javascript:" class="fees" @click="ifConfig = true">收费标准</a>
+=======
+              <a href="javascript:" class="fees">收费标准</a>
+>>>>>>> 9038d9816d579e1a54c59330eb201316fb43cf0c
             </td>
           </tr>
         </table>
@@ -409,7 +413,11 @@
           </div>
         </div>
       </div>
+<<<<<<< HEAD
     </div> 
+=======
+    </div>   
+>>>>>>> 9038d9816d579e1a54c59330eb201316fb43cf0c
     <!-- 车位管理弹窗 -->
     <div class="vehreg-main" v-if="ifVehreg">
       <div class="depwd" v-drag.cursor="'#Vehreg'">
@@ -505,7 +513,11 @@
       </div>
     </div>
     <!-- 确认删除弹窗 -->
+<<<<<<< HEAD
     <!-- <div class="delete_prompt" v-if="ifDel">
+=======
+    <div class="delete_prompt" v-if="ifDel">
+>>>>>>> 9038d9816d579e1a54c59330eb201316fb43cf0c
       <div class="depwd">
         <div class="text">你是否确认删除选中的记录</div>
         <div class="button clf">
@@ -574,6 +586,7 @@ export default {
           page_size: 2, //当前页数
           tatal: 10, //总条目数
           total_pages: 10 //条页数
+<<<<<<< HEAD
         },
         dataItems: {}
       },
@@ -753,16 +766,85 @@ export default {
         }
       ]
     }
+=======
+        },
+        dataItems: {}
+      },
+      // 车位信息
+      cars: {
+        attributes: {
+          page_index: 1, //当前页码
+          page_size: 2, //当前页数
+          tatal: 10, //总条目数
+          total_pages: 10 //条页数
+        },
+        dataItems: {}
+      },
+      selectedArea: [],
+      selectedCar: [],
+      // 车场区域查询数据
+      searchParams: {
+        project_id: null,
+        area_code: null,
+        area_name: null,
+        park_type: null,
+        area_type: null,
+        key: null,
+        begin_time: null,
+        end_time: null,
+        page_index: null,
+        page_size: null
+      },
+      /**车场数据 */
+      areaDatas: {
+        id: null,
+        project_id: null,
+        area_code: null,
+        area_name: null,
+        park_type: 0,
+        area_type: 0,
+        temp_car_inout: null,
+        in_time_long: null,
+        create_time: null,
+        update_time: null,
+        operator_id: null,
+        user_name: null,
+        remark: null
+      },
+      park_types: ["普通车场", "大套小车场"],
+      area_types: [["地面车库", "地下车库", "其他车库"], ["大车场", "小车场"]],
+      // 车位数据
+      placeDatas: {
+        id: null,
+        project_id: User.info.project_id,
+        area_id: null,
+        car_place_no: null,
+        car_group_id: null,
+        create_time: null,
+        update_time: null,
+        operator_id: User.info.id,
+        parkArea: null,
+        remark: null
+      },
+      // 车位查询
+      searchCars: {
+        key: null //车位号或者车位编号组
+      }
+    };
+>>>>>>> 9038d9816d579e1a54c59330eb201316fb43cf0c
   },
   components: {
     /**分页组件 */
     Pagination
   },
   methods: {
+<<<<<<< HEAD
     /* 切换收费标准 */
     changeForm (value) {
       this.chargeStandardValue = value[1]
     },
+=======
+>>>>>>> 9038d9816d579e1a54c59330eb201316fb43cf0c
     //车场信息 全选全不选
     selectedAll() {
       if (this.selectedArea.length) {
