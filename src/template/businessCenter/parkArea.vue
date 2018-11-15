@@ -636,8 +636,123 @@ export default {
       // 车位查询
       searchCars: {
         key: null //车位号或者车位编号组
-      }
-    };
+      },
+      /* 收费标准配置 - 收费标准 */
+      chargeStandardValue: '',
+      chargeStandards: [],
+      chargeStandardOptions: [
+        {
+          value: 'monthCardA',
+          label: '月卡A',
+          children: [
+            {
+              value: 'hasMonthCard',
+              label: '有位月卡收费标准'
+            },
+            {
+              value: 'notMonthCard',
+              label: '无位月卡收费标准'
+            },
+            {
+              value: 'hasYearCard',
+              label: '有位年卡收费标准'
+            },
+            {
+              value: 'notYearCard',
+              label: '无位年卡收费标准'
+            }
+          ]
+        },
+        {
+          value: 'monthCardB',
+          label: '月卡B',
+          children: [
+            {
+              value: 'hasMonthCard',
+              label: '有位月卡收费标准'
+            },
+            {
+              value: 'notMonthCard',
+              label: '无位月卡收费标准'
+            },
+            {
+              value: 'hasYearCard',
+              label: '有位年卡收费标准'
+            },
+            {
+              value: 'notYearCard',
+              label: '无位年卡收费标准'
+            }
+          ]
+        },
+        {
+          value: 'tempCarA',
+          label: '临时车A',
+          children: [
+            {
+              value: 'residenceChargeStandard',
+              label: '深圳住宅收费标准'
+            },
+            {
+              value: 'commonChargeStandard1',
+              label: '通用收费标准1（按小时收费）'
+            },
+            {
+              value: 'commonChargeStandard2',
+              label: '通用收费标准2（按次收费）'
+            },
+            {
+              value: 'commonChargeStandard3',
+              label: '通用收费标准3（自定义收费）'
+            }
+          ]
+        },
+        {
+          value: 'tempCarB',
+          label: '临时车B',
+          children: [
+            {
+              value: 'residenceChargeStandard',
+              label: '深圳住宅收费标准'
+            },
+            {
+              value: 'commonChargeStandard1',
+              label: '通用收费标准1（按小时收费）'
+            },
+            {
+              value: 'commonChargeStandard2',
+              label: '通用收费标准2（按次收费）'
+            },
+            {
+              value: 'commonChargeStandard3',
+              label: '通用收费标准3（自定义收费）'
+            }
+          ]
+        },
+        {
+          value: 'tempCarC',
+          label: '临时车C',
+          children: [
+            {
+              value: 'residenceChargeStandard',
+              label: '深圳住宅收费标准'
+            },
+            {
+              value: 'commonChargeStandard1',
+              label: '通用收费标准1（按小时收费）'
+            },
+            {
+              value: 'commonChargeStandard2',
+              label: '通用收费标准2（按次收费）'
+            },
+            {
+              value: 'commonChargeStandard3',
+              label: '通用收费标准3（自定义收费）'
+            }
+          ]
+        }
+      ]
+    }
   },
   components: {
     /**分页组件 */
