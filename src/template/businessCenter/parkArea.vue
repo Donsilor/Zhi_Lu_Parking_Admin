@@ -194,60 +194,60 @@
               </div>
             </div>
             <!-- 月卡 -->
-            <div class="center-right clf" v-if="/MonthCard$/.test(this.chargeStandardValue)">
-               <ul class="clf" v-for="index in 6" v-bind:key="index">
-                <li><span>{{index}}个月：</span><input type="number" step="1" min="1" max="1000" v-model="mCodes[index-1]"/></li>
-                <li><span>{{index+6}}个月：</span><input type="number" step="1" min="1" max="1000" v-model="mCodes[index+5]"/></li>
+            <div class="center-right clf" v-if="[0,1].some(o=>o==chargeStandards[1])">
+               <ul class="clf" v-for="(item, index) in standardData.depict" v-bind:key="index">
+                <li><span>{{item.count}}个月：</span><input type="number" step="1" min="1" max="1000" v-model="item.fee"/></li>
+                <!-- <li><span>{{index+6}}个月：</span><input type="number" step="1" min="1" max="1000" v-model="mCodes[index+5]"/></li> -->
                </ul>
             </div>
             <!-- 年卡 -->
-            <div class="center-right clf" v-else-if="/YearCard$/.test(this.chargeStandardValue)">
+            <div class="center-right clf" v-else-if="[2,3].some(o=>o==chargeStandards[1])">
               <ul class="clf">
-                <li v-for="index in 5" v-bind:key="index">
-                  <span>{{index}}年：</span><input type="number" step="1" min="1" max="99999" v-model="yCodes[index-1]"/></li>
+                <li  v-for="(item, index) in standardData.depict" v-bind:key="index">
+                  <span>{{item.count}}年：</span><input type="number" step="1" min="1" max="99999" v-model="item.fee"/></li>
               </ul>
             </div>
             <!-- 深圳住宅收费 -->
-            <div class="center-right clf" v-else-if="/^residence/.test(this.chargeStandardValue)">
+            <div class="center-right clf" v-else-if="chargeStandards[1]==4">
               <ul class="clf">
                 <li class="marginBottom50">
                   <div class="clf">
                     <span>进场免费时间：</span>
-                    <input class="width100" type="number" step="1" min="1" max="60" v-model="sCodes[0]"/>
+                    <input class="width100" type="number" step="1" min="1" max="60" v-model="standardData.depict.freeTime"/>
                     <span>分钟</span>
                   </div>
                   <div>
-                    <label><input type="checkbox" v-model="sCodes[1]"><span>计费包含免费分钟</span></label>
+                    <label><input type="checkbox" v-model="standardData.depict.chargeIncludeFreeTime"><span>计费包含免费分钟</span></label>
                   </div>
                 </li>
                 <li>
                   <div class="clf">
                     <span>最高收费：</span>
-                    <input class="width100" type="number" step="1" min="1" max="60" v-model="sCodes[2]"/>
+                    <input class="width100" type="number" step="1" min="1" max="60" v-model="standardData.depict.maxFee"/>
                     <span>元</span>
                   </div>
                 </li>
-                <li class="widthMax marginBottom50">
+                <li class="widthMax marginBottom50" >
                   <label>
-                    <input type="radio" name="residenceChargeStandardRadio" v-model="sCodes[3]">
+                    <input type="radio" name="residenceChargeStandardRadio" value="DAY" v-model="standardData.depict.chargeType">
                     <span>按天收费&emsp;&emsp;</span>
                   </label>
                   <div class="fl">
                     <span>收费金额：</span>
-                    <input type="number" step="1" min="1" max="100" v-model="sCodes[4]">
+                    <input type="number" step="1" min="1" max="100" v-model="standardData.depict.dayFee">
                     <span>元</span>
                   </div>
                 </li>
-                <li class="widthMax">
+                <li class="widthMax" >
                   <label class="fl">
-                    <input type="radio" name="residenceChargeStandardRadio" v-model="sCodes[5]">
+                    <input type="radio" name="residenceChargeStandardRadio" value="HOUR" v-model="standardData.depict.chargeType">
                     <span>按时收费&emsp;&emsp;</span>
                   </label>
                   <div class="fl">
                     <span>首时段&emsp;收费单位时间：</span>
-                    <input class="width100" type="number" step="1" min="1" max="100" v-model="sCodes[6]">
+                    <input class="width100" type="number" step="1" min="1" max="100" v-model="standardData.depict.firstTime">
                     <span>小时</span>
-                    <input class="width100" type="number" step="1" min="1" max="100" v-model="sCodes[7]">
+                    <input class="width100" type="number" step="1" min="1" max="100" v-model="standardData.depict.firstTimeFee">
                     <span>元</span>
                   </div>
                 </li>
@@ -255,49 +255,49 @@
                   <label class="fl">&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</label>
                   <div class="fl">
                     <span>其他时段&emsp;每小时收费：</span>
-                    <input class="width100" type="number" step="1" min="1" max="100" v-model="sCodes[8]">
+                    <input class="width100" type="number" step="1" min="1" max="100" v-model="standardData.depict.otherTimeFee">
                     <span>元</span>
                   </div>
                 </li>
               </ul>
             </div>
             <!-- 按小时收费 -->
-            <div class="center-right clf" v-else-if="/Standard1$/.test(this.chargeStandardValue)">
+            <div class="center-right clf" v-else-if="chargeStandards[1]==5">
               <ul class="clf">
                 <li>
                   <span>进场免费时间：</span>
-                  <input type="number" step="1" min="1" max="1000" v-model="hCodes[0]"/>
+                  <input type="number" step="1" min="1" max="1000" v-model="standardData.depict.freeTime"/>
                   <span class="widthAuto">分钟</span>
                 </li>
-                <li  v-for="index in 24" v-bind:key="index">
-                  <span>{{index}}小时：</span><input type="number" step="1" min="1" max="1000" v-model="hCodes[index]"/></li>
-                <li><span>最高收费：</span><input type="number" step="1" min="1" max="1000" v-model="hCodes[25]"/></li>
+                <li  v-for="(item, index) in standardData.depict.hourFeeList" v-bind:key="index">
+                  <span>{{item.count}}小时：</span><input type="number" step="1" min="1" max="1000" v-model="item.fee"/></li>
+                <li><span>最高收费：</span><input type="number" step="1" min="1" max="1000" v-model="standardData.depict.maxFee"/></li>
               </ul>
             </div>
             <!-- 按次收费 -->
-            <div class="center-right clf" v-else-if="/Standard2$/.test(this.chargeStandardValue)">
+            <div class="center-right clf" v-else-if="chargeStandards[1]==6">
               <ul class="clf">
                 <li>
                   <span>进场免费时间：</span>
-                  <input type="number" step="1" min="1" max="1000" v-model="tCodes[0]"/>
+                  <input type="number" step="1" min="1" max="1000" v-model="standardData.depict.freeTime"/>
                   <span class="widthAuto">分钟</span>
                 </li>
-                <li><span>每次收费：</span><input type="number" step="1" min="1" max="1000" v-model="tCodes[1]"/></li>
-                <li><span>最高收费：</span><input type="number" step="1" min="1" max="1000" v-model="tCodes[2]"/></li>
+                <li><span>每次收费：</span><input type="number" step="1" min="1" max="1000" v-model="standardData.depict.timeFee"/></li>
+                <li><span>最高收费：</span><input type="number" step="1" min="1" max="1000" v-model="standardData.depict.maxFee"/></li>
                 <li>
                   <label>
-                    <input type="checkbox" v-model="tCodes[3]">
+                    <input type="checkbox" v-model="standardData.depict.overDayRepeatCharge">
                     <span>24小时后重复计费</span>
                   </label>
                 </li>
               </ul>
             </div>
             <!-- 自定义收费 -->
-            <div class="center-right clf" v-else-if="/Standard3$/.test(this.chargeStandardValue)">
+            <div class="center-right clf" v-else-if="chargeStandards[1]==7">
               <ul class="clf">
                 <li>
                   <span>进场免费时间：</span>
-                  <input type="number" step="1" min="1" max="1000" value="250"/>
+                  <input type="number" step="1" min="1" max="1000" v-model="standardData.depict.freeTime"/>
                   <span class="widthAuto">分钟</span>
                 </li>
                 <li><span>每次收费：</span><input type="number" step="1" min="1" max="1000" value="250"/></li>
@@ -310,41 +310,11 @@
                   <th>计费单位(分钟)</th>
                   <th>操作</th>
                 </tr>
-                <tr>
-                  <td>00:01</td>
-                  <td>08:00</td>
-                  <td>5</td>
-                  <td>60</td>
-                  <td>
-                    <a href="javascript:">编辑</a>
-                    <a href="javascript:">删除</a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>00:01</td>
-                  <td>08:00</td>
-                  <td>5</td>
-                  <td>60</td>
-                  <td>
-                    <a href="javascript:">编辑</a>
-                    <a href="javascript:">删除</a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>00:01</td>
-                  <td>08:00</td>
-                  <td>5</td>
-                  <td>60</td>
-                  <td>
-                    <a href="javascript:">编辑</a>
-                    <a href="javascript:">删除</a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>00:01</td>
-                  <td>08:00</td>
-                  <td>5</td>
-                  <td>60</td>
+                <tr v-for="(item, index) in standardData.depict.timeIntervalFeeList" :key="index">
+                  <td>{{item.beginTime}}</td>
+                  <td>{{item.endTime}}</td>
+                  <td>{{item.unitTimeFee}}</td>
+                  <td>{{item.unitTime}}</td>
                   <td>
                     <a href="javascript:">编辑</a>
                     <a href="javascript:">删除</a>
@@ -355,19 +325,19 @@
                 <ul class="clf">
                   <li>
                     <span>开始时间：</span>
-                    <input type="time">
+                    <input type="time" v-model="tandardData.depict.beginTime">
                   </li>
                   <li>
                     <span>结束时间：</span>
-                    <input type="time">
+                    <input type="time" v-model="tandardData.depict.endTime">
                   </li>
                   <li>
                     <span>收费金额：</span>
-                    <input type="number" step="1" min="1" max="1000" value="250">
+                    <input type="number" step="1" min="1" max="1000" v-model="tandardData.depict.unitTimeFee">
                   </li>
                   <li>
                     <span>计费单位：</span>
-                    <input type="number" step="1" min="1" max="1000" value="250">
+                    <input type="number" step="1" min="1" max="1000" v-model="tandardData.depict.unitTime">
                     <span>分钟</span>
                   </li>
                   <li class="widthMax btns">
@@ -377,7 +347,7 @@
                 </ul>
               </div>
             </div>
-            <div class="right-button clf" v-if="chargeStandardValue">
+            <div class="right-button clf" v-if="chargeStandards[1]">
               <a class="fees-save" href="javascript:" @click="editStandar()">确认保存</a>
               <a class="fees-add" href="javascript:" @click="copyAndP()">复制/粘贴</a>
               <a class="fees-add" href="javascript:" @click="clickAddStandard()">新增</a>
@@ -668,6 +638,8 @@ export default {
         area_id: null,
         key: null
       },
+      searchStandards:{},
+      standardData:{},
       // 收费标准上传数据结构
       standardDatas: {
         id: null,
@@ -715,8 +687,8 @@ export default {
   methods: {
     /* 切换收费标准 */
     changeForm(value) {
-      console.log(value)
-      this.chargeStandardValue = value[1];
+      this.standardData = this.searchStandards.car_type[value[0]].getChildrenKey(value[1])
+      console.log(this.standardData, value)
     },
     //车场信息 全选全不选
     selectedAll() {
@@ -967,6 +939,7 @@ export default {
           this.standards.dataItems = response.dataItems.map(o => o.attributes);
           
           if(!this.chargeStandardOptions.length) new DataDictionary(this.$api).ins().then(datas => {
+            this.searchStandards = datas;
             for(let name in datas.car_type){
               datas.car_type[name].children = datas.car_type[name].depict.split(",").map(o=>{
                 if(typeof(datas.standard_type[o].depict) == "string"){
@@ -974,9 +947,13 @@ export default {
                 }
                 return datas.standard_type[o]
               })
+              datas.car_type[name].getChildrenKey = function(code){
+                return this.children.filter(o=>o.dic_code==code)[0];
+              }
               this.chargeStandardOptions.push(datas.car_type[name])
             }
             this.chargeStandardOptions = this.chargeStandardOptions;
+            console.log(this.chargeStandardOptions)
           });
         })
         .catch(response => this.$message.error(response.message));

@@ -122,7 +122,7 @@
 
               <el-upload
                 class="up fl"
-                action="http://localhost:8080/server_file/file/fileUpload?folder=user"
+                action="http://ceibs.54jj.cn/ZLParkingAdmin/server_file/file/fileUpload?folder=user"
                 :show-file-list="false"
                 :on-success="handleAvatarSuccess"
                 :before-upload="beforeAvatarUpload">
@@ -342,7 +342,7 @@ export default {
     selectedRole(){
       this.$api.operator.assign(new RequestParams()
         .addDataItemAttr(0, "id", "0")
-        .addDataItemAttr(0, "user_id", userData.id)
+        .addDataItemAttr(0, "user_id", this.userData.id)
         .addDataItemAttr(0, "role_id", this.selectedRoleData.id)
       ).then(response=>{
         this.$message.success(response.message)

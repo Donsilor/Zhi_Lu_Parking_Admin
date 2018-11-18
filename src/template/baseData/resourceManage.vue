@@ -56,7 +56,7 @@
         <div class="role-icon">
           <el-upload
             class="up fl"
-            action="http://localhost:8080/server_file/file/fileUpload?folder=resource_ico"
+            action="http://ceibs.54jj.cn/ZLParkingAdmin/server_file/file/fileUpload?folder=resource_ico"
             :show-file-list="false"
             :on-success="handleAvatarSuccess"
             :before-upload="beforeAvatarUpload">
@@ -193,7 +193,7 @@ import moment from "moment";
           cancelButtonText: '取消',
           type: 'warning'
         })
-        .then(() => this.$api.menu.delete(new RequestParams().addDataItemAttr(0,"id", id)))
+        .then(() => this.$api.menu.delete(new RequestParams().addAttribute("id", id)))
         .then(response=>{
           this.$message.success("删除成功");
           this.loadResDatas();

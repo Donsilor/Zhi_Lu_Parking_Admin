@@ -25,7 +25,7 @@
 
 <script>
 import {RequestParams,User} from "../assets/js/entity";
-
+import Vue from 'vue';
 export default {
   data() {
     return {
@@ -43,6 +43,7 @@ export default {
         console.log(dataItems)
         User.info = dataItems[0].attributes;
         this.$router.push(this.$route.query.redirect || "/");
+        
       }).catch(data=>this.$message.error(data.message));
     }
   }

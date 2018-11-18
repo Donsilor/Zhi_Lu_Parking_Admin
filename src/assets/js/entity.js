@@ -9,6 +9,8 @@ export const RequestDataItem = class RequestDataItem {
     this.objectId = "";
     this.subItems = [];
 
+    this.addAttribute("project_id", User.project_id);
+    this.addAttribute("user_id", User.info.user_type == 3 ? null : User.info.id);
     $.extend(this, obj);
   }
 
@@ -43,6 +45,8 @@ export const RequestParams = class RequestParams {
     /**业务对象列表； */
     this.dataItems = [];
 
+    this.addAttribute("project_id", User.project_id);
+    this.addAttribute("user_id", User.info.user_type == 3 ? null : User.info.id);
     $.extend(this, obj);
   }
 
@@ -249,12 +253,14 @@ export const ResourceMenu = class ResourceMenu {
     this.$api = api;
     this.resourceMenus = [];
   }
-
+  
   async ins(){
     let response = await this.$api.menu
-    .getlist(new RequestParams()
+    .getlist(new RequestParams().addDataItem(new RequestDataItem()
     .addAttribute("page_index", 1)
-    .addAttribute("page_size", 1000000));
+    .addAttribute("user_id", User.info.id)
+    .addAttribute("page_size", 1000000)
+    ))
     return this.resourceMenus = array2Descendants(response.dataItems.map((o,i) => (o.attributes.index = i,o.attributes)));
   }
 

@@ -77,12 +77,13 @@
                 children: 'children',
                 label: 'resource_name'
               }"
+              :node-key="'id'"
               :ref="'tree'"
               :show-checkbox="true"
               @node-click="handleNodeClick">
             </el-tree>
             <div class="button clf">
-              <a class="qr" @click="selectedRess = $refs.tree.getCheckedKeys(), assign()">确定</a>
+              <a class="qr" @click="assign()">确定</a>
             </div>
           </div>
         </div>
@@ -142,6 +143,7 @@ export default {
   methods: {
 
     assign(){
+      this.selectedRess = this.$refs.tree.getCheckedKeys();
       if(this.selectedRess.length){
         this.$api.role
         .assign(new RequestParams()

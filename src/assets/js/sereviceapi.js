@@ -154,7 +154,6 @@ export default (function createApis(apis) {
   else apis = function (params = new RequestParams()) {
     /////////////////////////////////////////////////////
     /**为了运行时植入，只能这样了 */
-    params.addAttribute("project_id", User.project_id);
     ///////////////////////////////////////////////////////
     return new Promise(function (resolve, reject) {
       let { url, method, param = {}, config = {} } = $.extend(true, {}, api);
