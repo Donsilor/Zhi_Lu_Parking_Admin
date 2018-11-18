@@ -3,7 +3,7 @@
     <div class="search ">
       <div class="add">
         <button class="registration-car blu-button" @click="showEditCars(null)">登记车辆</button>
-        <button class="upload-aut blu-button" @click="ifImportAuthorize = true">导入授权</button>
+        <!-- <button class="upload-aut blu-button" @click="ifImportAuthorize = true">导入授权</button> -->
       </div>
       <div class="clf top toggleDiv" v-show="searchDivShow">
         <div class="cominput fl">
@@ -144,7 +144,7 @@
         </div>
       </div>
     </div>
-    <div class="import-main" v-if="ifImportAuthorize">
+    <!-- <div class="import-main" v-if="ifImportAuthorize">
       <div class="depwd" v-drag.cursor="'#ImportAuthorize'">
         <div class="top-nav" id="ImportAuthorize">
           <p class="t-text fl">导入授权</p>
@@ -152,19 +152,19 @@
         </div>
         <div class="bot">
           <div class="cet clf">
-            <div class="fl choose-file" onclick="document.getElementById('ImportAuthorizeFile').click()">
+            <div class="fl choose-file" >
               选择文件
-              <input type="file" id="ImportAuthorizeFile" hidden/>
+              <input type="file" id="ImportAuthorizeFile"  @change="selectImportExcelFile"/>
             </div>
-            <a class="fr downloadtemp" href="javascript:;">下载模板</a>
-            <p>支持扩展名：.xls .xlsx</p>
+            <a class="fr downloadtemp" href="javascript:;" >下载模板</a>
+            <p>{{importExcelFile.name}}支持扩展名：.xls .xlsx</p>
           </div>
           <div class="button clf">
-            <a class="upload fr" href="javascript:;">上传</a>
+            <a class="upload fr" href="javascript:;"  @click="importExcel()">上传</a>
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
     <div class="nonreg-main" v-if="ifAuthorize">
       <div class="depwd" v-drag.cursor="'#Authorize'">
         <div class="top-nav" id="Authorize">
@@ -445,15 +445,15 @@ import moment from "moment";
         },
         selecedCars:[],
         carData:{
-          id:null,
-          project_id:null,
-          household_id:null,
-          car_no:null,
-          car_color:null,
-          car_brand:null,
-          car_mode:null,
-          operator_id:null,
-          remark:null
+          id:null,//          	Y	String	ID
+          project_id:null,//  	Y	String	项目ID
+          household_id:null,//	Y	String	住户ID
+          car_no:null,//      	Y	String	车牌号码
+          car_color:null,//   	N	String	车辆颜色(如：#FFFFFF)
+          car_brand:null,//   	N	String	车辆品牌
+          car_mode:null,//    	N	String	车辆型号
+          operator_id:null,// 	Y	String	操作员ID
+          remark:null,//      	N	String	备注
         },
         caraccreditData:{
           id:null,
@@ -575,6 +575,7 @@ import moment from "moment";
       Pagination
     },
     methods: {
+
       selectedAll(){
         if(this.selecedCars.length){
           this.selecedCars = [];

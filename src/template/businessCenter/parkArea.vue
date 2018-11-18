@@ -12,12 +12,14 @@
         <div class="cominput fl">
           <span class="conditions-text">车场类型：</span> 
             <select name="" v-model="searchParams.park_type">
+                <option value="null">请选择</option>
                 <option  v-for="(park,index)  in park_types" :value="index" :key="index">{{park}}</option>
             </select>
         </div>
         <div class="cominput fl normargin">
           <span class="conditions-text">区域类型：</span>
               <select name="" v-model="searchParams.area_type">
+                <option value="null">请选择</option>
                 <option  v-for="(area,index)  in area_types[searchParams.park_type]" :value="index" :key="index">{{area}}</option>
               </select>
         </div>
@@ -47,7 +49,7 @@
         <div class="fl">
           <button class="plechoose fl" @click="selectedAll">{{selectedArea.length>0?"全不选":"全选"}} <img src="../../assets/images/icon_9.png" alt=""></button>
           <button class="batchdel fl" @click="delPark(null)">批量删除</button>
-          <button class="greenbut fl" @click="showEditParkAreaConfig">配置车场收费标准</button>
+          <button class="greenbut fl" @click="showEditParkAreaConfig(null)">配置车场收费标准</button>
           <div>共搜索到 <span>{{areas.attributes.tatal || 0}}</span> 条数据</div>
         </div>
         <div class="fr">
@@ -60,6 +62,7 @@
         </div>
       </div>
     </div>
+    <!-- 车场区域 -->
     <div class="result clf">
       <div class="selected" v-show="selectedArea.length">已选 <span>{{selectedArea.length}}</span> 项数据</div>
       <div class="tab">
@@ -92,7 +95,7 @@
               <a href="javascript:" class="bj" @click="showEditParkArea(index)">编辑</a>
               <a href="javascript:" class='delete' @click="delPark(index)">删除</a>
               <a href="javascript:" @click="showCarManager(index)">管理车位</a>
-              <a href="javascript:" class="fees" @click="ifConfig = true">收费标准</a>
+              <a href="javascript:" class="fees" @click="showEditParkAreaConfig(index)">收费标准</a>
             </td>
           </tr>
         </table>
@@ -162,20 +165,16 @@
         </div>
         <div class="bot clf">
           <div class="bot-left fl">
-            <input type="text" placeholder="请输入内容"/>
+            <input type="text" placeholder="请输入内容" v-model="searchStandard.key"/>
+            <!-- 已有收费标准树结构 -->
             <div class="feestype">
-              <ul class="clf">
-                <li><i class="icon iconfont icon-jjia- fl"></i><span class="li-text fl">月卡A收费标准</span><i
-                  class="icon iconfont icon-jian-copy fl"></i></li>
-                <li><i class="icon iconfont icon-jjia- fl"></i><span class="li-text fl">月卡B收费标准</span><i
-                  class="icon iconfont icon-jian-copy fl"></i></li>
-                <li><i class="icon iconfont icon-jjia- fl"></i><span class="li-text fl">临时车A收费标准</span><i
-                  class="icon iconfont icon-jian-copy fl"></i></li>
-                <li><i class="icon iconfont icon-jjia- fl"></i><span class="li-text fl">临时车B收费标准</span><i
-                  class="icon iconfont icon-jian-copy fl"></i></li>
-                <li><i class="icon iconfont icon-jjia- fl"></i><span class="li-text fl">临时车C收费标准</span><i
-                  class="icon iconfont icon-jian-copy fl"></i></li>
-              </ul>
+              <el-tree 
+              :data="standards.tree" 
+              :props="defaultProps" 
+              :node-key="'id'"
+              :highlight-current="true"
+              @node-click="handleNodeClick"
+              :render-content="renderRoleNodeContent"></el-tree>
             </div>
           </div>
           <div class="bot-right fr">
@@ -184,76 +183,71 @@
                 <el-cascader
                   expand-trigger="hover"
                   :options="chargeStandardOptions"
+                  :props="{
+                    value:'dic_code',
+                    children:'children',
+                    label:'remark'
+                  }"
                   v-model="chargeStandards"
                   @change="changeForm">
                 </el-cascader>
               </div>
             </div>
+            <!-- 月卡 -->
             <div class="center-right clf" v-if="/MonthCard$/.test(this.chargeStandardValue)">
-              <ul class="clf">
-                <li><span>1个月：</span><input type="number" step="1" min="1" max="1000" value="250"/></li>
-                <li><span>7个月：</span><input type="number" step="1" min="1" max="1000" value="250"/></li>
-                <li><span>2个月：</span><input type="number" step="1" min="1" max="1000" value="250"/></li>
-                <li><span>8个月：</span><input type="number" step="1" min="1" max="1000" value="250"/></li>
-                <li><span>3个月：</span><input type="number" step="1" min="1" max="1000" value="250"/></li>
-                <li><span>9个月：</span><input type="number" step="1" min="1" max="1000" value="250"/></li>
-                <li><span>4个月：</span><input type="number" step="1" min="1" max="1000" value="250"/></li>
-                <li><span>10个月：</span><input type="number" step="1" min="1" max="1000" value="250"/></li>
-                <li><span>5个月：</span><input type="number" step="1" min="1" max="1000" value="250"/></li>
-                <li><span>11个月：</span><input type="number" step="1" min="1" max="1000" value="250"/></li>
-                <li><span>6个月：</span><input type="number" step="1" min="1" max="1000" value="250"/></li>
-                <li><span>12个月：</span><input type="number" step="1" min="1" max="1000" value="250"/></li>
-              </ul>
+               <ul class="clf" v-for="index in 6" v-bind:key="index">
+                <li><span>{{index}}个月：</span><input type="number" step="1" min="1" max="1000" v-model="mCodes[index-1]"/></li>
+                <li><span>{{index+6}}个月：</span><input type="number" step="1" min="1" max="1000" v-model="mCodes[index+5]"/></li>
+               </ul>
             </div>
+            <!-- 年卡 -->
             <div class="center-right clf" v-else-if="/YearCard$/.test(this.chargeStandardValue)">
               <ul class="clf">
-                <li><span>1年：</span><input type="number" step="1" min="1" max="1000" value="250"/></li>
-                <li><span>2年：</span><input type="number" step="1" min="1" max="1000" value="250"/></li>
-                <li><span>3年：</span><input type="number" step="1" min="1" max="1000" value="250"/></li>
-                <li><span>4年：</span><input type="number" step="1" min="1" max="1000" value="250"/></li>
-                <li><span>5年：</span><input type="number" step="1" min="1" max="1000" value="250"/></li>
+                <li v-for="index in 5" v-bind:key="index">
+                  <span>{{index}}年：</span><input type="number" step="1" min="1" max="99999" v-model="yCodes[index-1]"/></li>
               </ul>
             </div>
+            <!-- 深圳住宅收费 -->
             <div class="center-right clf" v-else-if="/^residence/.test(this.chargeStandardValue)">
               <ul class="clf">
                 <li class="marginBottom50">
                   <div class="clf">
                     <span>进场免费时间：</span>
-                    <input class="width100" type="number" step="1" min="1" max="60" value="30"/>
+                    <input class="width100" type="number" step="1" min="1" max="60" v-model="sCodes[0]"/>
                     <span>分钟</span>
                   </div>
                   <div>
-                    <label><input type="checkbox"><span>计费包含免费分钟</span></label>
+                    <label><input type="checkbox" v-model="sCodes[1]"><span>计费包含免费分钟</span></label>
                   </div>
                 </li>
                 <li>
                   <div class="clf">
                     <span>最高收费：</span>
-                    <input class="width100" type="number" step="1" min="1" max="60" value="30"/>
+                    <input class="width100" type="number" step="1" min="1" max="60" v-model="sCodes[2]"/>
                     <span>元</span>
                   </div>
                 </li>
                 <li class="widthMax marginBottom50">
                   <label>
-                    <input type="radio" name="residenceChargeStandardRadio">
+                    <input type="radio" name="residenceChargeStandardRadio" v-model="sCodes[3]">
                     <span>按天收费&emsp;&emsp;</span>
                   </label>
                   <div class="fl">
                     <span>收费金额：</span>
-                    <input type="number" step="1" min="1" max="100">
+                    <input type="number" step="1" min="1" max="100" v-model="sCodes[4]">
                     <span>元</span>
                   </div>
                 </li>
                 <li class="widthMax">
                   <label class="fl">
-                    <input type="radio" name="residenceChargeStandardRadio">
+                    <input type="radio" name="residenceChargeStandardRadio" v-model="sCodes[5]">
                     <span>按时收费&emsp;&emsp;</span>
                   </label>
                   <div class="fl">
                     <span>首时段&emsp;收费单位时间：</span>
-                    <input class="width100" type="number" step="1" min="1" max="100">
+                    <input class="width100" type="number" step="1" min="1" max="100" v-model="sCodes[6]">
                     <span>小时</span>
-                    <input class="width100" type="number" step="1" min="1" max="100">
+                    <input class="width100" type="number" step="1" min="1" max="100" v-model="sCodes[7]">
                     <span>元</span>
                   </div>
                 </li>
@@ -261,63 +255,44 @@
                   <label class="fl">&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</label>
                   <div class="fl">
                     <span>其他时段&emsp;每小时收费：</span>
-                    <input class="width100" type="number" step="1" min="1" max="100">
+                    <input class="width100" type="number" step="1" min="1" max="100" v-model="sCodes[8]">
                     <span>元</span>
                   </div>
                 </li>
               </ul>
             </div>
+            <!-- 按小时收费 -->
             <div class="center-right clf" v-else-if="/Standard1$/.test(this.chargeStandardValue)">
               <ul class="clf">
                 <li>
                   <span>进场免费时间：</span>
-                  <input type="number" step="1" min="1" max="1000" value="250"/>
+                  <input type="number" step="1" min="1" max="1000" v-model="hCodes[0]"/>
                   <span class="widthAuto">分钟</span>
                 </li>
-                <li><span>1小时：</span><input type="number" step="1" min="1" max="1000" value="250"/></li>
-                <li><span>2小时：</span><input type="number" step="1" min="1" max="1000" value="250"/></li>
-                <li><span>3小时：</span><input type="number" step="1" min="1" max="1000" value="250"/></li>
-                <li><span>4小时：</span><input type="number" step="1" min="1" max="1000" value="250"/></li>
-                <li><span>5小时：</span><input type="number" step="1" min="1" max="1000" value="250"/></li>
-                <li><span>6小时：</span><input type="number" step="1" min="1" max="1000" value="250"/></li>
-                <li><span>7小时：</span><input type="number" step="1" min="1" max="1000" value="250"/></li>
-                <li><span>8小时：</span><input type="number" step="1" min="1" max="1000" value="250"/></li>
-                <li><span>9小时：</span><input type="number" step="1" min="1" max="1000" value="250"/></li>
-                <li><span>10小时：</span><input type="number" step="1" min="1" max="1000" value="250"/></li>
-                <li><span>11小时：</span><input type="number" step="1" min="1" max="1000" value="250"/></li>
-                <li><span>12小时：</span><input type="number" step="1" min="1" max="1000" value="250"/></li>
-                <li><span>13小时：</span><input type="number" step="1" min="1" max="1000" value="250"/></li>
-                <li><span>14小时：</span><input type="number" step="1" min="1" max="1000" value="250"/></li>
-                <li><span>15小时：</span><input type="number" step="1" min="1" max="1000" value="250"/></li>
-                <li><span>16小时：</span><input type="number" step="1" min="1" max="1000" value="250"/></li>
-                <li><span>17小时：</span><input type="number" step="1" min="1" max="1000" value="250"/></li>
-                <li><span>18小时：</span><input type="number" step="1" min="1" max="1000" value="250"/></li>
-                <li><span>19小时：</span><input type="number" step="1" min="1" max="1000" value="250"/></li>
-                <li><span>20小时：</span><input type="number" step="1" min="1" max="1000" value="250"/></li>
-                <li><span>21小时：</span><input type="number" step="1" min="1" max="1000" value="250"/></li>
-                <li><span>22小时：</span><input type="number" step="1" min="1" max="1000" value="250"/></li>
-                <li><span>23小时：</span><input type="number" step="1" min="1" max="1000" value="250"/></li>
-                <li><span>24小时：</span><input type="number" step="1" min="1" max="1000" value="250"/></li>
-                <li><span>最高收费：</span><input type="number" step="1" min="1" max="1000" value="250"/></li>
+                <li  v-for="index in 24" v-bind:key="index">
+                  <span>{{index}}小时：</span><input type="number" step="1" min="1" max="1000" v-model="hCodes[index]"/></li>
+                <li><span>最高收费：</span><input type="number" step="1" min="1" max="1000" v-model="hCodes[25]"/></li>
               </ul>
             </div>
+            <!-- 按次收费 -->
             <div class="center-right clf" v-else-if="/Standard2$/.test(this.chargeStandardValue)">
               <ul class="clf">
                 <li>
                   <span>进场免费时间：</span>
-                  <input type="number" step="1" min="1" max="1000" value="250"/>
+                  <input type="number" step="1" min="1" max="1000" v-model="tCodes[0]"/>
                   <span class="widthAuto">分钟</span>
                 </li>
-                <li><span>每次收费：</span><input type="number" step="1" min="1" max="1000" value="250"/></li>
-                <li><span>最高收费：</span><input type="number" step="1" min="1" max="1000" value="250"/></li>
+                <li><span>每次收费：</span><input type="number" step="1" min="1" max="1000" v-model="tCodes[1]"/></li>
+                <li><span>最高收费：</span><input type="number" step="1" min="1" max="1000" v-model="tCodes[2]"/></li>
                 <li>
                   <label>
-                    <input type="checkbox">
+                    <input type="checkbox" v-model="tCodes[3]">
                     <span>24小时后重复计费</span>
                   </label>
                 </li>
               </ul>
             </div>
+            <!-- 自定义收费 -->
             <div class="center-right clf" v-else-if="/Standard3$/.test(this.chargeStandardValue)">
               <ul class="clf">
                 <li>
@@ -403,8 +378,9 @@
               </div>
             </div>
             <div class="right-button clf" v-if="chargeStandardValue">
-              <a class="fees-save" href="javascript:">确认保存</a>
-              <a class="fees-add" href="javascript:">新增</a>
+              <a class="fees-save" href="javascript:" @click="editStandar()">确认保存</a>
+              <a class="fees-add" href="javascript:" @click="copyAndP()">复制/粘贴</a>
+              <a class="fees-add" href="javascript:" @click="clickAddStandard()">新增</a>
             </div>
           </div>
         </div>
@@ -417,7 +393,7 @@
           <p class="t-text fl">车位管理</p>
           <p class="v-close fr" @click="ifVehreg = false">x</p>
         </div>
-        <div class="bot">
+        <div class="bot clf">
           <div class="vc-cet">
             <div class="clf">
               <p class="clf">
@@ -520,11 +496,15 @@
 
 <script>
 // import { User } from "../../assets/js/common";
-import { RequestParams, RequestDataItem, User } from "../../assets/js/entity";
+import {
+  RequestParams,
+  RequestDataItem,
+  User,
+  DataDictionary
+} from "../../assets/js/entity";
 import Pagination from "../Pagination";
 import moment from "moment";
-import { importExcel } from "../../assets/js/common";
-import XLSX from "xlsx";
+import { array2Descendants } from "../../assets/js/common";
 export default {
   data() {
     return {
@@ -588,7 +568,6 @@ export default {
         dataItems: {}
       },
       selectedArea: [],
-      selectedCar: [],
       // 车场区域查询数据
       searchParams: {
         project_id: null,
@@ -620,6 +599,7 @@ export default {
       },
       park_types: ["普通车场", "大套小车场"],
       area_types: [["地面车库", "地下车库", "其他车库"], ["大车场", "小车场"]],
+      selectedCar: [],
       // 车位数据
       placeDatas: {
         id: null,
@@ -638,121 +618,95 @@ export default {
         key: null //车位号或者车位编号组
       },
       /* 收费标准配置 - 收费标准 */
-      chargeStandardValue: '',
+      chargeStandardValue: "",
       chargeStandards: [],
-      chargeStandardOptions: [
-        {
-          value: 'monthCardA',
-          label: '月卡A',
-          children: [
-            {
-              value: 'hasMonthCard',
-              label: '有位月卡收费标准'
-            },
-            {
-              value: 'notMonthCard',
-              label: '无位月卡收费标准'
-            },
-            {
-              value: 'hasYearCard',
-              label: '有位年卡收费标准'
-            },
-            {
-              value: 'notYearCard',
-              label: '无位年卡收费标准'
-            }
-          ]
+      chargeStandardOptions: [],
+      // 已有收费标准数据
+      standards: {
+        attributes: {
+          page_index: 1, //当前页码
+          page_size: 2, //当前页数
+          tatal: 10, //总条目数
+          total_pages: 10 //条页数
         },
-        {
-          value: 'monthCardB',
-          label: '月卡B',
-          children: [
-            {
-              value: 'hasMonthCard',
-              label: '有位月卡收费标准'
-            },
-            {
-              value: 'notMonthCard',
-              label: '无位月卡收费标准'
-            },
-            {
-              value: 'hasYearCard',
-              label: '有位年卡收费标准'
-            },
-            {
-              value: 'notYearCard',
-              label: '无位年卡收费标准'
-            }
-          ]
-        },
-        {
-          value: 'tempCarA',
-          label: '临时车A',
-          children: [
-            {
-              value: 'residenceChargeStandard',
-              label: '深圳住宅收费标准'
-            },
-            {
-              value: 'commonChargeStandard1',
-              label: '通用收费标准1（按小时收费）'
-            },
-            {
-              value: 'commonChargeStandard2',
-              label: '通用收费标准2（按次收费）'
-            },
-            {
-              value: 'commonChargeStandard3',
-              label: '通用收费标准3（自定义收费）'
-            }
-          ]
-        },
-        {
-          value: 'tempCarB',
-          label: '临时车B',
-          children: [
-            {
-              value: 'residenceChargeStandard',
-              label: '深圳住宅收费标准'
-            },
-            {
-              value: 'commonChargeStandard1',
-              label: '通用收费标准1（按小时收费）'
-            },
-            {
-              value: 'commonChargeStandard2',
-              label: '通用收费标准2（按次收费）'
-            },
-            {
-              value: 'commonChargeStandard3',
-              label: '通用收费标准3（自定义收费）'
-            }
-          ]
-        },
-        {
-          value: 'tempCarC',
-          label: '临时车C',
-          children: [
-            {
-              value: 'residenceChargeStandard',
-              label: '深圳住宅收费标准'
-            },
-            {
-              value: 'commonChargeStandard1',
-              label: '通用收费标准1（按小时收费）'
-            },
-            {
-              value: 'commonChargeStandard2',
-              label: '通用收费标准2（按次收费）'
-            },
-            {
-              value: 'commonChargeStandard3',
-              label: '通用收费标准3（自定义收费）'
-            }
-          ]
-        }
-      ]
-    }
+        tree: [
+          {
+            label: "月卡A",
+            children: [
+              { label: "月卡A · 有位月卡收费标准" },
+              { label: "月卡A · 有位月卡收费标准" }
+            ]
+          },
+          {
+            label: "临时车A",
+            children: [
+              { label: "临时车A · 深圳住宅收费标准" },
+              { label: "临时车A · 通用收费标准1（按小时收费）" }
+            ]
+          },
+          {
+            label: "临时车B",
+            children: [
+              { label: "临时车B · 通用收费标准3（自定义收费）" },
+              { label: "临时车B · 通用收费标准2（按次收费）" }
+            ]
+          }
+        ],
+        dataItems: []
+      },
+      defaultProps: {
+        children: "children",
+        label: "label"
+      },
+      // 当前选择的已有收费标准
+      selectedParentIndex: -1,
+      // 点击的节点数据
+      clickStandar: null,
+      // 收费标准查询
+      searchStandard: {
+        project_id: null,
+        area_id: null,
+        key: null
+      },
+      // 收费标准上传数据结构
+      standardDatas: {
+        id: null,
+        project_id: null,
+        area_id: null,
+        standard_code: null,
+        standard_name: null,
+        car_type: null,
+        standard_type: null,
+        standard_content: null,
+        operator_id: null,
+        ramark: null
+      },
+      // 月卡
+      mCodes:[],
+      // 年卡
+      yCodes:[],
+      // 深圳住宅
+      sCodes:[],
+      // sCodes:{
+      //   come:null,
+      //   max:null,
+      //   haveIn:null,
+      //   day:null,
+      //   money:null,
+      //   hour:null,
+      //   firsttime:null,
+      //   firstMoney:null,
+      //   otherMoney:null,
+      // },
+      // 小时收费
+      hCodes:[],
+      // 次数收费
+      tCodes:[],
+      // 自定义
+      oCodes:[],
+      // 粘贴板上的内容
+      copys:null,
+    };
   },
   components: {
     /**分页组件 */
@@ -760,8 +714,9 @@ export default {
   },
   methods: {
     /* 切换收费标准 */
-    changeForm (value) {
-      this.chargeStandardValue = value[1]
+    changeForm(value) {
+      console.log(value)
+      this.chargeStandardValue = value[1];
     },
     //车场信息 全选全不选
     selectedAll() {
@@ -780,8 +735,11 @@ export default {
       this.loadAreasDatas();
     },
     /**显示配置车场收费标准 */
-    showEditParkAreaConfig() {
+    showEditParkAreaConfig(index) {
+      this.searchStandard.area_id =
+        index != null ? this.areas.dataItems[index].id : null;
       this.ifConfig = true;
+      this.loadStandardDatas();
     },
     /**显示车位管理 */
     showCarManager(index) {
@@ -908,7 +866,7 @@ export default {
           this.$message.success(response.message);
           this.placeDatas.car_place_no = null;
           this.placeDatas.car_group_id = null;
-          this.placeDatas.id=null;
+          this.placeDatas.id = null;
           this.loadCarsDatas();
         })
         .catch(({ message }) => this.$message.error(message));
@@ -931,11 +889,12 @@ export default {
         )
           .then(() =>
             this.$api.place.merge(
-              new RequestParams()
-                .addDataItems(datas.map(o => new RequestDataItem()
-                .addAttribute("id", o.id)
-                .addAttribute("car_group_id",o.car_group_id)
-                )               
+              new RequestParams().addDataItems(
+                datas.map(o =>
+                  new RequestDataItem()
+                    .addAttribute("id", o.id)
+                    .addAttribute("car_group_id", o.car_group_id)
+                )
               )
             )
           )
@@ -983,10 +942,110 @@ export default {
             this.$message.info("已取消删除");
           });
       } else this.$message.info("请选择要删除的车位数据");
+    },
+
+    // 收费标准管理
+    // 收费标准节点点击
+    handleNodeClick(data) {
+      this.clickStandar = data;
+      this.standards.dataItems.forEach((o, i) => {
+        if (o.id == data.pid) {
+          this.selectedParentIndex = i;
+        }
+      });
+    },
+    // 加载收费标准
+    loadStandardDatas(pageNum = 1, params = {}) {
+      this.$api.standard
+        .getlist(
+          new RequestParams()
+            .addAttributes(params)
+            .addAttributes(this.searchStandard)
+        )
+        .then(response => {
+          this.standards.attributes = response.attributes;
+          this.standards.dataItems = response.dataItems.map(o => o.attributes);
+          
+          if(!this.chargeStandardOptions.length) new DataDictionary(this.$api).ins().then(datas => {
+            for(let name in datas.car_type){
+              datas.car_type[name].children = datas.car_type[name].depict.split(",").map(o=>{
+                if(typeof(datas.standard_type[o].depict) == "string"){
+                  datas.standard_type[o].depict = JSON.parse(datas.standard_type[o].depict);
+                }
+                return datas.standard_type[o]
+              })
+              this.chargeStandardOptions.push(datas.car_type[name])
+            }
+            this.chargeStandardOptions = this.chargeStandardOptions;
+          });
+        })
+        .catch(response => this.$message.error(response.message));
+    },
+    // 点击新增按钮,清空条目
+    clickAddStandard(){
+      this.yCodes=[];
+      this.mCodes=[];
+      this.sCodes=[];
+      this.hCodes=[];
+      this.tCodes=[];
+    },
+    // 新增或编辑收费标准
+    editStandar() {
+      console.log(this.chargeStandardValue);
+    },
+    // 复制或粘贴
+    copyAndP(){
+      if(this.copys){//已有内容，粘贴
+        this.copys=null;
+
+      }else{//复制当前
+
+      }
+    },
+    // 初始化删除按钮
+    renderRoleNodeContent (h, {node, data, store}) {
+      return (
+        <span class='custom-tree-node'>
+          <span> {node.label}</span>
+          <span class='handleBtns'>
+            < a href='javascript:' onclick='delStandar(node.data)'>< img src={require('../../assets/images/deleteIcon.png')} /></ a>
+          </span>
+        </span>
+      )
+    },
+    // 删除收费标准
+    delStandar(datas) {
+      if (datas.length) {
+        this.$confirm(
+          `确定要删除收费标准数据[${datas.map(o => o.label)}]吗?`,
+          "提示",
+          {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning"
+          }
+        )
+          .then(() =>
+            this.$api.standard.delete(
+              new RequestParams().addDataItems(
+                datas.map(o => new RequestDataItem().addAttribute("id", o.id))
+              )
+            )
+          )
+          .then(response => {
+            this.$message.success("删除成功");
+            this.loadStandardDatas();
+          })
+          .catch(({ message }) => this.$message.error(message))
+          .catch(() => {
+            this.$message.info("已取消删除");
+          });
+      } else this.$message.info("请选择要删除的车位数据");
     }
   },
   mounted() {
     this.loadAreasDatas(1);
+    
   }
 };
 </script>

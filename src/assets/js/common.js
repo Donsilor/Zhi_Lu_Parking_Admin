@@ -1,7 +1,5 @@
 
 
-import $ from 'jquery';
-import XLSX from 'xlsx';
 /**
  * 数组转对象
  * @param {*} arr 
@@ -94,33 +92,6 @@ export const queryParams = function(url = "", params = {}){
     }
     else delete params[__key];
     return (key[0] == "?" ? `?v=${new Date().getTime()}` : "") + (value ? "&" + key.substr(1).replace(/[$][!]*[\w]+/ig, value) : "");
-  });
-}
-
-/**
- * 解析 Excel 表格文件
- * @param {*} file 文件
- * @param {*} header 要获取列标识，字段数组
- */
-export const importExcel = function(file, header){
-  return new Promise(resolve => {
-    let reader = new FileReader();
-    reader.onload = function (e) {
-      let binary = "";
-      let bytes = new Uint8Array(e.target.result);
-      let length = bytes.byteLength;
-      for (let i = 0; i < length; i++) {
-        binary += String.fromCharCode(bytes[i]);
-      }
-      /* read workbook */
-      var wb = XLSX.read(binary, {type: 'binary'});
-      let data = {};
-      for(let name of wb.SheetNames){
-        data[name] = XLSX.utils.sheet_to_json(wb.Sheets[name], {header:header});
-      }
-      resolve(data);
-    }
-    reader.readAsArrayBuffer(file);
   });
 }
 

@@ -21,7 +21,7 @@ export const RequestDataItem = class RequestDataItem {
 
   addAttribute(name, value) {
     if (!!value || typeof value == "number") {
-      this.attributes[name] = value;
+      this.attributes[String(name).trim()] = String(value).trim();
     }
     return this;
   }
@@ -55,7 +55,7 @@ export const RequestParams = class RequestParams {
 
   addAttribute(name, value) {
     if (!!value || typeof value == "number") {
-      this.attributes[name] = value;
+      this.attributes[String(name).trim()] = String(value).trim();
     }
     return this;
   }
@@ -264,6 +264,12 @@ export const ResourceMenu = class ResourceMenu {
  * 导出 Excel 表格数据到文件
  */
 export const ExcelSheets = class ExcelSheets {
+
+  static get dictionary(){
+    return {
+      
+    };
+  }
   
   constructor(){
     this.sheets = {};
@@ -274,8 +280,17 @@ export const ExcelSheets = class ExcelSheets {
    */
   addSheet(name){
     if(!this.sheets[name]){
-      this.sheets[name] = [];
+      this.sheets[name] = {
+        rows:[],
+        headers:[]
+      };
     }
+    return this;
+  }
+
+  setSheetHeader(name, headers){
+    this.addSheet(name);
+    this.sheets[name].headers = headers;
     return this;
   }
 
@@ -285,7 +300,7 @@ export const ExcelSheets = class ExcelSheets {
    * @param {*} row 数据对象，以[KEY]作为标题
    */
   addRow(sheetName, row){
-    this.sheets[sheetName].push(row);
+    this.sheets[sheetName].rows.push(row);
     return this;
   }
   /**
@@ -294,7 +309,10 @@ export const ExcelSheets = class ExcelSheets {
    * @param {*} rows 数据列表
    */
   addRows(sheetName, rows){
-    this.sheets[sheetName] = this.sheets[sheetName].concat(rows);
+    if(!Array.isArray(rows)) return new Error("addRows(sheetName, rows[必须是数组])");
+    for(let row of rows){
+      this.addRow(sheetName, row);
+    }
     return this;
   }
 
@@ -307,11 +325,42 @@ export const ExcelSheets = class ExcelSheets {
   exportExcel(filename){
     const wb = XLSX.utils.book_new();
     for(let sheetName in this.sheets){
-      const ws = XLSX.utils.json_to_sheet(this.sheets[sheetName]);
+      const ws = XLSX.utils.json_to_sheet(this.sheets[sheetName].rows);
       XLSX.utils.book_append_sheet(wb, ws, sheetName);
     }
     XLSX.writeFile(wb, filename + ".xlsx");
   }
+
+  /**
+   * 解析 Excel 表格文件
+   * @param {*} file 文件
+   */
+  importExcel(file){
+    return new Promise(resolve => {
+      let reader = new FileReader();
+      reader.onload = (e=> {
+        let binary = "";
+        let bytes = new Uint8Array(e.target.result);
+        let length = bytes.byteLength;
+        for (let i = 0; i < length; i++) {
+          binary += String.fromCharCode(bytes[i]);
+        }
+        /* read workbook */
+        var wb = XLSX.read(binary, {type: 'binary'});
+        let data = {};
+        for(let name of wb.SheetNames){
+          let header = 2;
+          if(this.sheets[name])if(this.sheets[name].headers.length){
+            header = this.sheets[name].headers
+          }
+          data[name] = XLSX.utils.sheet_to_json(wb.Sheets[name], {header:header}).slice(2);
+        }
+        resolve(data);
+      }).bind(this);
+      reader.readAsArrayBuffer(file);
+    });
+  }
+
   
   empty(){
     this.sheets = {};
@@ -324,7 +373,7 @@ export const ExcelSheets = class ExcelSheets {
  * 目前可以获取本地的网络IP地址
  * ips[0]
  */
-export const Network = new class Network {
+export const Network = class Network {
   constructor(){
     function loadNetworkIps(){
       return new Promise(resolve=>{
@@ -356,7 +405,7 @@ export const Network = new class Network {
           //construct a new RTCPeerConnection    
           var pc = new RTCPeerConnection(servers, mediaConstraints);    
           function handleCandidate(candidate){    
-              //match just the IP address    
+              //match just the IP address
               var ip_regex = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/    
               var ip_addr = ip_regex.exec(candidate)[1];    
               //remove duplicates    

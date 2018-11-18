@@ -524,7 +524,7 @@ export default {
         serviceId: 'standard.getlist'
       }
     },
-    /**新增编辑车位信息 */
+    /**新增编辑收费标准信息 */
     editor: {
       url: '/standard/editor',
       method: HTTP_REQUEST_METHOD.POST,
@@ -532,7 +532,7 @@ export default {
         serviceId: 'standard.editor'
       }
     },
-    /**删除车位 */
+    /**删除收费标准*/
     delete: {
       url: '/standard/delete',
       method: HTTP_REQUEST_METHOD.POST,

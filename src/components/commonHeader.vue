@@ -26,6 +26,8 @@ import { User } from "../assets/js/entity";
         User.empty();
         this.$router.push("/login");
       }
+    },
+    mounted(){
     }
   }
 </script>

@@ -1,12 +1,6 @@
 <template>
   <div class="left_column">
-    <ul id="sideMenuUl" ref="sideMenuUl">
-      <!-- <li :class="{current:currentLi==index}" @click="currentLi = index" v-for="(menus, index) in resourceMenus" :key="index">
-        <div class="title">{{menus.resource_name}}</div>
-        <div class="menu">
-          <router-link v-for="(menu, index) in menus.children" :key="index" :to="menu.resource_url">{{menu.resource_name}}</router-link>
-        </div>
-      </li> -->
+    <ul id="sideMenuUl" ref="sideMenuUl" v-if="userInfo.user_type == 3" >
       <li class='' >
         <div class="title">基础资料</div>
         <div class="menu">
@@ -45,12 +39,20 @@
         </div>
       </li>
     </ul>
+    <ul id="sideMenuUl" ref="sideMenuUl" v-else>
+      <li :class="{current:currentLi==index}" @click="currentLi = index" v-for="(menus, index) in resourceMenus" :key="index">
+        <div class="title">{{menus.resource_name}}</div>
+        <div class="menu">
+          <router-link v-for="(menu, index) in menus.children" :key="index" :to="menu.resource_url">{{menu.resource_name}}</router-link>
+        </div>
+      </li>
+    </ul>
     <a href="javascript:" class="toggleBtn" @click="simplifyToggle"></a>
   </div>
 </template>
 
 <script>
-import { ResourceMenu } from "../assets/js/entity";
+import { ResourceMenu, User } from "../assets/js/entity";
 export default {
   data() {
     return {
@@ -79,7 +81,8 @@ export default {
           // 备注
           remark:null
       },
-      resourceMenus:[]
+      resourceMenus:[],
+      userInfo:User.info
     };
   },
   methods: {
@@ -99,28 +102,47 @@ export default {
           .addClass("current")
       : $(this.$refs.sideMenuUl.children[0]).addClass("current");
 
-      function initSideMenuTab(id) {
-        let ul = document.getElementById(id);
-        let lis = ul.children;
-        for (let i = 0; i < lis.length; i++) {
-          lis[i].onclick = function() {
-            for (let i = 0; i < lis.length; i++) {
-              lis[i].className = "";
-            }
-            this.className = "current";
-            localStorage.setItem('currentMenu', i)
-          };
+    new ResourceMenu(this.$api).ins().then(resourceMenus => this.resourceMenus = resourceMenus);
+    if(this.userInfo.user_type == 3){
+        function initSideMenuTab(id) {
+          let ul = document.getElementById(id);
+          let lis = ul.children;
+          for (let i = 0; i < lis.length; i++) {
+            lis[i].onclick = function() {
+              for (let i = 0; i < lis.length; i++) {
+                lis[i].className = "";
+              }
+              this.className = "current";
+              localStorage.setItem('currentMenu', i)
+            };
+          }
         }
-      }
 
       initSideMenuTab("sideMenuUl");
-
-
-    new ResourceMenu(this.$api).ins().then(resourceMenus => this.resourceMenus = resourceMenus);
-    console.log(this.resourceMenus)
+    }
   }
 };
+
+// 基础资料:/
+// 资源管理:/resourceManage
+// 角色管理:/roleManage
+// 部门管理:/departmentManage
+// 用户管理:/userManage
+// 数据字典:/dataDict
+// 项目管理:/projectManage
+// 授权管理:/authorizeManage
+// 操作日志:/handleLog
+// 系统配置:/systemConfig
+// 业务中心:/</div>
+// 房屋管理:/houseManage
+// 车辆授权:/carAccredit
+// 月卡续费:/monthCard
+// 车场区域:/parkArea
+// 设备管理:/equipManage
+// 监控中心:/</div>
+// 设备监控:/equipMonitor
 </script>
 
 <style scoped>
 </style>
+

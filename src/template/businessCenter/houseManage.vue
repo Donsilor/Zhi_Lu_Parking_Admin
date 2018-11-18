@@ -192,12 +192,12 @@
         </div>
         <div class="bot">
           <div class="cet clf">
-            <div class="fl choose-file">选择文件<input type="file" accept=".xls,.xlsx"  /></div>
-            <a class="fr downloadtemp" href="javascript:">下载模板</a>
-            <p>支持扩展名：.xls .xlsx</p>
+            <div class="fl choose-file">选择文件<input type="file" accept=".xls,.xlsx" @change="selectImportExcelFile" /></div>
+            <a class="fr downloadtemp" >下载模板</a>
+            <p>{{importExcelFile.name || ""}} 支持扩展名：.xls .xlsx</p>
           </div>
           <div class="button clf">
-            <a class="upload fr" href="javascript:">上传</a>
+            <a class="upload fr" href="javascript:" @click="importExcel()">上传</a>
           </div>
         </div>
       </div>
@@ -270,7 +270,7 @@
 import { RequestParams, RequestDataItem,User, ExcelSheets } from "../../assets/js/entity";
 import Pagination from "../Pagination";
 import moment from "moment";
-import {importExcel} from "../../assets/js/common";
+import {array2Object} from "../../assets/js/common";
 import XLSX from 'xlsx';
 export default {
   data () {
@@ -321,29 +321,29 @@ export default {
       selectedHouseHolds:[],
       /**房屋数据 */
       houseData:{
-        id:null,
-        project_id:null,
-        courtyard:null,
-        building:null,
-        units:null,
-        room_no:null,
-        operator_id:null,
-        remark:null
+        id:null,//          	Y	String	ID
+        project_id:null,//  	Y	String	项目ID
+        courtyard:null,//   	Y	String	庭院
+        building:null,//    	Y	String	楼栋
+        units:null,//       	Y	String	单元
+        room_no:null,//     	Y	String	房号
+        operator_id:null,// 	Y	String	操作员ID
+        remark:null,//      	N	String	备注
       },
       /**房屋住户数据 */
       houseHoldData:{
-        id:null,
-        project_id:null,
-        house_id:null,
-        household_type:null,
-        full_name:null,
-        sex:null,
-        tel:null,
-        identification_no:null,
-        addr:null,
-        birthday:null,
-        operator_id:null,
-        remark:null
+        id:null,//               	Y	String	ID
+        project_id:null,//       	Y	String	项目ID
+        house_id:null,//         	Y	String	房屋ID
+        household_type:null,//   	Y	Int	住户类型(0：亲属1：业主2：租客3：朋友)
+        full_name:null,//        	Y	String	姓名
+        sex:null,//              	Y	Int	性别(0：女1：男)
+        tel:null,//              	Y	String	电话
+        identification_no:null,//	N	String	证件号码
+        addr:null,//             	N	String	证件地址
+        birthday:null,//         	N	String	出生日期
+        operator_id:null,//      	Y	String	操作员ID
+        remark:null,//           	N	String	备注
       },
       houseHolds:{
         attributes: {
@@ -363,6 +363,7 @@ export default {
         },
         dataItems: [],
       },
+      importExcelFile:{},
       ifEditRegister: false,
       ifImportAuthorize: false,
       ifAuthorize: false,
@@ -377,6 +378,53 @@ export default {
     Pagination
   },
   methods: {
+    selectImportExcelFile({target}){
+      this.importExcelFile = target.files[0];
+    },
+
+    importExcel(){
+      this.$confirm(`确定要导入[${this.importExcelFile.name}]吗?`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+      })
+      .then(()=>{
+        let excelSheets = new ExcelSheets();
+        for(let name in ExcelSheets.dictionary){
+          excelSheets.setSheetHeader(name, Object.keys(ExcelSheets.dictionary[name]));
+        }
+
+        return excelSheets.importExcel(this.importExcelFile).then(({房屋列表,住户列表,车辆列表})=>{
+          console.log(房屋列表,住户列表,车辆列表)
+          return this.$api.house.editor(new RequestParams()
+          .addDataItems(房屋列表.map(o=>new RequestDataItem().addAttributes(o))))
+        })
+        .then(({dataItems}) => {
+          let houses = array2Object(dataItems.map(o=>o.attributes), "code");
+          return this.$api.household.editor(new RequestParams()
+          .addDataItems(住户列表.map(o=>{
+            return new RequestDataItem().addAttributes(o).addAttribute("house_id", houses[o.house_code].id);
+          })))
+        })
+        .then(({dataItems})=>{
+          let households = array2Object(dataItems.map(o=>o.attributes), "code");
+          return this.$api.car.editor(new RequestParams()
+          .addDataItems(车辆列表.map(o=>{
+            return new RequestDataItem().addAttributes(o).addAttribute("household_id", households[o.household_code].id);
+          })))
+        })
+        .then(()=>{
+          this.$message.success("导入成功");
+          this.loadHousesDatas();
+        })
+        .catch(({message}) => this.$message.error(message))
+        .catch(({message}) => this.$message.error(message))
+        .catch(({message}) => this.$message.error(message));
+      })
+      .catch((error) => (this.$message.info("文件不正确，导入失败") ,console.log(error)))
+      .catch(() => this.$message.info("已取消删除"))
+      .finally(()=>this.ifImportAuthorize = false);
+    },
 
     selectedAll(){
       if(this.selectedHouses.length){

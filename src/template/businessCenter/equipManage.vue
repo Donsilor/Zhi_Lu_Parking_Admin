@@ -22,6 +22,7 @@
             <div class="th">所属区域</div>
             <div class="th">设备类型</div>
             <div class="th">IP地址</div>
+            <div class="th">MAC地址</div>
             <div class="th">创建时间</div>
             <div class="th">更新时间</div>
             <div class="th">操作员</div>
@@ -32,28 +33,30 @@
               <div class="td"><a href="javascript:" class="toggleBtn" @click="device.isShowChildren = !device.isShowChildren, pucker = !pucker" :pucker="pucker" >+</a></div>
               <div class="td">
                 <div class="tr level1_dataItem">
-                  <div class="td">{{device.device_code}}</div>
-                  <div class="td">{{device.device_name}}</div>
+                  <div class="td">{{device.device_code||" "}}</div>
+                  <div class="td">{{device.device_name||" "}}</div>
                   <div class="td">{{/*device.area_id*/0}}</div>
                   <div class="td">{{/*设备类型(WORKS：工作站 INLET：入口　OUTLET：出口 CAMERA：摄像头 LED：LED显示屏 HORN：喇叭 BARRIERGATE：道闸,从数据字典获取，有层级关系，工作站为第一层，出入口为第二层，其他设备为第三层)*/
                     {WORKS:"工作站",INLET:"入口",OUTLET:"出口",CAMERA:"摄像头",LED:"LED显示屏",HORN:"喇叭",BARRIERGATE:"道闸"}[device.device_type]
                   }}</div>
-                  <div class="td">{{device.device_ip}}</div>
-                  <div class="td">{{device.create_time}}</div>
-                  <div class="td">{{device.update_time}}</div>
-                  <div class="td">{{device.user_name}}</div>
+                  <div class="td">{{device.device_ip||" "}}</div>
+                  <div class="td">{{device.in_device_mac||" "}}</div>
+                  <div class="td">{{device.create_time||" "}}</div>
+                  <div class="td">{{device.update_time||" "}}</div>
+                  <div class="td">{{device.user_name||" "}}</div>
                   <div class="td">
                     <a href="javascript:" @click="showEditDevice(device)">编辑</a>
                     <a href="javascript:" @click="delDevice(device)">删除</a>
                   </div>
                 </div>
-                <div class="tr level1_toggleTable" v-show="device.isShowChildren">
+                <div class="tr level1_toggleTable" v-show="device.isShowChildren && device.children.length">
                   <div class="tr level2_ths">
                     <div class="th"></div>
                     <div class="th">设备编号</div>
                     <div class="th">设备名称</div>
                     <div class="th">设备类型</div>
                     <div class="th">IP地址</div>
+                    <div class="th">MAC地址</div>
                     <div class="th">开闸方式</div>
                     <div class="th">加载参数</div>
                     <div class="th">创建时间</div>
@@ -67,17 +70,18 @@
                         class="td"><a href="javascript:" class="toggleBtn" @click="device_.isShowChildren = !device_.isShowChildren, pucker = !pucker" :pucker="pucker">+</a></div>
                       <div class="td">
                         <div class="tr level2_dataItem">
-                          <div class="td">{{device_.device_code}}</div>
-                          <div class="td">{{device_.device_name}}</div>
+                          <div class="td">{{device_.device_code||" "}}</div>
+                          <div class="td">{{device_.device_name||" "}}</div>
                           <div class="td">{{/*设备类型(WORKS：工作站 INLET：入口　OUTLET：出口 CAMERA：摄像头 LED：LED显示屏 HORN：喇叭 BARRIERGATE：道闸,从数据字典获取，有层级关系，工作站为第一层，出入口为第二层，其他设备为第三层)*/
                             {WORKS:"工作站",INLET:"入口",OUTLET:"出口",CAMERA:"摄像头",LED:"LED显示屏",HORN:"喇叭",BARRIERGATE:"道闸"}[device_.device_type]
                           }}</div>
-                          <div class="td">{{device_.device_ip}}</div>
+                          <div class="td">{{device_.device_ip||" "}}</div>
+                          <div class="td">{{device_.in_device_mac||" "}}</div>
                           <div class="td">{{[/*开闸方式(0无1自动开闸2确认开闸)*/"无","自动开闸","确认开闸"][device_.cut_off_mode]}}</div>
                           <div class="td">{{device_.load_para || "无"}}</div>
-                          <div class="td">{{device_.create_time}}</div>
-                          <div class="td">{{device_.update_time}}</div>
-                          <div class="td">{{device_.user_name}}</div>
+                          <div class="td">{{device_.create_time||" "}}</div>
+                          <div class="td">{{device_.update_time||" "}}</div>
+                          <div class="td">{{device_.user_name||" "}}</div>
                           <div class="td">
                             <a href="javascript:" @click="showEditDevice(device_)">编辑</a>
                             <a href="javascript:" @click="delDevice(device_)">删除</a>
@@ -89,6 +93,7 @@
                             <div class="th">设备名称</div>
                             <div class="th">设备类型</div>
                             <div class="th">IP地址</div>
+                            <div class="th">MAC地址</div>
                             <div class="th">加载参数</div>
                             <div class="th">创建时间</div>
                             <div class="th">更新时间</div>
@@ -99,16 +104,17 @@
                             <div class="tr level3_itemTable">
                               <div class="td">
                                 <div class="tr level3_dataItem">
-                                  <div class="td">{{device__.device_code}}</div>
-                                  <div class="td">{{device__.device_name}}</div>
+                                  <div class="td">{{device__.device_code||" "}}</div>
+                                  <div class="td">{{device__.device_name||" "}}</div>
                                   <div class="td">{{/*设备类型(WORKS：工作站 INLET：入口　OUTLET：出口 CAMERA：摄像头 LED：LED显示屏 HORN：喇叭 BARRIERGATE：道闸,从数据字典获取，有层级关系，工作站为第一层，出入口为第二层，其他设备为第三层)*/
                                     {WORKS:"工作站",INLET:"入口",OUTLET:"出口",CAMERA:"摄像头",LED:"LED显示屏",HORN:"喇叭",BARRIERGATE:"道闸"}[device__.device_type]
                                   }}</div>
-                                  <div class="td">{{device__.device_ip}}</div>
-                                  <div class="td">{{device__.load_para}}</div>
-                                  <div class="td">{{device__.create_time}}</div>
-                                  <div class="td">{{device__.update_time}}</div>
-                                  <div class="td">{{device__.user_name}}</div>
+                                  <div class="td">{{device__.device_ip||" "}}</div>
+                                  <div class="td">{{device__.in_device_mac||" "}}</div>
+                                  <div class="td">{{device__.load_para||" "}}</div>
+                                  <div class="td">{{device__.create_time||" "}}</div>
+                                  <div class="td">{{device__.update_time||" "}}</div>
+                                  <div class="td">{{device__.user_name||" "}}</div>
                                   <div class="td">
                                     <a href="javascript:" @click="showEditDevice(device__)">编辑</a>
                                     <a href="javascript:" @click="delDevice(device__)">删除</a>
@@ -174,6 +180,7 @@
                 </select>
               </p>
               <p class="clf"><span class="fl">IP地址或机号：</span><input class="fl" type="text" placeholder="请输入" v-model="deviceData.device_ip"></p>
+              <p class="clf"><span class="fl">MAC地址：</span><input class="fl" type="text" placeholder="请输入" v-model="deviceData.in_device_mac"></p>
               <p class="bz clf"><span class="fl">备注：</span><input class="fl" type="text" placeholder="请输入备注" v-model="deviceData.remark"></p>
             </div>
             <div class="button clf">
@@ -222,6 +229,7 @@ export default {
         device_type:"WORKS",// 	Y	String	设备类型(WORKS：工作站 INLET：入口　OUTLET：出口 CAMERA：摄像头 LED：LED显示屏 HORN：喇叭 BARRIERGATE：道闸,从数据字典获取，有层级关系，工作站为第一层，出入口为第二层，其他设备为第三层)
         cut_off_mode:0,//	Y	Int	    开闸方式(0无1自动开闸2确认开闸)
         device_ip:null,//   	Y	String	IP地址
+        in_device_mac:null,
         load_para:null,//   	N	String	加载参数
         isfee_zero:0,//  	Y	Int	    收费0元自动开闸（0：否1是；设备类型为出口时使用）
         operator_id:null,// 	Y	String	操作员ID
@@ -229,7 +237,6 @@ export default {
         remark:null,//      	N	String	备注
         create_time:null,// 	Y	String	创建时间
         update_time:null,// 	Y	String	更新时间
-
       },
       devices:{
         attributes: {

@@ -155,13 +155,13 @@
           <div class="cet clf">
             <div class="fl choose-file">
               选择文件
-              <input type="file" id="ImportAuthorizeFile" hidden/>
+              <input type="file" @change="selectImportExcelFile" />
             </div>
             <a class="fr downloadtemp" href="javascript:">下载模板</a>
-            <p>支持扩展名：.xls .xlsx</p>
+            <p>{{importExcelFile.name}}支持扩展名：.xls .xlsx</p>
           </div>
           <div class="button clf">
-            <a class="upload fr" href="javascript:">上传</a>
+            <a class="upload fr" href="javascript:" @click="importExcel()">上传</a>
           </div>
         </div>
       </div>
@@ -172,7 +172,7 @@
 </template>
 
 <script>
-import { RequestParams, RequestDataItem,User } from "../../assets/js/entity";
+import { RequestParams, RequestDataItem,User, ExcelSheets, DataDictionary } from "../../assets/js/entity";
 import Pagination from "../Pagination";
 import moment from "moment";
   export default {
@@ -223,9 +223,8 @@ import moment from "moment";
 
           },
         },
-        standards:{
-          
-        },
+        standards:[],
+        dataDictionary:{},
         pickerOptions: {
           shortcuts: [{
             text: '最近一周',
@@ -260,6 +259,47 @@ import moment from "moment";
       Pagination
     },
     methods: {
+      selectImportExcelFile({target}){
+        this.importExcelFile = target.files[0];
+      },
+
+      importExcel(){
+        this.$confirm(`确定要导入[${this.importExcelFile.name}]吗?`, '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+        })
+        .then(()=>{
+          let excelSheets = new ExcelSheets();
+          for(let name in ExcelSheets.dictionary){
+            excelSheets.setSheetHeader(name, Object.keys(ExcelSheets.dictionary[name]));
+          }
+          return excelSheets.importExcel(this.importExcelFile).then(async ({车辆授权})=>{
+            车辆授权 = 车辆授权.map(o=>new RequestDataItem().addAttributes(o));
+            for(let o of 车辆授权){
+              let car = await this.$api.car.getlist(new RequestParams().addAttribute("car_no", o.attributes.car_no));
+              let delay = await this.$api.delay.getlist(new RequestParams().addAttribute("key", `and car_no = '${o.attributes.car_no}'`));
+              if(!delay.dataItems[0]){
+                return this.$message.error(`无法导入，请先为车辆[${o.attributes.car_no}]授权`);
+              }
+              if(!car.dataItems[0]){
+                return this.$message.error(`无法导入，请先添加车辆[${o.attributes.car_no}]`);
+              }
+              o.addAttribute("car_auth_id", delay.dataItems[0].attributes.id)
+              .addAttribute("car_id", car.dataItems[0].attributes.id)
+            }
+            return this.$api.delay.charge(new RequestParams().addDataItems(车辆授权))
+          })
+          .then(response => {
+            this.loadCarDelaysDatas();
+            this.$message.success(response.message)
+          })
+          .catch(response => this.$message.error(response.message));;
+        })
+        .catch((error) => (this.$message.info("文件不正确，导入失败") ,console.log(error)))
+        .catch(() => this.$message.info("已取消删除"))
+        .finally(()=>this.ifImportAuthorize = false);
+      },
 
       selectedAll(){
         if(this.selectedDelays.length){
@@ -271,6 +311,18 @@ import moment from "moment";
       showPostponedRenewal(data){
         if(data){
           this.carDelayData = data;
+          new DataDictionary(this.$api).ins().then(data=>{
+            this.dataDictionary = data;
+            /**
+             * 1. 根据车辆类型获取对应的收费标准
+             * 2. 每个收费标准
+             */
+            this.$api.standard.getlist()
+            .then(response => {
+              console.log(response)
+            })
+            .catch(response => this.$message.error(response.message));
+          })
         }
         this.ifRegister = true;
       },
@@ -306,15 +358,6 @@ import moment from "moment";
           })
           .catch(response => this.$message.error(response.message));
       },
-      loadStandards(){
-        this.$api.standard.getlist()
-        .then(response => {
-          this.carDelays.attributes = response.attributes;
-          this.carDelays.dataItems = response.dataItems.map(o => o.attributes);
-        })
-        .catch(response => this.$message.error(response.message));
-
-      }
     },
     mounted () {
       this.loadCarDelaysDatas(1);
