@@ -46,7 +46,9 @@ export const RequestParams = class RequestParams {
     this.dataItems = [];
 
     this.addAttribute("project_id", User.project_id);
+    this.addAttribute("operator_id", User.info.id);
     this.addAttribute("user_id", User.info.user_type == 3 ? null : User.info.id);
+
     $.extend(this, obj);
   }
 

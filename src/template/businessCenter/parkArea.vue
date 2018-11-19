@@ -165,12 +165,16 @@
         </div>
         <div class="bot clf">
           <div class="bot-left fl">
-            <input type="text" placeholder="请输入内容" v-model="searchStandard.key"/>
+            <input type="text" placeholder="请输入内容" v-model="searchStandard.key" @change="loadStandardDatas(1,{key:`and standard_name like '%${searchStandard.key}%'`})"/>
             <!-- 已有收费标准树结构 -->
             <div class="feestype">
               <el-tree 
               :data="standards.tree" 
-              :props="defaultProps" 
+              :props="{
+                value:'dic_code',
+                children: 'children',
+                label: 'remark'
+              }" 
               :node-key="'id'"
               :highlight-current="true"
               @node-click="handleNodeClick"
@@ -195,9 +199,8 @@
             </div>
             <!-- 月卡 -->
             <div class="center-right clf" v-if="[0,1].some(o=>o==chargeStandards[1])">
-               <ul class="clf" v-for="(item, index) in standardData.depict" v-bind:key="index">
-                <li><span>{{item.count}}个月：</span><input type="number" step="1" min="1" max="1000" v-model="item.fee"/></li>
-                <!-- <li><span>{{index+6}}个月：</span><input type="number" step="1" min="1" max="1000" v-model="mCodes[index+5]"/></li> -->
+               <ul class="clf">
+                <li v-for="(item, index) in standardData.depict" v-bind:key="index"><span>{{item.count}}个月：</span><input type="number" step="1" min="1" max="1000" v-model="item.fee"/></li>
                </ul>
             </div>
             <!-- 年卡 -->
@@ -215,13 +218,11 @@
                     <span>进场免费时间：</span>
                     <input class="width100" type="number" step="1" min="1" max="60" v-model="standardData.depict.freeTime"/>
                     <span>分钟</span>
-                  </div>
-                  <div>
-                    <label><input type="checkbox" v-model="standardData.depict.chargeIncludeFreeTime"><span>计费包含免费分钟</span></label>
+                    <label class="absHasFree" style="right:-30px;"><input type="checkbox" v-model="standardData.depict.chargeIncludeFreeTime">计费包含免费分钟</label>
                   </div>
                 </li>
                 <li>
-                  <div class="clf">
+                  <div class="clf paddingLeft80">
                     <span>最高收费：</span>
                     <input class="width100" type="number" step="1" min="1" max="60" v-model="standardData.depict.maxFee"/>
                     <span>元</span>
@@ -263,11 +264,12 @@
             </div>
             <!-- 按小时收费 -->
             <div class="center-right clf" v-else-if="chargeStandards[1]==5">
-              <ul class="clf">
+              <ul class="clf evenLiPadding">
                 <li>
                   <span>进场免费时间：</span>
                   <input type="number" step="1" min="1" max="1000" v-model="standardData.depict.freeTime"/>
                   <span class="widthAuto">分钟</span>
+                  <label class="absHasFree"><input type="checkbox" v-model="standardData.depict.chargeIncludeFreeTime">计费包含免费分钟</label>
                 </li>
                 <li  v-for="(item, index) in standardData.depict.hourFeeList" v-bind:key="index">
                   <span>{{item.count}}小时：</span><input type="number" step="1" min="1" max="1000" v-model="item.fee"/></li>
@@ -276,16 +278,17 @@
             </div>
             <!-- 按次收费 -->
             <div class="center-right clf" v-else-if="chargeStandards[1]==6">
-              <ul class="clf">
+              <ul class="clf evenLiPadding">
                 <li>
                   <span>进场免费时间：</span>
                   <input type="number" step="1" min="1" max="1000" v-model="standardData.depict.freeTime"/>
                   <span class="widthAuto">分钟</span>
+                  <label class="absHasFree"><input type="checkbox">计费包含免费分钟</label>
                 </li>
                 <li><span>每次收费：</span><input type="number" step="1" min="1" max="1000" v-model="standardData.depict.timeFee"/></li>
                 <li><span>最高收费：</span><input type="number" step="1" min="1" max="1000" v-model="standardData.depict.maxFee"/></li>
                 <li>
-                  <label>
+                  <label class="clf" style="float:left;margin-left: 70px;">
                     <input type="checkbox" v-model="standardData.depict.overDayRepeatCharge">
                     <span>24小时后重复计费</span>
                   </label>
@@ -293,16 +296,18 @@
               </ul>
             </div>
             <!-- 自定义收费 -->
-            <div class="center-right clf" v-else-if="chargeStandards[1]==7">
-              <ul class="clf">
+            <div class="center-right clf" v-else-if="chargeStandards[1]==7"  >
+              <ul class="clf evenLiPadding">
                 <li>
                   <span>进场免费时间：</span>
                   <input type="number" step="1" min="1" max="1000" v-model="standardData.depict.freeTime"/>
                   <span class="widthAuto">分钟</span>
+                  <label class="absHasFree"><input type="checkbox" v-model="standardData.depict.chargeIncludeFreeTime">计费包含免费分钟</label>
                 </li>
-                <li><span>每次收费：</span><input type="number" step="1" min="1" max="1000" value="250"/></li>
+                <li><span>最高收费：</span><input type="number" step="1" min="1" max="1000" v-model="standardData.depict.maxFee"/></li>
               </ul>
               <table class="tempChargeStandard" cellpadding="0" cellspacing="0">
+                <thead>
                 <tr>
                   <th>开始时间</th>
                   <th>结束时间</th>
@@ -310,47 +315,49 @@
                   <th>计费单位(分钟)</th>
                   <th>操作</th>
                 </tr>
-                <tr v-for="(item, index) in standardData.depict.timeIntervalFeeList" :key="index">
+                </thead>
+                <tbody>
+                <tr v-for="(item, index) in standardData.depict.timeIntervalFeeList" :key="index" :val_data="standardData.val_data">
                   <td>{{item.beginTime}}</td>
                   <td>{{item.endTime}}</td>
                   <td>{{item.unitTimeFee}}</td>
                   <td>{{item.unitTime}}</td>
                   <td>
-                    <a href="javascript:">编辑</a>
-                    <a href="javascript:">删除</a>
+                    <a href="javascript:" @click="standardData.base = item, pucker=!pucker" :pucker="pucker">编辑</a>
+                    <a href="javascript:" @click="standardData.depict.timeIntervalFeeList.splice(index, 1), pucker=!pucker" :pucker="pucker">删除</a>
                   </td>
                 </tr>
+                </tbody>
               </table>
               <div class="tempChargeStandardEdit">
                 <ul class="clf">
                   <li>
                     <span>开始时间：</span>
-                    <input type="time" v-model="tandardData.depict.beginTime">
+                    <input type="time" v-model="standardData.base.beginTime" @change="pucker=!pucker">
                   </li>
                   <li>
                     <span>结束时间：</span>
-                    <input type="time" v-model="tandardData.depict.endTime">
+                    <input type="time" v-model="standardData.base.endTime" @change="pucker=!pucker">
                   </li>
                   <li>
                     <span>收费金额：</span>
-                    <input type="number" step="1" min="1" max="1000" v-model="tandardData.depict.unitTimeFee">
+                    <input type="number" step="1" min="1" max="1000" v-model="standardData.base.unitTimeFee" @change="pucker=!pucker">
                   </li>
                   <li>
                     <span>计费单位：</span>
-                    <input type="number" step="1" min="1" max="1000" v-model="tandardData.depict.unitTime">
+                    <input type="number" step="1" min="1" max="1000" v-model="standardData.base.unitTime" @change="pucker=!pucker">
                     <span>分钟</span>
                   </li>
                   <li class="widthMax btns">
-                    <a href="javascript:" class="addBtn">添加</a>
-                    <a href="javascript:">清空</a>
+                    <a href="javascript:" class="addBtn" @click="addTimeIntervalFeeList(),  pucker=!pucker">添加</a>
+                    <a href="javascript:" @click="standardData.base = {},  pucker=!pucker">清空</a>
                   </li>
                 </ul>
               </div>
             </div>
             <div class="right-button clf" v-if="chargeStandards[1]">
-              <a class="fees-save" href="javascript:" @click="editStandar()">确认保存</a>
+              <a class="fees-save" href="javascript:" @click="editStandar()" :pucker="pucker">{{standardData.iid ? "确认修改" : "确认保存"}}</a>
               <a class="fees-add" href="javascript:" @click="copyAndP()">复制/粘贴</a>
-              <a class="fees-add" href="javascript:" @click="clickAddStandard()">新增</a>
             </div>
           </div>
         </div>
@@ -450,17 +457,6 @@
         </div>
       </div>
     </div>
-    <!-- 确认删除弹窗 -->
-    <!-- <div class="delete_prompt" v-if="ifDel">
-      <div class="depwd">
-        <div class="text">你是否确认删除选中的记录</div>
-        <div class="button clf">
-          <a class="qr fr">确定</a>
-          <a class="qx fr" @click="ifDel = false">取消</a>
-        </div>
-      </div>
-    </div> -->
-    <!--弹窗-->
   </div>
 </template>
 
@@ -474,10 +470,12 @@ import {
 } from "../../assets/js/entity";
 import Pagination from "../Pagination";
 import moment from "moment";
+import $ from 'jquery';
 import { array2Descendants } from "../../assets/js/common";
 export default {
   data() {
     return {
+      pucker:false,
       toggleSearchText: "收起搜索",
       searchDivShow: true,
       pickerOptions: {
@@ -599,34 +597,8 @@ export default {
           tatal: 10, //总条目数
           total_pages: 10 //条页数
         },
-        tree: [
-          {
-            label: "月卡A",
-            children: [
-              { label: "月卡A · 有位月卡收费标准" },
-              { label: "月卡A · 有位月卡收费标准" }
-            ]
-          },
-          {
-            label: "临时车A",
-            children: [
-              { label: "临时车A · 深圳住宅收费标准" },
-              { label: "临时车A · 通用收费标准1（按小时收费）" }
-            ]
-          },
-          {
-            label: "临时车B",
-            children: [
-              { label: "临时车B · 通用收费标准3（自定义收费）" },
-              { label: "临时车B · 通用收费标准2（按次收费）" }
-            ]
-          }
-        ],
+        tree: [],
         dataItems: []
-      },
-      defaultProps: {
-        children: "children",
-        label: "label"
       },
       // 当前选择的已有收费标准
       selectedParentIndex: -1,
@@ -639,43 +611,15 @@ export default {
         key: null
       },
       searchStandards:{},
-      standardData:{},
+      standardData:{
+        depict:{
+          base:{}
+        }
+      },
       // 收费标准上传数据结构
       standardDatas: {
-        id: null,
-        project_id: null,
-        area_id: null,
-        standard_code: null,
-        standard_name: null,
-        car_type: null,
-        standard_type: null,
-        standard_content: null,
-        operator_id: null,
-        ramark: null
+        
       },
-      // 月卡
-      mCodes:[],
-      // 年卡
-      yCodes:[],
-      // 深圳住宅
-      sCodes:[],
-      // sCodes:{
-      //   come:null,
-      //   max:null,
-      //   haveIn:null,
-      //   day:null,
-      //   money:null,
-      //   hour:null,
-      //   firsttime:null,
-      //   firstMoney:null,
-      //   otherMoney:null,
-      // },
-      // 小时收费
-      hCodes:[],
-      // 次数收费
-      tCodes:[],
-      // 自定义
-      oCodes:[],
       // 粘贴板上的内容
       copys:null,
     };
@@ -685,10 +629,30 @@ export default {
     Pagination
   },
   methods: {
+    addTimeIntervalFeeList(){
+      if(this.standardData.base.unitTimeFee && 
+      this.standardData.base.unitTime && 
+      this.standardData.base.beginTime && 
+      this.standardData.base.endTime
+      ){
+        this.standardData.depict.timeIntervalFeeList.push({
+          beginTime:this.standardData.base.beginTime,
+          endTime:this.standardData.base.endTime,
+          unitTimeFee:this.standardData.base.unitTimeFee,
+          unitTime:this.standardData.base.unitTime,
+        });
+      }
+    },
     /* 切换收费标准 */
     changeForm(value) {
-      this.standardData = this.searchStandards.car_type[value[0]].getChildrenKey(value[1])
-      console.log(this.standardData, value)
+      this.standardData = this.searchStandards.car_type[value[0]].getChildrenKey(value[1]);
+      let item = this.searchStandards.car_type[value[0]];
+      let data = this.standardData;
+      data.standard_code = item.car_type+value[0];
+      data.area_id = this.searchStandard.area_id;
+      data.standard_name = item.remark +"/"+ data.remark
+      data.standard_type = value[1];
+      data.car_type = value[0];
     },
     //车场信息 全选全不选
     selectedAll() {
@@ -850,6 +814,7 @@ export default {
           ? [this.cars.dataItems[id]]
           : this.selectedCar.map(o => this.cars.dataItems[o]);
       if (datas.length) {
+        let car_group_id = datas.map(o=>o.car_place_no).join("") + String(new Date().getTime())
         this.$confirm(
           `确定要合并车位号[${datas.map(o => o.car_place_no)}]吗?`,
           "提示",
@@ -865,7 +830,7 @@ export default {
                 datas.map(o =>
                   new RequestDataItem()
                     .addAttribute("id", o.id)
-                    .addAttribute("car_group_id", o.car_group_id)
+                    .addAttribute("car_group_id", car_group_id)
                 )
               )
             )
@@ -918,32 +883,54 @@ export default {
 
     // 收费标准管理
     // 收费标准节点点击
-    handleNodeClick(data) {
-      this.clickStandar = data;
-      this.standards.dataItems.forEach((o, i) => {
-        if (o.id == data.pid) {
-          this.selectedParentIndex = i;
-        }
-      });
+    handleNodeClick(data, a, c, v) {
+      if(data.depict){
+        this.chargeStandards = [0, data.standard_type];
+        this.standardData = data;
+      }
     },
     // 加载收费标准
     loadStandardDatas(pageNum = 1, params = {}) {
       this.$api.standard
         .getlist(
           new RequestParams()
-            .addAttributes(params)
             .addAttributes(this.searchStandard)
+            .addAttribute("key", "")
+            .addAttributes(params)
+            .addAttribute("page_size", 1000000)
         )
         .then(response => {
           this.standards.attributes = response.attributes;
           this.standards.dataItems = response.dataItems.map(o => o.attributes);
-          
-          if(!this.chargeStandardOptions.length) new DataDictionary(this.$api).ins().then(datas => {
+          this.standards.tree = [];
+          this.chargeStandardOptions = [];
+          new DataDictionary(this.$api).ins().then(datas => {
             this.searchStandards = datas;
+            if(!datas.standard_type){
+              this.ifConfig = false;
+              return this.$message.error("请先前往配置收费标准数据字典");
+            }
+            let tempTree = {};
+            for(let item of this.standards.dataItems){
+              item.iid = item.id;
+              item.depict = JSON.parse(item.standard_content);
+              item.remark = datas.standard_type[item.standard_type].remark;
+              item.base = {};
+              if(!tempTree[item.car_type]){
+                tempTree[item.car_type] = {
+                  remark:datas.car_type[item.car_type].remark,
+                  children:[]
+                };
+                this.standards.tree.push(tempTree[item.car_type]);
+              }
+              tempTree[item.car_type].children.push(item);
+            }
+
             for(let name in datas.car_type){
               datas.car_type[name].children = datas.car_type[name].depict.split(",").map(o=>{
                 if(typeof(datas.standard_type[o].depict) == "string"){
                   datas.standard_type[o].depict = JSON.parse(datas.standard_type[o].depict);
+                  datas.standard_type[o].base = {};
                 }
                 return datas.standard_type[o]
               })
@@ -953,22 +940,29 @@ export default {
               this.chargeStandardOptions.push(datas.car_type[name])
             }
             this.chargeStandardOptions = this.chargeStandardOptions;
-            console.log(this.chargeStandardOptions)
-          });
+          })
         })
         .catch(response => this.$message.error(response.message));
     },
-    // 点击新增按钮,清空条目
-    clickAddStandard(){
-      this.yCodes=[];
-      this.mCodes=[];
-      this.sCodes=[];
-      this.hCodes=[];
-      this.tCodes=[];
-    },
     // 新增或编辑收费标准
     editStandar() {
-      console.log(this.chargeStandardValue);
+
+      delete this.standardData.depict.base;
+
+      this.$api.standard.editor(new RequestParams()
+      .addAttribute("id", this.standardData.iid)
+      .addAttribute("area_id",this.standardData.area_id)
+      .addAttribute("standard_code",this.standardData.standard_code)
+      .addAttribute("standard_name",this.standardData.standard_name)
+      .addAttribute("car_type",this.standardData.car_type)
+      .addAttribute("standard_type",this.standardData.standard_type)
+      .addAttribute("standard_content",JSON.stringify(this.standardData.depict))
+      )
+      .then(response =>{
+        this.$message.info(response.message);
+        this.pucker=!this.pucker
+      })
+      .catch(({ message }) => this.$message.error(message))
     },
     // 复制或粘贴
     copyAndP(){
@@ -981,43 +975,42 @@ export default {
     },
     // 初始化删除按钮
     renderRoleNodeContent (h, {node, data, store}) {
+      console.log(data)
       return (
         <span class='custom-tree-node'>
           <span> {node.label}</span>
           <span class='handleBtns'>
-            < a href='javascript:' onclick='delStandar(node.data)'>< img src={require('../../assets/images/deleteIcon.png')} /></ a>
+            <a href='javascript:' onClick={()=>{
+              this.delStandar(data.iid, data.standard_name)
+            }}>< img src={require('../../assets/images/deleteIcon.png')} /></a>
           </span>
         </span>
       )
     },
     // 删除收费标准
-    delStandar(datas) {
-      if (datas.length) {
-        this.$confirm(
-          `确定要删除收费标准数据[${datas.map(o => o.label)}]吗?`,
-          "提示",
-          {
-            confirmButtonText: "确定",
-            cancelButtonText: "取消",
-            type: "warning"
-          }
+    delStandar(id, name) {
+      if(!id) return;
+      this.$confirm(
+        `确定要删除收费标准数据[${name}]吗?`,
+        "提示",
+        {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }
+      )
+        .then(() =>
+          this.$api.standard.delete(
+            new RequestParams().addDataItemAttr(0, "id", id))
         )
-          .then(() =>
-            this.$api.standard.delete(
-              new RequestParams().addDataItems(
-                datas.map(o => new RequestDataItem().addAttribute("id", o.id))
-              )
-            )
-          )
-          .then(response => {
-            this.$message.success("删除成功");
-            this.loadStandardDatas();
-          })
-          .catch(({ message }) => this.$message.error(message))
-          .catch(() => {
-            this.$message.info("已取消删除");
-          });
-      } else this.$message.info("请选择要删除的车位数据");
+        .then(response => {
+          this.$message.success("删除成功");
+          this.loadStandardDatas();
+        })
+        .catch(({ message }) => this.$message.error(message))
+        .catch(() => {
+          this.$message.info("已取消删除");
+        });
     }
   },
   mounted() {

@@ -5,8 +5,8 @@
  * @param {*} arr 
  * @param {*} key 
  */
-export const array2Object = function (arr = [], key = "id") {
-  let result = {};
+export const array2Object = function (arr = [], key = "id", type=1) {
+  let result = {}, results = [];
   for (let o of arr) {
     if (o[key]) result[o[key]] = o;
   }

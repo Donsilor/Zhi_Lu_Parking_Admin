@@ -59,15 +59,18 @@
 .main1 .bot .bot-right .nav-choose>div>select{width:200px;height: 30px;padding-left: 10px;line-height: 30px;font-size: 14px;border: 1px solid #999;border-radius: 5px;}
 .main1 .bot .bot-right .center-right{width: 100%;padding-left: 40px;padding-top: 30px;padding-right: 52px;}
 .main1 .bot .bot-right .center-right ul{width: 100%;}
-.main1 .bot .bot-right .center-right ul li{width:50%;float: left;margin-bottom: 10px;}
+.main1 .bot .bot-right .center-right ul li{width:50%;float: left;margin-bottom: 10px;position: relative;}
+.main1 .bot .bot-right .center-right ul.evenLiPadding li:nth-of-type(even){padding-left: 80px;}
+.absHasFree{position: absolute;right: -80px;bottom: -20px;line-height: 30px;}
 .main1 .bot .bot-right .center-right ul li.widthMax{width: 100%;}
 .main1 .bot .bot-right .center-right ul li.marginBottom50{margin-bottom: 50px;}
+.main1 .bot .bot-right .center-right ul li .paddingLeft80{padding-left: 80px;}
 .main1 .bot .bot-right .center-right ul li span{float: left;height: 30px;line-height: 30px;}
 .main1 .bot .bot-right .center-right ul li span:first-of-type{min-width: 3.6rem;text-align: right;padding-right: 5px;}
 
 .main1 .bot .bot-right .center-right ul li input[type=number].width100{width: 100px;}
 
-.main1 .bot .bot-right .center-right ul li input[type=number]{float: left;width: 150px;height: 30px;padding-left: 10px;line-height: 30px;border: 1px solid #999;border-radius: 5px;margin-right: 5px;}
+.main1 .bot .bot-right .center-right ul li input[type=number]{float: left;width: 150px;height: 30px;padding-left: 10px;line-height: 30px;border: 1px solid #999;border-radius: 5px;margin:0 5px;}
 .main1 .bot .bot-right .center-right ul li input[type=radio],
 .main1 .bot .bot-right .center-right ul li input[type=checkbox]{float: left;width: 16px;height: 16px;margin: 7px;}
 .main1 .bot .bot-right .right-button{width: 100%;padding-right:52px;padding-top: 50px;}
@@ -125,14 +128,17 @@
 .vehreg-main .page .go{width: 1.875rem;text-align: center;}
 
 
-.tempChargeStandard{width: 100%;line-height: 50px;border-top: 1px solid #e9e9e9;border-left: 1px solid #e9e9e9;color: #666;}
+.tempChargeStandard{width: 100%;line-height: 50px;border-top: 1px solid #e9e9e9;border-left: 1px solid #e9e9e9;color: #666;margin-top: 20px;}
+.tempChargeStandard thead{display: block;width: 100%;}
+.tempChargeStandard tbody{display: block;width: calc(100% + 17px);overflow-y: scroll;height: 300px;}
+/*.tempChargeStandard tbody::-webkit-scrollbar{width: 10px;}*/
 .tempChargeStandard th,
 .tempChargeStandard td{border-right: 1px solid #e9e9e9;border-bottom: 1px solid #e9e9e9;font-weight: normal;padding: 0 10px;text-align: center;}
 .tempChargeStandard th{background-color: #f4f4f4;}
-.tempChargeStandard th:nth-of-type(1),
-.tempChargeStandard th:nth-of-type(2){width: 20%;}
+.tempChargeStandard th,
+.tempChargeStandard td{width: 20%;}
+.tempChargeStandard tr{width: 100%;display: inline-table;}
 .tempChargeStandard a{color: #1c7df9;margin: 0 5px;}
-
 
 .tempChargeStandardEdit{border: 1px solid #e9e9e9;margin-top: 30px;padding: 20px 20px 5px;}
 .tempChargeStandardEdit input[type=time]{float: left;width: 150px;height: 30px;padding-left: 10px;line-height: 30px;border: 1px solid #999;border-radius: 5px;margin-right: 5px;}
