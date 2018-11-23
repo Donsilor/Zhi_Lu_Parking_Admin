@@ -5,8 +5,8 @@
         <div class="condition fl">
           <span class="conditions-text">搜索条件：</span>
           <div class="custom-input">
-            <input type="text" placeholder="请输入">
-            <input type="submit" value="">
+            <input type="text" placeholder="请输入" v-model="searchParam">
+            <input type="submit" value="" @click="loadLogDatas()">
           </div>
         </div>
         <div class="fr create">
@@ -36,7 +36,7 @@
           <div>共搜索到 <span>{{logs.attributes.tatal || 0}}</span> 条数据</div>
         </div>
         <div class="fr">
-          <button class="search-button blu-button">搜索</button>
+          <button class="search-button blu-button" @click="loadLogDatas()">搜索</button>
           <button class="clear-button bluborder-button">清除</button>
           <button class="ss transf-button" :class="{hide:!searchDivShow}" @click="searchDivShow=!searchDivShow">
             <i><img src="../../assets/images/icon_t_arrow2.png" alt=""></i>
@@ -150,7 +150,7 @@ export default {
       /* 弹窗 */
       isViewPopupShow: false,
       //      isDelPopupShow: false,
-
+      searchParam:null,
       /* ele-ui时间插件 */
       createTime: '',
       createTimeOptions: {
@@ -251,9 +251,13 @@ export default {
     },
 
     loadLogDatas (pageNum = 1, params = {}) {
+
       this.$api.log
       .getlist(new RequestParams()
       .addAttributes(params)
+      .addAttribute("key", this.searchParam && ` AND resource_name like '%${this.searchParam}%'`)
+      .addAttribute("begin_time", this.createTime[0])
+      .addAttribute("end_time", this.createTime[1])
       .addAttribute("page_index",pageNum))
       .then(data => {
         this.logs.attributes = data.attributes

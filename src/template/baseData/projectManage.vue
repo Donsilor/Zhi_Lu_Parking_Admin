@@ -9,7 +9,7 @@
           <span class="conditions-text">资源名称：</span>
           <div class="custom-input">
             <input type="text" v-model="searchParam" placeholder="请输入编号或者名称">
-            <input type="submit" value="" v-on:click="loadProjectDatas(1, {key:searchParam})">
+            <input type="submit" value="" v-on:click="loadProjectDatas()">
           </div>
         </div>
         <div class="fr create">
@@ -39,7 +39,7 @@
           <div>共搜索到 <span>{{projects.attributes.tatal || 0}}</span> 条数据</div>
         </div>
         <div class="fr">
-          <button class="search-button blu-button" v-on:click="loadProjectDatas(1, {key:searchParam})">搜索</button>
+          <button class="search-button blu-button" v-on:click="loadProjectDatas()">搜索</button>
           <button class="clear-button bluborder-button" v-on:click="searchParam = null, searchTimes = []">清除</button>
           <button class="ss transf-button" v-bind:class="{hide:!searchDivShow}"
                   v-on:click="searchDivShow=!searchDivShow">
@@ -307,9 +307,11 @@ export default {
 
     /**加载项目列表数据 */
     loadProjectDatas (pageNum = 1, params = {}) {
+
       this.$api.project
       .getlist(new RequestParams()
       .addAttributes(params)
+      .addAttribute('key', this.searchParam && ` AND project_code like '%${this.searchParam}%' OR project_name like '${this.searchParam}'`)
       .addAttribute('page_index', pageNum)
       .addAttribute('begin_time', this.searchTimes[0])
       .addAttribute('end_time', this.searchTimes[1]))

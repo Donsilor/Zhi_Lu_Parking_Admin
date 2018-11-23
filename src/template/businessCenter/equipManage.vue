@@ -7,7 +7,7 @@
       <div class="clf top toggleDiv" v-show="searchDivShow">
         <div class="cominput fl">
           <span class="conditions-text" >车场区域：</span>
-          <input type="text" placeholder="请输入" v-model="searchParam">
+          <input type="text" placeholder="请输入设备编号或者设备名称" v-model="searchParam">
           <button @click="loadDeviceDatas()" class="search-button blu-button fl">搜索</button>
         </div>
       </div>
@@ -347,7 +347,7 @@ export default {
       this.$api.device
         .getlist(new RequestParams()
         .addAttributes(params)
-        .addAttribute("key", this.searchParam)
+        .addAttribute("key", this.searchParam && ` AND device_code like '${this.searchParam}' OR device_name like '${this.searchParam}'`)
         .addAttribute("page_index", pageNum)
         .addAttribute("page_size", 100000)
         )

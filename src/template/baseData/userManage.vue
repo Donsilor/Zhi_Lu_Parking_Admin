@@ -9,7 +9,7 @@
           <span class="conditions-text">搜索条件：</span>
           <div class="custom-input">
             <input type="text" placeholder="请输入用户名或号码" v-model="searchParam">
-            <input type="submit" value="" v-on:click="loadUserDatas(1, {key:searchParam})">
+            <input type="submit" value="" v-on:click="loadUserDatas()">
           </div>
         </div>
       </div>
@@ -20,7 +20,7 @@
           <div>共搜索到 <span>{{users.attributes.tatal || 0}}</span> 条数据</div>
         </div>
         <div class="fr">
-          <button class="search-button blu-button" v-on:click="loadUserDatas(1, {key:searchParam})">搜索</button>
+          <button class="search-button blu-button" v-on:click="loadUserDatas()">搜索</button>
           <button class="clear-button bluborder-button" v-on:click="searchParam = null">清除</button>
           <button class="ss transf-button" v-bind:class="{hide:!searchDivShow}"
                   v-on:click="searchDivShow=!searchDivShow">
@@ -387,6 +387,7 @@ export default {
       this.$api.operator
         .getlist(new RequestParams()
         .addAttributes(params)
+        .addAttribute('key', this.searchParam && ` AND user_name like '%${this.searchParam}%' OR tel like '${this.searchParam}'`)
         .addAttribute("page_index", pageNum))
       .then(response => {
         this.users.attributes = response.attributes;

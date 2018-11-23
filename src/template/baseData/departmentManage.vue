@@ -8,8 +8,8 @@
         <div class="condition">
           <span class="conditions-text">搜索条件：</span>
           <div class="custom-input">
-            <input type="text" placeholder="请输入" v-model="searchParam">
-            <input type="submit" value="" @click="loadDeptsDatas(1, {key:searchParam})">
+            <input type="text" placeholder="请输入编号或者名称" v-model="searchParam">
+            <input type="submit" value="" @click="loadDeptsDatas()">
           </div>
         </div>
       </div>
@@ -20,7 +20,7 @@
           <div>共搜索到 <span>{{depts.attributes.tatal || 0}}</span> 条数据</div>
         </div>
         <div class="fr">
-          <button class="search-button blu-button" @click="loadDeptsDatas(1, {key:searchParam})">搜索</button>
+          <button class="search-button blu-button" @click="loadDeptsDatas()">搜索</button>
           <button class="clear-button bluborder-button" @click="searchParam = null">清除</button>
           <button class="ss transf-button" v-bind:class="{hide:!searchDivShow}"
                   v-on:click="searchDivShow=!searchDivShow">
@@ -192,6 +192,7 @@ import moment from "moment";
         this.$api.dept
           .getlist(new RequestParams()
           .addAttributes(params)
+          .addAttribute("key", this.searchParam && `AND dept_code = '${this.searchParam}' OR dept_name = '${this.searchParam}'`)
           .addAttribute("page_index", pageNum))
           .then(response => {
             this.depts.attributes = response.attributes;

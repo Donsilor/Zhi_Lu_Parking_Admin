@@ -762,8 +762,8 @@ export default {
     loadCarsDatas(pageNum = 1, params = {}) {
       let keys = "and 1=1 ";
       if(this.searchCars.key){
-        keys += ` OR car_place_no like '${this.searchCars.key}'`;
-        keys += ` OR car_group_id like '${this.searchCars.key}'`;
+        keys += ` OR car_place_no like '%${this.searchCars.key}%'`;
+        keys += ` OR car_group_id like '%${this.searchCars.key}%'`;
       }
       if(this.placeDatas.area_id){
         keys += ` and area_id = '${this.placeDatas.area_id}'`;

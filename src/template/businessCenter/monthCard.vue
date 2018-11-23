@@ -6,22 +6,21 @@
       </div>
       <div class="clf top toggleDiv" v-show="searchDivShow">
         <div class="cominput fl">
-          <span class="conditions-text">车牌号码：</span>
-          <input type="text" placeholder="请输入" >
+          <span class="conditions-text" >车牌号码：</span>
+          <input type="text" placeholder="请输入" v-model="searchParams.car_no" >
         </div>
         <div class="cominput fl">
           <span class="conditions-text">住户：</span>
-          <input type="text" placeholder="请输入">
+          <input type="text" placeholder="请输入" v-model="searchParams.household_name" >
         </div>
         <div class="cominput fl">
           <span class="conditions-text">状态：</span>
-          <input type="text" placeholder="请输入">
+          <input type="number" min="0" max="1" placeholder="请输入" v-model="searchParams.status" >
         </div>
         <div class="cominput fl">
           <span class="conditions-text">车位：</span>
           <div class="custom-input">
-            <input type="text" placeholder="请输入">
-            <input type="submit" value="">
+            <input type="text" placeholder="请输入" v-model="searchParams.car_place_no" >
           </div>
         </div>
         <div class="fl create">
@@ -185,7 +184,9 @@ import moment from "moment";
         ifRegister: false,
         searchTimes:[],
         searchParams:{
-          
+          household_name:null,
+          car_no:null,
+          car_place_no:null,
         },
         ifImportAuthorize: false,
         selectedDelays:[],
@@ -352,10 +353,20 @@ import moment from "moment";
 
       /**加载车辆区域列表数据 */
       loadCarDelaysDatas(pageNum = 1, params = {}) {
+
+        let key = "and 1 = 1 ";
+        
+        for(let item in this.searchParams){
+          if(this.searchParams[item]){
+            key += `and ${item} like '%${this.searchParams[item]}%'`;
+          }
+        }
+
         this.$api.delay
           .getlist(new RequestParams()
           .addAttributes(this.searchParams)
           .addAttributes(params)
+          .addAttribute("key", key)
           .addAttribute("begin_time", this.searchTimes[0])
           .addAttribute("end_time", this.searchTimes[1])
           .addAttribute("page_index", this.pageNum))

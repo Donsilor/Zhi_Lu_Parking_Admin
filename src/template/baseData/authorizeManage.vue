@@ -9,7 +9,7 @@
           <span class="conditions-text">搜索条件：</span>
           <div class="custom-input">
             <input type="text" placeholder="请输入用户名或号码" v-model="searchParam">
-            <input type="submit" value=""  @click="loadAuthorizesDatas(1, {key:searchParam})">
+            <input type="submit" value=""  @click="loadAuthorizesDatas()">
           </div>
         </div>
       </div>
@@ -20,7 +20,7 @@
           <div>共搜索到 <span>{{authorizes.attributes.tatal || 0}}</span> 条数据</div>
         </div>
         <div class="fr">
-          <button class="search-button blu-button"  @click="loadAuthorizesDatas(1, {key:searchParam})">搜索</button>
+          <button class="search-button blu-button"  @click="loadAuthorizesDatas()">搜索</button>
           <button class="clear-button bluborder-button"  @click="searchParam = null">清除</button>
           <button class="ss transf-button" v-bind:class="{hide:!searchDivShow}" v-on:click="searchDivShow=!searchDivShow">
             <i><img src="../../assets/images/icon_t_arrow2.png" alt=""></i>
@@ -330,6 +330,7 @@ import moment from "moment";
         this.$api.oauth
           .getlist(new RequestParams()
           .addAttributes(params)
+          .addAttribute("key", this.searchParam && `AND tel like '%${this.searchParam}%' OR client_name like '%${this.searchParam}%'`)
           .addAttribute("page_index", pageNum))
           .then(response => {
             this.authorizes.attributes = response.attributes;

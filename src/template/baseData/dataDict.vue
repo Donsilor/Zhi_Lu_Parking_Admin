@@ -9,7 +9,7 @@
           <span class="conditions-text">搜索条件：</span>
           <div class="custom-input">
             <input type="text" placeholder="请输入编号或者名称" v-model="searchParam">
-            <input type="submit" value="" @click="loadDictionarysDatas(1,{'key':searchParam})">
+            <input type="submit" value="" @click="loadDictionarysDatas()">
           </div>
         </div>
       </div>
@@ -20,7 +20,7 @@
           <div>共搜索到 <span>{{dictionarys.attributes.tatal || 0}}</span> 条数据</div>
         </div>
         <div class="fr">
-          <button class="search-button blu-button" @click="loadDictionarysDatas(1,{'key':searchParam})">搜索</button>
+          <button class="search-button blu-button" @click="loadDictionarysDatas()">搜索</button>
           <button class="clear-button bluborder-button" v-on:click="searchParam = null">清除</button>
           <button class="ss transf-button" v-bind:class="{hide:!searchDivShow}"
                   v-on:click="searchDivShow=!searchDivShow">
@@ -209,6 +209,7 @@ import moment from "moment";
         this.$api.dictionary
           .getlist(new RequestParams()
           .addAttributes(params)
+          .addAttribute("key", this.searchParam && `AND dic_code like '%${this.searchParam}%' OR dic_name like '%${this.searchParam}%'`)
           .addAttribute("project_id", null)
           .addAttribute("page_index", pageNum))
           .then(response => {
