@@ -51,11 +51,11 @@
             <tr v-for="(user, index) in users.dataItems" v-bind:key="index">
               <td><input type="checkbox" :value="index" v-model="selectedUsers"></td>
               <td><span><img v-bind:src="user.photo" alt=""></span></td>
-              <td>{{user.user_name}}</td>
-              <td>{{user.full_name}}</td>
-              <td>{{user.tel}}</td>
-              <td>{{user.create_time}}</td>
-              <td>{{user.update_time}}</td>
+              <td><div :title="user.user_name">{{user.user_name}}</div></td>
+              <td><div :title="user.full_name">{{user.full_name}}</div></td>
+              <td><div :title="user.tel">{{user.tel}}</div></td>
+              <td><div :title="user.create_time">{{user.create_time}}</div></td>
+              <td><div :title="user.update_time">{{user.update_time}}</div></td>
               <td><span v-bind:class="{normal:user.status}">正常</span></td>
               <td>
                 <a href="javascript:" class="edit" @click="showEditUser(index)">编辑</a>
@@ -202,7 +202,6 @@ export default {
       /**新增用户的数据 */
       userData: {
         id:null,//         	Y	String	ID
-        project_id:null,// 	Y	String	项目ID
         dept_id:null,//    	Y	String	部门ID
         user_name:null,//  	Y	String	用户名
         full_name:null,//  	Y	String	姓名
@@ -226,7 +225,6 @@ export default {
       },
       selectedRoleData:{
         id:null,//        	Y	String	ID
-        project_id:null,//	Y	String	项目ID
         pid:null,//       	Y	String	父级角色
         role_name:null,// 	Y	String	角色名称
         role_abb:null,//  	Y	String	角色标识
@@ -326,11 +324,9 @@ export default {
 
       this.$api.operator.editor(new RequestParams()
       .addAttributes(this.userData)
+      .addAttribute("status", 0)
       .addAttribute("photo", this.userData.relativepath)
-      .addAttribute("status", 1)
-      .addAttribute("user_type", User.info.user_type)
-      .addAttribute("project_id", this.userData.project_id || User.info.project_id)
-      .addAttribute("dept_id", "0"))
+      .addAttribute("user_type", User.info.user_type))
       .then(response=>{
         this.$message.success(response.message)
         this.addUserWindow = false;
@@ -354,7 +350,7 @@ export default {
         
       let datas = id != null ? [this.users.dataItems[id]] : this.selectedUsers.map(o=>this.users.dataItems[o]);
       if(datas.length){
-        this.$confirm(`确定要删除[${datas.map(o=>o.user_name)}]吗?`, '提示', {
+        this.$confirm(`确定要删除吗?`, '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'

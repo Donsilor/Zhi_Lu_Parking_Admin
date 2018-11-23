@@ -55,7 +55,8 @@
         <div class="fr">
           <button class="search-button blu-button" @click="loadAreasDatas()">搜索</button>
           <button class="clear-button bluborder-button" @click="searchParams = {}, searchTimes = []">清除</button>
-          <button class="ss transf-button" v-bind:class="{hide:searchDivShow}" v-on:click="searchDivShow=!searchDivShow">
+          <button class="ss transf-button" v-bind:class="{hide:!searchDivShow}"
+                  v-on:click="searchDivShow=!searchDivShow">
             <i><img src="../../assets/images/icon_t_arrow2.png" alt=""></i>
             <span>{{searchDivShow === true ? "收起搜索" : "展开搜索"}}</span>
           </button>
@@ -82,15 +83,17 @@
           </tr>
           <tr v-for="(area, index) in areas.dataItems" v-bind:key="index">
             <td><input type="checkbox" :value="index" v-model="selectedArea"></td>
-            <td>{{area.area_code}}</td>
-            <td>{{area.area_name}}</td>
-            <td>{{["普通车场"/*0*/,"大套小车场"/*1*//*一个项目ID下只能有一种车场类型*/][area.park_type]}}</td>
-            <td>{{[["地面车库","地下车库","其他车库"]/*普通车场时：0地面车库 1地下车库 2其他车库（如机械车库等）*/,["大车场","小车场"]/*(大套小车场时：0大车场 1小车场)*/][area.park_type][area.area_type]}}</td>
-            <td>{{"没有返回这个字段"}}</td>
-            <td>{{["不限制","限制"/*是否限制临时车(0：不限制1：限制)*/][area.temp_car_inout]}}</td>
-            <td>{{area.create_time}}</td>
-            <td>{{area.update_time}}</td>
-            <td>{{area.user_name}}</td>
+            <td><div :title="area.area_code">{{area.area_code}}</div></td>
+            <td><div :title="area.area_name">{{area.area_name}}</div></td>
+            <td><div :title="area.park_type">{{['普通车场'/*0*/,'大套小车场'/*1*//*一个项目ID下只能有一种车场类型*/][area.park_type]}}</div></td>
+            <td><div>{{[['地面车库','地下车库','其他车库']/*普通车场时：0地面车库 1地下车库 2其他车库（如机械车库等）*/,['大车场','小车场']/*(大套小车场时：0大车场
+                1小车场)*/][area.park_type][area.area_type]}}
+              </div></td>
+            <td>{{'没有返回这个字段'}}</td>
+            <td><div :title="area.temp_car_inout">{{['不限制','限制'/*是否限制临时车(0：不限制1：限制)*/][area.temp_car_inout]}}</div></td>
+            <td><div :title="area.create_time">{{area.create_time}}</div></td>
+            <td><div :title="area.update_time">{{area.update_time}}</div></td>
+            <td><div :title="area.user_name">{{area.user_name}}</div></td>
             <td>
               <a href="javascript:" class="bj" @click="showEditParkArea(index)">编辑</a>
               <a href="javascript:" class='delete' @click="delPark(index)">删除</a>
@@ -121,8 +124,10 @@
           <p class="red" hidden><i class="iconfont icon-jian-tianchong"></i>错误提示的文案<span>x</span></p>
           <div class="cet">
             <div class="clf">
-              <p class="clf"><span class="fl">编号：</span><input class="fl" type="text" v-model="areaDatas.area_code" placeholder="请输入编号，必填"></p>
-              <p class="clf"><span class="fl">名称：</span><input class="fl" type="text" v-model="areaDatas.area_name" placeholder="请输入"></p>
+              <p class="clf"><span class="fl">编号：</span><input class="fl" type="text" v-model="areaDatas.area_code"
+                                                               placeholder="请输入编号，必填"></p>
+              <p class="clf"><span class="fl">名称：</span><input class="fl" type="text" v-model="areaDatas.area_name"
+                                                               placeholder="请输入"></p>
               <p class="clf"><span class="fl">车场类型：</span>
                 <select name="" value="0" v-model="areaDatas.park_type">
                   <option  v-for="(park,index)  in park_types" :value="index" :key="index">{{park}}</option>
@@ -132,7 +137,7 @@
                   <option  v-for="(area,index)  in area_types[areaDatas.park_type||0]" :value="index" :key="index">{{area}}</option>
                 </select>
               </p>
-              <p class="clf"><span class="fl">区域车位数：</span><input class="fl" type="text" v-model="areaDatas.area_type" placeholder="请选择"></p>
+              <!-- <p class="clf"><span class="fl">区域车位数：</span><input class="fl" type="text" v-model="areaDatas.area_type" placeholder="请选择"></p> -->
               <p class="clf"><span class="fl">是否限制临时车：</span>
                 <span class="p-text">
 							<span class="flase fl ckb"><input class="rad" type="radio" id="deo1" v-model="areaDatas.temp_car_inout" name="radio" value="0"><label
@@ -173,7 +178,7 @@
               :props="{
                 value:'dic_code',
                 children: 'children',
-                label: 'remark'
+                label: 'standard_name'
               }" 
               :node-key="'id'"
               :highlight-current="true"
@@ -190,7 +195,7 @@
                   :props="{
                     value:'dic_code',
                     children:'children',
-                    label:'remark'
+                    label:'dic_name'
                   }"
                   v-model="chargeStandards"
                   @change="changeForm">
@@ -375,7 +380,7 @@
             <div class="clf">
               <p class="clf">
                 <span class="fl">车场区域：</span>
-                <input type="text" v-model="placeDatas.parkArea">
+                <input type="text" disabled v-model="placeDatas.parkArea">
               </p>
               <p class="clf">
                 <span class="fl">车位号：</span>
@@ -538,7 +543,6 @@ export default {
       selectedArea: [],
       // 车场区域查询数据
       searchParams: {
-        project_id: null,
         area_code: null,
         area_name: null,
         park_type: null,
@@ -552,7 +556,6 @@ export default {
       /**车场数据 */
       areaDatas: {
         id: null,
-        project_id: null,
         area_code: null,
         area_name: null,
         park_type: 0,
@@ -561,7 +564,6 @@ export default {
         in_time_long: null,
         create_time: null,
         update_time: null,
-        operator_id: null,
         user_name: null,
         remark: null
       },
@@ -571,13 +573,11 @@ export default {
       // 车位数据
       placeDatas: {
         id: null,
-        project_id: User.info.project_id,
         area_id: null,
         car_place_no: null,
         car_group_id: null,
         create_time: null,
         update_time: null,
-        operator_id: User.info.id,
         parkArea: null,
         remark: null
       },
@@ -606,7 +606,6 @@ export default {
       clickStandar: null,
       // 收费标准查询
       searchStandard: {
-        project_id: null,
         area_id: null,
         key: null
       },
@@ -648,9 +647,9 @@ export default {
       this.standardData = this.searchStandards.car_type[value[0]].getChildrenKey(value[1]);
       let item = this.searchStandards.car_type[value[0]];
       let data = this.standardData;
-      data.standard_code = item.car_type+value[0];
+      data.standard_code = value[0];
       data.area_id = this.searchStandard.area_id;
-      data.standard_name = item.remark +"/"+ data.remark
+      data.standard_name = item.dic_name +"收费标准"
       data.standard_type = value[1];
       data.car_type = value[0];
     },
@@ -668,7 +667,6 @@ export default {
       };
       this.ifRenew = true;
       this.searchAreaHlodId = this.areaDatas.id;
-      this.loadAreasDatas();
     },
     /**显示配置车场收费标准 */
     showEditParkAreaConfig(index) {
@@ -691,8 +689,6 @@ export default {
         .editor(
           new RequestParams()
             .addAttributes(this.areaDatas)
-            .addAttribute("project_id", User.info.project_id)
-            .addAttribute("operator_id", User.info.id)
         )
         .then(response => {
           this.$message.success(response.message);
@@ -712,7 +708,6 @@ export default {
             .addAttributes(params)
             .addAttributes(this.searchParams)
             .addAttribute("page_index", pageNum)
-            .addAttribute("project_id", User.info.project_id)
             .addAttribute("begin_time", searchTimes[0])
             .addAttribute("end_time", searchTimes[1])
         )
@@ -730,7 +725,7 @@ export default {
           : this.selectedArea.map(o => this.areas.dataItems[o]);
       if (datas.length) {
         this.$confirm(
-          `确定要删除车场数据[${datas.map(o => o.area_name)}]吗?`,
+          `确定要删除车场数据吗?`,
           "提示",
           {
             confirmButtonText: "确定",
@@ -765,11 +760,19 @@ export default {
     },
     // 加载车位数据
     loadCarsDatas(pageNum = 1, params = {}) {
+      let keys = "and 1=1 ";
+      if(this.searchCars.key){
+        keys += ` OR car_place_no like '${this.searchCars.key}'`;
+        keys += ` OR car_group_id like '${this.searchCars.key}'`;
+      }
+      if(this.placeDatas.area_id){
+        keys += ` and area_id = '${this.placeDatas.area_id}'`;
+      }
       this.$api.place
         .getlist(
           new RequestParams()
             .addAttributes(params)
-            .addAttributes(this.searchCars)
+            .addAttribute("key", keys)
             .addAttribute("page_index", pageNum)
         )
         .then(response => {
@@ -790,8 +793,6 @@ export default {
     },
     // 编辑或新建车位信息
     editCarsDatas() {
-      this.placeDatas.car_group_id =
-        this.placeDatas.car_place_no + new Date().getTime();
       this.$api.place
         .editor(
           new RequestParams().addDataItem(
@@ -854,7 +855,7 @@ export default {
           : this.selectedCar.map(o => this.cars.dataItems[o]);
       if (datas.length) {
         this.$confirm(
-          `确定要删除车位数据[${datas.map(o => o.car_place_no)}]吗?`,
+          `确定要删除车位数据吗?`,
           "提示",
           {
             confirmButtonText: "确定",
@@ -914,21 +915,13 @@ export default {
             for(let item of this.standards.dataItems){
               item.iid = item.id;
               item.depict = JSON.parse(item.standard_content);
-              item.remark = datas.standard_type[item.standard_type].remark;
               item.base = {};
-              if(!tempTree[item.car_type]){
-                tempTree[item.car_type] = {
-                  remark:datas.car_type[item.car_type].remark,
-                  children:[]
-                };
-                this.standards.tree.push(tempTree[item.car_type]);
-              }
-              tempTree[item.car_type].children.push(item);
+              this.standards.tree.push(item);
             }
 
             for(let name in datas.car_type){
               datas.car_type[name].children = datas.car_type[name].depict.split(",").map(o=>{
-                if(typeof(datas.standard_type[o].depict) == "string"){
+                if(datas.standard_type[o])if(typeof(datas.standard_type[o].depict) == "string"){
                   datas.standard_type[o].depict = JSON.parse(datas.standard_type[o].depict);
                   datas.standard_type[o].base = {};
                 }
@@ -960,7 +953,8 @@ export default {
       )
       .then(response =>{
         this.$message.info(response.message);
-        this.pucker=!this.pucker
+        this.pucker=!this.pucker;
+        this.loadStandardDatas();
       })
       .catch(({ message }) => this.$message.error(message))
     },
@@ -991,7 +985,7 @@ export default {
     delStandar(id, name) {
       if(!id) return;
       this.$confirm(
-        `确定要删除收费标准数据[${name}]吗?`,
+        `确定要删除收费标准数据吗?`,
         "提示",
         {
           confirmButtonText: "确定",

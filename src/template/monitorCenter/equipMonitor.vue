@@ -35,18 +35,41 @@
             <video-player class="vjs-custom-skin" ref="videoPlayer" :options="{
               overNative: true,
               autoplay: true,
-              controls: false,
-              techOrder: ['html5'],
+              controls: true,
+              techOrder: ['html5', 'flash'],
               sourceOrder: true,
-              html5: { hls: { withCredentials: false } },
+              html5: { hls: { withCredentials: true } },
               sources: [{
-                type: 'video/mp4',
-                src: 'https://cdn.theguardian.tv/webM/2015/07/20/150716YesMen_synd_768k_vp8.webm'
+                type: 'rtsp/flv',
+                src: 'rtsp://192.168.55.101:554'
               }]
             }"></video-player>
           </li>
           <li>
-            <video src="https://cdn.theguardian.tv/webM/2015/07/20/150716YesMen_synd_768k_vp8.webm" autoplay> </video>
+            <video  src="rtsp://192.168.55.101:554" controls></video>
+            <!-- <object style="width: 100%;height: 100%" classid="clsid:9BE31822-FDAD-461B-AD51-BE1D1C159921" codebase="http://download.videolan.org/pub/videolan/vlc/last/win32/axvlc.cab"
+              id="vlc1" name="vlc1" class="vlcPlayer" events="True">
+                <param name="Src" id="p1" value="rtsp://192.168.55.101:554" />
+                <param name="ShowDisplay" value="True" />
+                <param name="AutoLoop" value="False" />
+                <param name="AutoPlay" value="True" />
+                <param name='fullscreen' value='false' />
+                <param name="wmode" value="transparent" />
+                <param name='controls' value='false' />
+                <embed  
+                  id="e1" 
+                  name="vlc1" 
+                  type="application/x-vlc-plugin" 
+                  version="VideoLAN.VLCPlugin.2" 
+                  autoplay="yes" 
+                  loop="no" 
+                  width="95%" 
+                  height="95%" 
+                  fullscreen="false" 
+                  wmode="transparent" 
+                  controls="false" 
+                  target="rtsp://192.168.55.101:554"/>
+            </object> -->
           </li>
         </ul>
       </div>
@@ -150,6 +173,8 @@
       player() {
         return this.$refs.videoPlayer.player
       },
+    },
+    mounted(){
     }
   };
 </script>

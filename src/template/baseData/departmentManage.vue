@@ -43,9 +43,9 @@
           </tr>
           <tr v-for="(dept, index) in depts.dataItems" v-bind:key="index">
             <td><input type="checkbox" :value="index" v-model="selectedDepts"></td>
-            <td>{{dept.dept_code}}</td>
-            <td>{{dept.dept_name}}</td>
-            <td>{{dept.remark}}</td>
+            <td><div :title="dept.dept_code">{{dept.dept_code}}</div></td>
+            <td><div :title="dept.dept_name">{{dept.dept_name}}</div></td>
+            <td><div :title="dept.remark">{{dept.remark}}</div></td>
             <td>
               <a href="javascript:" class="edit" @click="showEditDept(index)">编辑</a>
               <a href="javascript:" class="delete" @click="delDept(index)">删除</a>
@@ -76,7 +76,7 @@
               <!-- <p class="red"><i class="iconfont icon-jian-tianchong"></i>错误提示的文案</p> -->
               <p class="num"><span class='red-text'>*</span><span>编号：</span><input type="text" v-model="deptData.dept_code" placeholder="请输入编号，必填">  </p>
               <p class="name"><span class='red-text'>*</span><span>名称：</span><input type="text"  v-model="deptData.dept_name" placeholder="请输入名称，必填"> </p>
-              <p class="bz"><span class='red-text'>*</span><span>备注：</span><input type="text"  v-model="deptData.remark" placeholder="请输入备注" id="inp"></p>
+              <p class="bz"><span class='red-text'>*</span><span>备注：</span><textarea type="text"  v-model="deptData.remark" placeholder="请输入备注" id="inp"></textarea></p>
             </div>
             <div class="button clf">
               <a class="qr fr" @click="editDept">确定</a>
@@ -113,7 +113,6 @@ import moment from "moment";
         selectedDepts:[],
         deptData:{
           id:null,//         	Y	String	ID
-          project_id:null,// 	Y	String	项目ID
           dept_code:null,//  	Y	String	编号
           dept_name:null,//  	Y	String	名称
           remark:null,//     	N	String	备注
@@ -155,7 +154,9 @@ import moment from "moment";
         if(adopt) return this.$message.error(adopt);
 
         this.$api.dept.editor(new RequestParams()
-        .addAttributes(this.deptData))
+        .addAttributes(this.deptData)
+        .addAttribute("project_id", 0)
+        )
         .then(response=>{
           this.$message.success(response.message)
           this.ifEditDepartment = false;
@@ -168,7 +169,7 @@ import moment from "moment";
 
         let datas = id != null ? [this.depts.dataItems[id]] : this.selectedDepts.map(o=>this.depts.dataItems[o]);
         if(datas.length){
-          this.$confirm(`确定要删除[${datas.map(o=>o.dept_name)}]吗?`, '提示', {
+          this.$confirm(`确定要删除吗?`, '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning'

@@ -9,8 +9,9 @@ export const RequestDataItem = class RequestDataItem {
     this.objectId = "";
     this.subItems = [];
 
-    this.addAttribute("project_id", User.project_id);
-    this.addAttribute("user_id", User.info.user_type == 3 ? null : User.info.id);
+    this.addAttribute("project_id", User.info.project_id);
+    this.addAttribute("user_id", User.info.id);
+    this.addAttribute("operator_id", User.info.id);
     $.extend(this, obj);
   }
 
@@ -25,11 +26,19 @@ export const RequestDataItem = class RequestDataItem {
     if (!!value || typeof value == "number") {
       this.attributes[String(name).trim()] = String(value).trim();
     }
+    else delete this.attributes[String(name).trim()];
     return this;
   }
 
   addSubItem(obj) {
     this.subItems.push(obj);
+    return this;
+  }
+
+  addSubItems(objs) {
+    for(let item of objs){
+      this.addSubItem(item);
+    }
     return this;
   }
 }
@@ -45,11 +54,24 @@ export const RequestParams = class RequestParams {
     /**业务对象列表； */
     this.dataItems = [];
 
-    this.addAttribute("project_id", User.project_id);
+    this.addAttribute("project_id", User.info.project_id);
     this.addAttribute("operator_id", User.info.id);
-    this.addAttribute("user_id", User.info.user_type == 3 ? null : User.info.id);
+    this.addAttribute("user_id", User.info.id);
 
     $.extend(this, obj);
+  }
+
+  getJsonParams(){
+    if(User.isSystemAdmin){
+      let asp = this.serviceId.split(".")[1];
+      if(asp == "getlist"){
+        delete this.attributes["project_id"];
+        for(let item of this.dataItems){
+          delete item["project_id"];
+        }
+      }
+    }
+    return this;
   }
 
   addAttributes(objs){
@@ -63,6 +85,7 @@ export const RequestParams = class RequestParams {
     if (!!value || typeof value == "number") {
       this.attributes[String(name).trim()] = String(value).trim();
     }
+    else delete this.attributes[String(name).trim()];
     return this;
   }
 
@@ -200,7 +223,7 @@ export const User = new class User {
   }
 
   get project_id(){
-    return this.__info.project_id;
+    return this.isSystemAdmin ? null : this.__info.project_id;
   }
 
   get isSystemAdmin(){
@@ -231,7 +254,7 @@ export const DataDictionary = class DataDictionary {
   async ins(){
     let response = await this.$api.dictionary
     .getlist(new RequestParams()
-    .addAttribute("project_id", User.info.project_id)
+    .addAttribute("project_id", null)
     .addAttribute("page_size", 10000000)
     .addAttribute("page_index", 1));
     
@@ -258,11 +281,11 @@ export const ResourceMenu = class ResourceMenu {
   
   async ins(){
     let response = await this.$api.menu
-    .getlist(new RequestParams().addDataItem(new RequestDataItem()
+    .getlist(new RequestParams()
     .addAttribute("page_index", 1)
     .addAttribute("user_id", User.info.id)
     .addAttribute("page_size", 1000000)
-    ))
+    )
     return this.resourceMenus = array2Descendants(response.dataItems.map((o,i) => (o.attributes.index = i,o.attributes)));
   }
 
@@ -272,10 +295,49 @@ export const ResourceMenu = class ResourceMenu {
  * 导出 Excel 表格数据到文件
  */
 export const ExcelSheets = class ExcelSheets {
+  
+  						
+  
 
   static get dictionary(){
     return {
-      
+      房屋列表:{
+        code:"房屋编号",	
+        courtyard:"庭院",
+        building:"楼栋",
+        units:"单元",
+        room_no:"房号",
+        remark:"备注",
+      },
+      住户列表:{
+        house_code:"房屋编号",	
+        code:"住户编号",	
+        full_name:"姓名",	
+        sex:"性别",	
+        household_type:"住户类型",	
+        tel:"电话号码",	
+        identification_no:"证件号码",	
+        addr:"证件地址",	
+        birthday:"出生日期",	
+        remark:"备注",	
+      },
+      车辆列表:{
+        household_code:"住户编号",
+        car_no:"车牌号",
+        car_brand:"品牌",
+        car_mode:"型号",
+        car_color:"颜色",
+        remark:"车辆备注",
+      },
+      月卡续费:{
+        car_no:"车牌号",	
+        amount:"收费金额",	
+        pay_mode:"支付方式",	
+        old_end_time:"旧有效期至",	
+        new_end_time:"新有效期至",	
+        source:"来源",	
+        remark:"备注",	
+      }
     };
   }
   
@@ -363,6 +425,7 @@ export const ExcelSheets = class ExcelSheets {
           }
           data[name] = XLSX.utils.sheet_to_json(wb.Sheets[name], {header:header}).slice(2);
         }
+        console.log(data)
         resolve(data);
       }).bind(this);
       reader.readAsArrayBuffer(file);

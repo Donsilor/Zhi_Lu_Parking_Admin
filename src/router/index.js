@@ -41,7 +41,7 @@ export default new Router({
       path: '/',
       component: admin,
       name: '停车场后台管理系统',
-      redirect: {path: "/departmentManage"},
+      redirect: {path: "/home"},
       meta: {title: '停车场后台管理系统', requireAuth:true},
       children: [
         {path: '/home', component: home, meta: {title: '停车场后台管理系统', requireAuth:true}},

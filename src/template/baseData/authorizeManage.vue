@@ -22,7 +22,7 @@
         <div class="fr">
           <button class="search-button blu-button"  @click="loadAuthorizesDatas(1, {key:searchParam})">搜索</button>
           <button class="clear-button bluborder-button"  @click="searchParam = null">清除</button>
-          <button class="ss transf-button" v-bind:class="{hide:searchDivShow}" v-on:click="searchDivShow=!searchDivShow">
+          <button class="ss transf-button" v-bind:class="{hide:!searchDivShow}" v-on:click="searchDivShow=!searchDivShow">
             <i><img src="../../assets/images/icon_t_arrow2.png" alt=""></i>
             <span>{{searchDivShow ? "收起搜索" : "展开搜索"}}</span>
           </button>
@@ -47,13 +47,13 @@
           </tr>
           <tr v-for="(authorize, index) in authorizes.dataItems" v-bind:key="index">
             <td><input type="checkbox" :value="index" v-model="selectedAthorizes"></td>
-            <td>{{authorize.oauth_name}}</td>
-            <td>{{authorize.client_name}}</td>
-            <td>{{authorize.tel}}</td>
-            <td>{{authorize.addr}}</td>
-            <td>{{authorize.create_time}}</td>
-            <td>{{authorize.update_time}}</td>
-            <td>{{authorize.tel}}</td>
+            <td><div :title="authorize.oauth_name">{{authorize.oauth_name}}</div></td>
+            <td><div :title="authorize.client_name">{{authorize.client_name}}</div></td>
+            <td><div :title="authorize.tel">{{authorize.tel}}</div></td>
+            <td><div :title="authorize.addr">{{authorize.addr}}</div></td>
+            <td><div :title="authorize.create_time">{{authorize.create_time}}</div></td>
+            <td><div :title="authorize.update_time">{{authorize.update_time}}</div></td>
+            <td><div :title="authorize.tel">{{authorize.tel}}</div></td>
             <td><span v-bind:class="{normal:authorize.status}">正常</span></td>
             <td>
               <a href="javascript:" class="edit"  @click="showEditAuthorize(index)">编辑</a>
@@ -95,11 +95,11 @@
                 <input class="fl ppsw" v-model="authorizeData.oauth_key2" name="ppsw" type="text" placeholder="请输入6-8位数字密码，必填">
                 <span class="ppswremind remind">请输入正确信息</span>
               </p>
-              <p>
+              <p class="clf">
                 <span class="fl"><span class='red-text'>*</span>授权时间：</span>
                 <el-date-picker
                   class="fl"
-                  v-model="authorizeData.authorizeTimes"
+                  v-model="authorizeTimes"
                   type="daterange"
                   align="right"
                   unlink-panels
@@ -107,37 +107,7 @@
                   range-separator="至"
                   start-placeholder="授权起始日期"
                   end-placeholder="授权结束日期"
-                  :picker-options="{
-                    shortcuts: [
-                      {
-                        text: '最近一周',
-                        onClick (picker) {
-                          const end = new Date()
-                          const start = new Date()
-                          start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
-                          picker.$emit('pick', [start, end])
-                        }
-                      },
-                      {
-                        text: '最近一个月',
-                        onClick (picker) {
-                          const end = new Date()
-                          const start = new Date()
-                          start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
-                          picker.$emit('pick', [start, end])
-                        }
-                      },
-                      {
-                        text: '最近三个月',
-                        onClick (picker) {
-                          const end = new Date()
-                          const start = new Date()
-                          start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
-                          picker.$emit('pick', [start, end])
-                        }
-                      }
-                    ]
-                  }">
+                >
                 </el-date-picker>
               </p>
               <p class="clf"><span class="fl"><span class='red-text'>*</span>客户名称：</span><input class="fl" v-model="authorizeData.client_name" type="text" placeholder="请输入姓名，必填"> </p>
@@ -204,7 +174,6 @@ import moment from "moment";
           addr:null,//       	N	String	地址
           begin_time:null,// 	Y	String	有效期开始时间(格式：yyyy-MM-dd HH:mm:ss)
           end_time:null,//   	Y	String	有效期结束时间(格式：yyyy-MM-dd HH:mm:ss)
-          operator_id:null,//	Y	String	操作员ID
           remark:null,//     	N	String	备注
         },
         authorizes:{
@@ -215,7 +184,8 @@ import moment from "moment";
             total_pages: 10 //条页数
           },
           dataItems: []
-        }
+        },
+
       };
     },
     components: {
@@ -234,6 +204,58 @@ import moment from "moment";
       showEditAuthorize(id){
         this.authorizeData = this.authorizes.dataItems[id] || {};
         this.ifAuthorize = true;
+        this.$api.standard
+          .getlist(
+            new RequestParams()
+              .addAttributes(this.searchStandard)
+              .addAttribute("key", "")
+              .addAttribute("page_size", 1000000)
+          )
+          .then(response => {
+            this.standards.attributes = response.attributes;
+            this.standards.dataItems = response.dataItems.map(o => o.attributes);
+            this.standards.tree = [];
+            this.chargeStandardOptions = [];
+            new DataDictionary(this.$api).ins().then(datas => {
+              this.searchStandards = datas;
+              if(!datas.standard_type){
+                this.ifConfig = false;
+                return this.$message.error("请先前往配置收费标准数据字典");
+              }
+              let tempTree = {};
+              for(let item of this.standards.dataItems){
+                item.iid = item.id;
+                item.depict = JSON.parse(item.standard_content);
+                item.remark = datas.standard_type[item.standard_type].remark;
+                item.base = {};
+                if(!tempTree[item.car_type]){
+                  tempTree[item.car_type] = {
+                    remark:datas.car_type[item.car_type].remark,
+                    children:[]
+                  };
+                  this.standards.tree.push(tempTree[item.car_type]);
+                }
+                tempTree[item.car_type].children.push(item);
+              }
+
+              for(let name in datas.car_type){
+                datas.car_type[name].children = datas.car_type[name].depict.split(",").map(o=>{
+                  if(typeof(datas.standard_type[o].depict) == "string"){
+                    datas.standard_type[o].depict = JSON.parse(datas.standard_type[o].depict);
+                    datas.standard_type[o].base = {};
+                  }
+                  return datas.standard_type[o]
+                })
+                datas.car_type[name].getChildrenKey = function(code){
+                  return this.children.filter(o=>o.dic_code==code)[0];
+                }
+                this.chargeStandardOptions.push(datas.car_type[name])
+              }
+              this.chargeStandardOptions = this.chargeStandardOptions;
+            })
+          })
+          .catch(response => this.$message.error(response.message));
+      
       },
       
       editAuthorize(){
@@ -285,7 +307,7 @@ import moment from "moment";
           
         let datas = id != null ? [this.authorizes.dataItems[id]] : this.selectedAthorizes.map(o=>this.authorizes.dataItems[o]);
         if(datas.length){
-          this.$confirm(`确定要删除[${datas.map(o=>o.oauth_name)}]吗?`, '提示', {
+          this.$confirm(`确定要删除吗?`, '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning'

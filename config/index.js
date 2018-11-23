@@ -6,12 +6,12 @@ const path = require('path')
 
 module.exports = {
   dev: {
-    // Paths
+    // Paths 
     assetsSubDirectory: './static',
     assetsPublicPath: '/',
     proxyTable: {
       '/server_api': {
-          target: 'http://119.29.152.124:8800', // 你接口的域名  http://172.00.61.243:8082
+          target: 'http://119.29.152.124:8800', // 119.29.152.124
           //secure: false,      // 如果是https接口，需要配置这个参数
           changeOrigin: true,     // 如果接口跨域，需要进行这个参数配置
           pathRewrite: {
@@ -19,11 +19,19 @@ module.exports = {
           }
       },
       '/server_file': {
-          target: 'http://119.29.152.124:8840', // 你接口的域名  http://172.00.61.243:8082
+          target: 'http://119.29.152.124:8840', // 119.29.152.124
           //secure: false,      // 如果是https接口，需要配置这个参数
           changeOrigin: true,     // 如果接口跨域，需要进行这个参数配置
           pathRewrite: {
             '^/server_file': './'
+          }
+      },
+      '/server_rtsp': {
+          target: 'rtsp://192.168.55.101:554', // 119.29.152.124
+          //secure: false,      // 如果是https接口，需要配置这个参数
+          changeOrigin: true,     // 如果接口跨域，需要进行这个参数配置
+          pathRewrite: {
+            '^/server_rtsp': './'
           }
       }
     },
@@ -42,7 +50,7 @@ module.exports = {
     useEslint: true,
     // If true, eslint errors and warnings will also be shown in the error overlay
     // in the browser.
-    showEslintErrorsInOverlay: false,
+    showEslintErrorsInOverlay: true,
 
     /**
      * Source Maps

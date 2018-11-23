@@ -46,12 +46,12 @@
           </tr>
           <tr v-for="(dictionary, index) in dictionarys.dataItems" v-bind:key="index">
             <td><input type="checkbox" :value="index" v-model="selectedDictionarys"></td>
-            <td>{{dictionary.dic_code}}</td>
-            <td>{{dictionary.dic_name}}</td>
-            <td>{{dictionary.dic_key}}</td>
+            <td><div :title="dictionary.dic_code">{{dictionary.dic_code}}</div></td>
+            <td><div :title="dictionary.dic_name">{{dictionary.dic_name}}</div></td>
+            <td><div :title="dictionary.dic_key">{{dictionary.dic_key}}</div></td>
             <td>{{/*参数类型(SYS：系统参数PARK：项目参数)*/{SYS:"系统参数",PARK:"项目参数"}[dictionary.dic_type]}}</td>
-            <td>{{dictionary.depict}}</td>
-            <td>{{dictionary.remark}}</td>
+            <td><div :title="dictionary.depict">{{dictionary.depict}}</div></td>
+            <td><div :title="dictionary.remark">{{dictionary.remark}}</div></td>
             <td>
               <a href="javascript:" class="edit" @click="showEditDictionary(dictionary)">编辑</a>
               <a href="javascript:" class="delete" @click="delDictionary(index)">删除</a>
@@ -122,7 +122,6 @@ import moment from "moment";
         ifEditDict: false,
         dictionaryData:{
           id:null,//        	Y	String	ID
-          project_id:null,//	Y	String	项目ID(系统用户使用时使用的全是项目ID为NULL的，项目用户使用时使用的是项目ID为NULL和当前用户对应的项目ID的)
           dic_code:null,//  	Y	String	参数编号
           dic_name:null,//  	Y	String	参数名称
           dic_key:null,//   	Y	String	参数值
@@ -174,7 +173,8 @@ import moment from "moment";
 
         this.$api.dictionary.editor(new RequestParams()
         .addAttributes(this.dictionaryData)
-        .addAttribute("project_id", User.info.project_id))
+        .addAttribute("project_id" , 0)
+        )
         .then(response=>{
           this.$message.success(response.message)
           this.ifEditDict = false;
@@ -187,7 +187,7 @@ import moment from "moment";
 
         let datas = id != null ? [this.dictionarys.dataItems[id]] : this.selectedDictionarys.map(o=>this.dictionarys.dataItems[o]);
         if(datas.length){
-          this.$confirm(`确定要删除[${datas.map(o=>o.dic_name)}]吗?`, '提示', {
+          this.$confirm(`确定要删除吗?`, '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning'
@@ -209,7 +209,7 @@ import moment from "moment";
         this.$api.dictionary
           .getlist(new RequestParams()
           .addAttributes(params)
-          .addAttribute("project_id", User.info.project_id)
+          .addAttribute("project_id", null)
           .addAttribute("page_index", pageNum))
           .then(response => {
             this.dictionarys.attributes = response.attributes;

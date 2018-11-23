@@ -38,15 +38,15 @@
 
 /*弹窗*/
 
-.depwd{width: 630px;position: absolute;top: 10%;left: 35%;}
+.depwd{width: 630px;position: absolute;top: calc(50% - 289px);left: calc(50% - 315px);}
 .depwd .bot{width:100%;background-color: #fff;padding-bottom: 30px;}
 .depwd .t-text{font-size: .875rem;color: #fff;line-height: 3.75rem;margin-left:25px;}
 .depwd .cet{width: 500px;margin: 0 auto;padding-top: 1.25rem;}
 .depwd .red{color: #f35857;font-size: .875rem;height: 1.875rem;line-height: 1.875rem;margin-bottom: 25px;padding-left: 5.625rem;}
 .depwd .cet p{line-height: 1.875rem;margin-bottom: 1.5rem;}
 .depwd .cet p span{text-align:right;width: 25%;}
-.depwd .cet input{width: 75%;height: 2.25rem;border: 1px solid #999;color:#999;float: right;padding-left: .625rem;border-radius: 5px;}
-.depwd .cet textarea{width: 70%;height: 70px;border-radius: 5px;padding:8px;color: #999;font-family: "Microsoft YaHei";resize: none;}
+.depwd .cet input{width: 75%;border: 1px solid #999;}
+.depwd .cet textarea{width: 70%;height: 70px;border-radius: 5px;padding:8px;font-family: "Microsoft YaHei";resize: none;}
 .depwd .icon-xingxing{font-size: 8px!important;color: #ff0000!important;}
 .depwd .bz>i{color: transparent!important;}
 .depwd .button{height: 1.875rem;width: 100%;margin-top: 1.875rem;}

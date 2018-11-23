@@ -28,11 +28,9 @@
 .result .tab .usermanagement-table tr td  a{font-size:14px;color:#1c7dfa;margin: 0 3px;}
 
 
-.depwd{height:60px;width: 600px;position: absolute;top: 15%;left: 40%;}
-.bot{width:100%;background-color: #fff;padding-bottom: 50px;}
+.depwd{width: 600px;position: absolute;top: calc(50% - 270px);left: calc(50% - 300px);}
+.bot{width:100%;background-color: #fff;}
 .t-text{font-size: 14px;color: #fff;line-height: 60px;margin-left:25px;}
-.close{width:60px;height:60px;font-size: 14px;color: #fff;line-height: 60px;text-align: center;}
-.close:hover{cursor: pointer;background-color: #006af2;}
 .cet{width: 440px;margin: 0 auto;padding-top: 10px;}
 .red{color: #f35857;font-size: 14px;height: 30px;line-height: 30px;margin-bottom: 25px;padding-left: 90px;}
 .cet p{line-height: 30px;margin-bottom: 20px;position: relative;}

@@ -72,15 +72,15 @@
           <tbody>
             <tr  v-for="(project, index) in projects.dataItems" v-bind:key="index">
               <td><input type="checkbox" :value="index" v-model="selectedProjects"></td>
-              <td>{{project.project_code}}</td>
-              <td>{{project.project_name}}</td>
-              <td>{{project.addr}}</td>
-              <td>{{project.linkman}}</td>
-              <td>{{project.tel}}</td>
-              <td>{{project.total_place}}</td>
-              <td>{{project.create_time}}</td>
-              <td>{{project.update_time}}</td>
-              <td>{{project.user_name}}</td>
+              <td><div :title="project.project_code">{{project.project_code}}</div></td>
+              <td><div :title="project.project_name">{{project.project_name}}</div></td>
+              <td><div :title="project.addr">{{project.addr}}</div></td>
+              <td><div :title="project.linkman">{{project.linkman}}</div></td>
+              <td><div :title="project.tel">{{project.tel}}</div></td>
+              <td><div :title="project.total_place">{{project.total_place}}</div></td>
+              <td><div :title="project.create_time">{{project.create_time}}</div></td>
+              <td><div :title="project.update_time">{{project.update_time}}</div></td>
+              <td><div :title="project.user_name">{{project.user_name}}</div></td>
               <td><span v-bind:class="{normal:project.status}">正常</span></td>
               <td>
                 <a class="bj" href="javascript:" @click="showEditProject(index)">编辑</a>
@@ -180,7 +180,6 @@ export default {
         linkman: null,//     	Y	String	联系人
         tel: null,//         	Y	String	联系电话
         total_place: null,// 	Y	Int	总车位数
-        operator_id: User.info.id,// 	Y	String	操作员ID
         remark: null,//      	N	String	备注
         resetPW: false
       },
@@ -258,7 +257,7 @@ export default {
 
       if(adopt) return this.$message.error(adopt);
 
-      this.$api.project.editor(new RequestParams().addAttributes(this.projectData).addAttribute("operator_id", User.info.id))
+      this.$api.project.editor(new RequestParams().addAttributes(this.projectData))
       .then(response=>{
         this.$message.error(response.message)
         this.ifEditInfo = false
@@ -288,7 +287,7 @@ export default {
       let datas = id != null ? [this.projects.dataItems[id]] : this.selectedProjects.map(o => this.projects.dataItems[o])
       console.log(datas)
       if (datas.length) {
-        this.$confirm(`确定要删除[${datas.map(o => o.project_name)}]吗?`, '提示', {
+        this.$confirm(`确定要删除吗?`, '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -311,7 +310,6 @@ export default {
       this.$api.project
       .getlist(new RequestParams()
       .addAttributes(params)
-      .addAttribute("key", "and id = '0c9f01a22d284ad2871f50557098def1'")
       .addAttribute('page_index', pageNum)
       .addAttribute('begin_time', this.searchTimes[0])
       .addAttribute('end_time', this.searchTimes[1]))

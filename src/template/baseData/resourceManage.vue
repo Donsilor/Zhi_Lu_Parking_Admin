@@ -70,7 +70,7 @@
       <div>
         <div class="name">排序：</div>
         <div class="role">
-          <el-slider v-model="resData.sorting" :format-tooltip="formatTooltip"></el-slider>
+          <el-slider v-model="resData.sorting" :min="1"></el-slider>
         </div>
       </div>
       <div>
@@ -81,7 +81,7 @@
       </div>
 
       <div class="clf btn btn_modify">
-        <a href="javascript:" @click="editRes()">修改</a>
+        <a href="javascript:" @click="editRes()"> {{resData.id ? "修改" : "新增"}}</a>
         <a href="javascript:" @click="delRes(resData.id,resData.resource_name)">删除</a>
       </div>
 
@@ -117,88 +117,100 @@
 </template>
 
 <script>
-import { RequestParams,RequestDataItem, User } from "../../assets/js/entity";
-import { array2Descendants , isChildrensId} from "../../assets/js/common";
+import { RequestParams, RequestDataItem, User } from "../../assets/js/entity";
+import { array2Descendants, isChildrensId } from "../../assets/js/common";
 import Pagination from "../Pagination";
 import moment from "moment";
-  export default {
-    data () {
-      return {
-        ifAllotPopup: false,
-        resData:{
-          id:null,//           	Y	string	ID
-          pid:null,//          	Y	string	父ID
-          resource_code:null,//	Y	string	资源编号
-          resource_name:null,//	Y	string	资源名称
-          resource_type:null,//	Y	int	功能类型(menu：菜单 button：按钮)
-          resource_url:null,// 	Y	String	链接地址
-          layer:null,//        	Y	Int	层级
-          isshow:null,//       	Y	Int	是否显示（0：不显示1显示）
-          resource_icon:null,//	Y	String	图标
-          sorting:null,//      	Y	Int	排序
-          remark:null,//       	N	string	备注
-          relativepath:null,
+export default {
+  data() {
+    return {
+      ifAllotPopup: false,
+      resData: {
+        id: null, //           	Y	string	ID
+        pid: null, //          	Y	string	父ID
+        resource_code: null, //	Y	string	资源编号
+        resource_name: null, //	Y	string	资源名称
+        resource_type: null, //	Y	int	功能类型(menu：菜单 button：按钮)
+        resource_url: null, // 	Y	String	链接地址
+        layer: null, //        	Y	Int	层级
+        isshow: null, //       	Y	Int	是否显示（0：不显示1显示）
+        resource_icon: null, //	Y	String	图标
+        sorting: null, //      	Y	Int	排序
+        remark: null, //       	N	string	备注
+        relativepath: null
+      },
+      selectedParentIndex: -1,
+      ress: {
+        attributes: {
+          page_index: 1, //当前页码
+          page_size: 2, //当前页数
+          tatal: 10, //总条目数
+          total_pages: 10 //条页数
         },
-        selectedParentIndex:-1,
-        ress: {
-          attributes: {
-            page_index: 1, //当前页码
-            page_size: 2, //当前页数
-            tatal: 10, //总条目数
-            total_pages: 10 //条页数
-          },
-          tree:[],
-          dataItems: []
-        },
-        defaultProps: {
-          children: 'children',
-          label: 'resource_name'
+        tree: [],
+        dataItems: []
+      },
+      defaultProps: {
+        children: "children",
+        label: "resource_name"
+      }
+    };
+  },
+  methods: {
+    editRes() {
+      let adopt = null;
+      if (String(this.resData.relativepath).trim() == "")
+        adopt = "请选择资源图标";
+      if (String(this.resData.resource_code).trim() == "")
+        adopt = "请填写资源编码";
+      if (String(this.resData.resource_name).trim() == "")
+        adopt = "请填写资源名称";
+      if (String(this.resData.resource_type).trim() == "")
+        adopt = "请选择资源类型";
+      if (String(this.resData.resource_url).trim() == "")
+        adopt = "请填写资源链接";
+      if (String(this.resData.isshow).trim() == "")
+        adopt = "请选择资源是否显示";
+      if (String(this.resData.sorting).trim() == "") adopt = "请设置资源序号";
+      if (adopt) return this.$message.error(adopt);
+
+      let data = this.ress.dataItems[this.selectedParentIndex];
+      if (data) {
+        if (isChildrensId(this.resData, data.id)) {
+          return this.$message.error("不能选择自己/下级元素");
         }
       }
-    },
-    methods: {
-
-      editRes(){
-        let adopt = null;
-        if(String(this.resData.relativepath).trim() == "") adopt = "请选择资源图标";
-        if(String(this.resData.resource_code).trim() == "") adopt = "请填写资源编码";
-        if(String(this.resData.resource_name).trim() == "") adopt = "请填写资源名称";
-        if(String(this.resData.resource_type).trim() == "") adopt = "请选择资源类型";
-        if(String(this.resData.resource_url).trim() == "") adopt = "请填写资源链接";
-        if(String(this.resData.isshow).trim() == "") adopt = "请选择资源是否显示";
-        if(String(this.resData.sorting).trim() == "") adopt = "请设置资源序号";
-        if(adopt) return this.$message.error(adopt);
-
-        let data = this.ress.dataItems[this.selectedParentIndex];
-        if(data){
-          if(isChildrensId(this.resData, data.id)){
-            return this.$message.error("不能选择自己/下级元素")
-          }
-        }
-        this.$api.menu
-          .editor(new RequestParams()
-          .addAttributes(this.resData)
-          .addAttribute("pid", data ? data.id : 0)
-          .addAttribute("resource_icon", this.resData.relativepath))
-          .then(response=>{
-            this.$message.success(response.message)
-            this.loadResDatas();
-          })
-          .catch(({message}) => this.$message.error(message))
-      },
-
-      delRes(id, name){
-        this.$confirm(`确定要删除[${name}]吗?`, '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
+      this.$api.menu
+        .editor(
+          new RequestParams()
+            .addAttributes(this.resData)
+            .addAttribute("pid", data ? data.id : 0)
+            .addAttribute(
+              "resource_icon",
+              this.resData.relativepath || this.resData.resource_icon
+            )
+        )
+        .then(response => {
+          this.$message.success(response.message);
+          this.loadResDatas();
         })
-        .then(() => this.$api.menu.delete(new RequestParams().addAttribute("id", id)))
-        .then(response=>{
+        .catch(({ message }) => this.$message.error(message));
+    },
+
+    delRes(id, name) {
+      this.$confirm(`确定要删除吗?`, "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() =>
+          this.$api.menu.delete(new RequestParams().addAttribute("id", id))
+        )
+        .then(response => {
           this.$message.success("删除成功");
           this.loadResDatas();
         })
-        .catch(({message}) => this.$message.error(message))
+        .catch(({ message }) => this.$message.error(message))
         .catch(() => {
           this.$message.info("已取消删除");
         });
@@ -207,53 +219,55 @@ import moment from "moment";
     /**加载项目列表数据 */
     loadResDatas(pageNum = 1, params = {}) {
       this.$api.menu
-        .getlist(new RequestParams()
-        .addAttributes(params)
-        .addAttribute("page_index", pageNum)
-        .addAttribute("page_size", 1000000)
+        .getlist(
+          new RequestParams()
+            .addAttributes(params)
+            .addAttribute("page_index", pageNum)
+            .addAttribute("page_size", 1000000)
         )
         .then(response => {
           this.ress.attributes = response.attributes;
-          this.ress.tree = array2Descendants(response.dataItems.map((o,i) => (o.attributes.index = i,o.attributes)));
+          this.ress.tree = array2Descendants(
+            response.dataItems.map(
+              (o, i) => ((o.attributes.index = i), o.attributes)
+            )
+          );
           this.ress.dataItems = response.dataItems.map(o => o.attributes);
         })
-        .catch(({message}) => this.$message.error(message));
-      },
-      /**点击节点 */
-      handleNodeClick (data) {
-        this.resData = data;
-        this.ress.dataItems.forEach((o, i)=>{
-          if(o.id == data.pid){
-            this.selectedParentIndex = i;
-          }
-        });
-      },
-      formatTooltip (val) {
-        return val / 100;
-      },
-      handleAvatarSuccess(res, file) {
-        this.resData.resource_icon = URL.createObjectURL(file.raw);
-        this.resData.relativepath = res.relativepath;
-      },
-      beforeAvatarUpload(file) {
-        const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
-        const isLt2M = file.size / 1024 / 1024 < 2;
-
-        if (!isJPG) {
-          this.$message.error('上传头像图片只能是 JPG/PNG 格式!');
-        }
-        if (!isLt2M) {
-          this.$message.error('上传头像图片大小不能超过 2MB!');
-        }
-        return isJPG && isLt2M;
-      },
+        .catch(({ message }) => this.$message.error(message));
     },
-    mounted() {
-      this.loadResDatas(1, {});
+    /**点击节点 */
+    handleNodeClick(data) {
+      this.resData = data;
+      this.ress.dataItems.forEach((o, i) => {
+        if (o.id == data.pid) {
+          this.selectedParentIndex = i;
+        }
+      });
+    },
+    handleAvatarSuccess(res, file) {
+      this.resData.resource_icon = URL.createObjectURL(file.raw);
+      this.resData.relativepath = res.relativepath;
+    },
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === "image/jpeg" || file.type === "image/png";
+      const isLt2M = file.size / 1024 / 1024 < 2;
+
+      if (!isJPG) {
+        this.$message.error("上传头像图片只能是 JPG/PNG 格式!");
+      }
+      if (!isLt2M) {
+        this.$message.error("上传头像图片大小不能超过 2MB!");
+      }
+      return isJPG && isLt2M;
     }
+  },
+  mounted() {
+    this.loadResDatas(1, {});
   }
+};
 </script>
 
 <style scoped>
-  @import "../../assets/css/ResourceManagement.css";
+@import "../../assets/css/ResourceManagement.css";
 </style>

@@ -162,7 +162,7 @@ export default (function createApis(apis) {
       }
       const axion_method = axion_instance_method[method];
       if (axion_method) {
-        axion_method(url, $.extend(params, param), config).then(response => {
+        axion_method(url, new RequestParams($.extend(params, param)).getJsonParams(), config).then(response => {
           if (response.data.resultCode == 0) {
             resolve(response.data);
           }
@@ -171,7 +171,7 @@ export default (function createApis(apis) {
           }
         }).catch(error => {
           reject(new ResponseBody({
-            message: `请求失败!`,
+            message: `服务器还没准备好!`,
             resultCode: 1,
             attributes: error
           }));

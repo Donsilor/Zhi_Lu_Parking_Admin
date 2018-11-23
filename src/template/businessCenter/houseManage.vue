@@ -18,7 +18,7 @@
           <span class="conditions-text">单元：</span>
           <input type="text" placeholder="请输入" v-model="searchParams.units">
         </div>
-        <div class="condition">
+        <div class="cominput fl">
           <span class="conditions-text">房号：</span>
           <div class="custom-input">
           <input type="text" placeholder="请输入" v-model="searchParams.room_no">
@@ -47,13 +47,15 @@
         <div class="fl">
           <button class="plechoose fl" @click="selectedAll">请选择 <img src="../../assets/images/icon_9.png" alt=""></button>
           <button class="batchdel fl" @click="delHouses(null)">批量删除</button>
+          <button data-v-a422a792="" class="blu-button fl">导出EXCEL</button>
           <button hidden class="greenbut fl">配置车场收费标准</button>
           <div>共搜索到 <span>{{houses.attributes.tatal || 0}}</span> 条数据</div>
         </div>
         <div class="fr">
           <button class="search-button blu-button" @click="loadHousesDatas()">搜索</button>
           <button class="clear-button bluborder-button" @click="searchParams = {}, searchTimes = []">清除</button>
-          <button class="ss transf-button"  v-bind:class="{hide:searchDivShow}" v-on:click="searchDivShow=!searchDivShow">
+          <button class="ss transf-button"  v-bind:class="{hide:!searchDivShow}"
+                  v-on:click="searchDivShow=!searchDivShow">
             <i><img src="../../assets/images/icon_t_arrow2.png" alt=""></i>
             <span>{{searchDivShow === true ? "收起搜索" : "展开搜索"}}</span>
           </button>
@@ -77,13 +79,13 @@
           </tr>
           <tr  v-for="(house, index) in houses.dataItems" v-bind:key="index">
             <td><input type="checkbox" :value="index" v-model="selectedHouses" ></td>
-            <td>{{house.courtyard}}</td>
-            <td>{{house.building}}</td>
-            <td>{{house.units}}</td>
-            <td>{{house.room_no}}</td>
-            <td>{{house.create_time}}</td>
-            <td>{{house.update_time}}</td>
-            <td>{{house.user_name}}</td>
+            <td><div :title="house.courtyard">{{house.courtyard}}</div></td>
+            <td><div :title="house.building">{{house.building}}</div></td>
+            <td><div :title="house.units">{{house.units}}</div></td>
+            <td><div :title="house.room_no">{{house.room_no}}</div></td>
+            <td><div :title="house.create_time">{{house.create_time}}</div></td>
+            <td><div :title="house.update_time">{{house.update_time}}</div></td>
+            <td><div :title="house.user_name">{{house.user_name}}</div></td>
             <td>
               <a href="javascript:" class="bj" @click="showEditHouses(index)">编辑</a>
               <a href="javascript:" @click="delHouses(index)">删除</a>
@@ -108,15 +110,32 @@
           <p class="t-text fl">房屋信息</p>
           <p class="close fr" @click="ifEditInfo = false">x</p>
         </div>
-        <div class="bot">
+        <div class="bot clf">
           <div class="cet">
             <div class="clf">
-              <p class="red" hidden ><i class="iconfont icon-jian-tianchong"></i>错误提示的文案<span>x</span></p>
-              <p class="clf"><span class="fl">庭院：</span><input class="fl" type="text" v-model="houseData.courtyard" placeholder="wx88888888888888"></p>
-              <p class="clf"><input class="fr" v-model="houseData.building" type="text" placeholder="19000124000"><span class="fr">楼栋：</span></p>
-              <p class="clf"><span class="fl">单元：</span><input class="fl" v-model="houseData.units" type="text" placeholder="134@qq.com"></p>
-              <p class="clf"><input class="fr" type="text" v-model="houseData.room_no" placeholder="当前默认....."><span class="fr">房号：</span></p>
-              <p class="clf"><span class="fl">备注：</span><input class="fl" v-model="houseData.remark" type="text" placeholder="请再次输入主机密码，必填"></p>
+              <p class="red" hidden >
+                <i class="iconfont icon-jian-tianchong"></i>错误提示的文案<span>x</span>
+              </p>
+              <p class="clf">
+                <span class="fl">庭院：</span>
+                <input class="fl" type="text" v-model="houseData.courtyard" placeholder="请输入编号，必填">
+              </p>
+              <p class="clf">
+                <span class="fl">楼栋：</span>
+                <input class="fl" v-model="houseData.building" type="text" placeholder="请输入6-8位数字密码，必填">
+              </p>
+              <p class="clf">
+                <span class="fl">单元：</span>
+                <input class="fl" v-model="houseData.units" type="text" placeholder="请输入6-8位数字密码，必填">
+              </p>
+              <p class="clf">
+                <span class="fl">房号：</span>
+                <input class="fl" type="text" v-model="houseData.room_no" placeholder="请输入6-8位数字密码，必填">
+              </p>
+              <p class="clf">
+                <span class="fl">备注：</span>
+                <textarea class="fl" v-model="houseData.remark" placeholder="请输入备注"></textarea>
+              </p>
             </div>
             <div class="button clf">
               <a class="qr fr" @click="editHouses">确定</a>
@@ -145,17 +164,17 @@
               </tr>
               <tr  v-for="(houseHold, index) in houseHolds.dataItems" v-bind:key="index">
                 <td><input type="checkbox" :value="index" v-model="selectedHouseHolds" ></td>
-                <td>{{houseHold.full_name}}</td>
-                <td>{{["女","男"][houseHold.sex]}}</td>
-                <td>{{["亲属","业主","租客","朋友"/*住户类型(0：亲属1：业主2：租客3：朋友)*/][houseHold.household_type]}}</td>
-                <td>{{houseHold.tel}}</td>
-                <td>{{houseHold.identification_no}}</td>
-                <td>{{houseHold.addr}}</td>
-                <td>{{houseHold.birthday}}</td>
-                <td>{{houseHold.create_time}}</td>
-                <td>{{houseHold.update_time}}</td>
-                <td>{{houseHold.user_name}}</td>
-                <td>{{["正常","冻结","注销"/*(0：正常1：冻结2：注销)*/][houseHold.status]}}</td>
+                <td><div :title="houseHold.full_name">{{houseHold.full_name}}</div></td>
+                <td><div :title="houseHold.sex">{{['女','男'][houseHold.sex]}}</div></td>
+                <td><div :title="houseHold.household_type">{{['亲属','业主','租客','朋友'/*住户类型(0：亲属1：业主2：租客3：朋友)*/][houseHold.household_type]}}</div></td>
+                <td><div :title="houseHold.tel">{{houseHold.tel}}</div></td>
+                <td><div :title="houseHold.identification_no">{{houseHold.identification_no}}</div></td>
+                <td><div :title="houseHold.addr">{{houseHold.addr}}</div></td>
+                <td><div :title="houseHold.birthday">{{houseHold.birthday}}</div></td>
+                <td><div :title="houseHold.create_time">{{houseHold.create_time}}</div></td>
+                <td><div :title="houseHold.update_time">{{houseHold.update_time}}</div></td>
+                <td><div :title="houseHold.user_name">{{houseHold.user_name}}</div></td>
+                <td><div :title="houseHold.status">{{['正常','冻结','注销'/*(0：正常1：冻结2：注销)*/][houseHold.status]}}</div></td>
                 <td>
                   <a href="javascript:" @click="showEditHouseHolds(index)">编辑</a>
                   <a href="javascript:" class="delete" @click="delHouseHolds(index)">删除</a>
@@ -190,7 +209,7 @@
           <p class="t-text fl">导入授权</p>
           <p class="close fr" @click="ifImportAuthorize = false">x</p>
         </div>
-        <div class="bot">
+        <div class="bot clf">
           <div class="cet clf">
             <div class="fl choose-file">选择文件<input type="file" accept=".xls,.xlsx" @change="selectImportExcelFile" /></div>
             <a class="fr downloadtemp" >下载模板</a>
@@ -208,7 +227,7 @@
           <p class="t-text fl">住户授权</p>
           <p class="close fr" @click="ifAddInhabitant = false">x</p>
         </div>
-        <div class="bot">
+        <div class="bot clf">
           <div class="cet">
             <div class="clf">
               <p class="red" hidden><i class="iconfont icon-jian-tianchong"></i>错误提示的文案<span>x</span></p>
@@ -218,7 +237,9 @@
               </div>
               <div class="clf">
                 <span class="fl">性别：</span>
-                <input class="fl" type="text" placeholder="19000124000" v-model="houseHoldData.sex">
+                <label><input type="radio" name="residentSex" value="1" v-model="houseHoldData.sex">男</label>
+                <label><input type="radio" name="residentSex" value="0" v-model="houseHoldData.sex">女</label>
+                <!--<input class="fl" type="text" placeholder="19000124000" v-model="houseHoldData.sex">-->
               </div>
               <div class="clf">
                 <span class="fl">住户类型：</span>
@@ -322,18 +343,15 @@ export default {
       /**房屋数据 */
       houseData:{
         id:null,//          	Y	String	ID
-        project_id:null,//  	Y	String	项目ID
         courtyard:null,//   	Y	String	庭院
         building:null,//    	Y	String	楼栋
         units:null,//       	Y	String	单元
         room_no:null,//     	Y	String	房号
-        operator_id:null,// 	Y	String	操作员ID
         remark:null,//      	N	String	备注
       },
       /**房屋住户数据 */
       houseHoldData:{
         id:null,//               	Y	String	ID
-        project_id:null,//       	Y	String	项目ID
         house_id:null,//         	Y	String	房屋ID
         household_type:null,//   	Y	Int	住户类型(0：亲属1：业主2：租客3：朋友)
         full_name:null,//        	Y	String	姓名
@@ -342,7 +360,6 @@ export default {
         identification_no:null,//	N	String	证件号码
         addr:null,//             	N	String	证件地址
         birthday:null,//         	N	String	出生日期
-        operator_id:null,//      	Y	String	操作员ID
         remark:null,//           	N	String	备注
       },
       houseHolds:{
@@ -394,32 +411,31 @@ export default {
           excelSheets.setSheetHeader(name, Object.keys(ExcelSheets.dictionary[name]));
         }
 
-        return excelSheets.importExcel(this.importExcelFile).then(({房屋列表,住户列表,车辆列表})=>{
-          console.log(房屋列表,住户列表,车辆列表)
+        return excelSheets.importExcel(this.importExcelFile).then(({住户列表,房屋列表,车辆列表})=>{
           return this.$api.house.editor(new RequestParams()
           .addDataItems(房屋列表.map(o=>new RequestDataItem().addAttributes(o))))
+          .then(({dataItems}) => {
+            let houses = array2Object(dataItems.map(o=>o.attributes), "code");
+            return this.$api.household.editor(new RequestParams()
+            .addDataItems(住户列表.map(o=>{
+              return new RequestDataItem().addAttributes(o).addAttribute("house_id", houses[o.house_code].id);
+            })))
+          })
+          .then(({dataItems})=>{
+            let households = array2Object(dataItems.map(o=>o.attributes), "code");
+            return this.$api.car.editor(new RequestParams()
+            .addDataItems(车辆列表.map(o=>{
+              return new RequestDataItem().addAttributes(o).addAttribute("household_id", households[o.household_code].id);
+            })))
+          })
+          .then(()=>{
+            this.$message.success("导入成功");
+            this.loadHousesDatas();
+          })
+          .catch(error => this.$message.error(error.message), console.log(error))
+          .catch(error => this.$message.error(error.message))
+          .catch(error => this.$message.error(error.message));
         })
-        .then(({dataItems}) => {
-          let houses = array2Object(dataItems.map(o=>o.attributes), "code");
-          return this.$api.household.editor(new RequestParams()
-          .addDataItems(住户列表.map(o=>{
-            return new RequestDataItem().addAttributes(o).addAttribute("house_id", houses[o.house_code].id);
-          })))
-        })
-        .then(({dataItems})=>{
-          let households = array2Object(dataItems.map(o=>o.attributes), "code");
-          return this.$api.car.editor(new RequestParams()
-          .addDataItems(车辆列表.map(o=>{
-            return new RequestDataItem().addAttributes(o).addAttribute("household_id", households[o.household_code].id);
-          })))
-        })
-        .then(()=>{
-          this.$message.success("导入成功");
-          this.loadHousesDatas();
-        })
-        .catch(({message}) => this.$message.error(message))
-        .catch(({message}) => this.$message.error(message))
-        .catch(({message}) => this.$message.error(message));
       })
       .catch((error) => (this.$message.info("文件不正确，导入失败") ,console.log(error)))
       .catch(() => this.$message.info("已取消删除"))
@@ -450,8 +466,6 @@ export default {
       this.$api.house.editor(new RequestParams()
       .addDataItem(new RequestDataItem()
       .addAttributes(this.houseData)
-      .addAttribute("project_id", User.info.project_id)
-      .addAttribute("operator_id", User.info.id)
       ))
       .then(response=>{
         this.$message.success(response.message)
@@ -465,9 +479,7 @@ export default {
       this.$api.household.editor(new RequestParams()
       .addDataItem(new RequestDataItem()
       .addAttributes(this.houseHoldData)
-      .addAttribute("project_id", User.info.project_id)
       .addAttribute("house_id", this.searchHouseHlodId)
-      .addAttribute("operator_id", User.info.id)
       ))
       .then(response=>{
         this.$message.success(response.message)
@@ -482,7 +494,7 @@ export default {
         
       let datas = id != null ? [this.houses.dataItems[id]] : this.selectedHouses.map(o=>this.houses.dataItems[o]);
       if(datas.length){
-        this.$confirm(`确定要删除庭院[${datas.map(o=>o.courtyard)}]吗?`, '提示', {
+        this.$confirm(`确定要删除庭院吗?`, '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -504,7 +516,7 @@ export default {
         
       let datas = id != null ? [this.houseHolds.dataItems[id]] : this.selectedHouseHolds.map(o=>this.houseHolds.dataItems[o]);
       if(datas.length){
-        this.$confirm(`确定要删除住户[${datas.map(o=>o.full_name)}]吗?`, '提示', {
+        this.$confirm(`确定要删除住户吗?`, '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -604,20 +616,25 @@ export default {
           .el-input__inner
             border 1px solid #999
 
-
-
-      input,
+      input[type=text],
       select
         float left
         width 70%
         height 30px
         border 1px solid #999
-        color #999
         padding-left 10px
         border-radius 3px
 
         &.w85
           width 85%
+
+      input[type=radio]
+        margin-right 5px
+
+      label
+        font-size 14px
+        margin-right 20px
+        cursor pointer
 
 
 </style>

@@ -35,23 +35,23 @@
           <a href="javascript:" class="modify" @click="ifParkingVariate = true">修改</a>
         </div>
         <div>
-          <span>抓拍图片保存路径：<i>{{parking.photo_path}}</i></span>
+          <span>抓拍图片保存路径：<i :title="parking.photo_path">{{parking.photo_path}}</i></span>
           <a href="javascript:" class="modify" @click="ifParkingVariate = true">修改</a>
         </div>
         <div>
-          <span>图片默认保存时长：<i>{{parking.photo_save_time}}天</i></span>
+          <span>图片默认保存时长：<i :title="parking.photo_save_time">{{parking.photo_save_time}}天</i></span>
           <a href="javascript:" class="modify" @click="ifParkingVariate = true">修改</a>
         </div>
         <div>
-          <span>车牌头字母：<i>{{parking.car_head}}</i></span>
+          <span>车牌头字母：<i :title="parking.car_head">{{parking.car_head}}</i></span>
           <a href="javascript:" class="modify" @click="ifParkingVariate = true">修改</a>
         </div>
         <div>
-          <span>LED默认加载文字：<i>{{parking.led_load_str}}</i></span>
+          <span>LED默认加载文字：<i :title="parking.led_load_str">{{parking.led_load_str}}</i></span>
           <a href="javascript:" class="modify" @click="ifParkingVariate = true">修改</a>
         </div>
         <div>
-          <span>固定卡初次授权开始日期：<i>{{parking.first_auth}}</i></span>
+          <span>固定卡初次授权开始日期：<i :title="parking.first_auth">{{parking.first_auth}}</i></span>
           <a href="javascript:" class="modify" @click="ifParkingVariate = true">修改</a>
         </div>
       </div>
@@ -122,27 +122,27 @@
               <p class="red" hidden><i class="iconfont icon-jian-tianchong"></i>错误提示的文案</p>
               <p class="clf">
                 <span class="fl">总车位数：</span>
-                <input class="fl user w30" name="user" type="text" v-model="parking.park_count">
+                <input class="fl user w30" name="user" type="text" v-model="parking.park_count" placeholder="请输入总车位数">
               </p>
               <p class="clf">
                 <span class="fl">抓拍图片保存路径：</span>
-                <input class="fl psw w50" name="psw" type="text" v-model="parking.photo_path">
+                <input class="fl psw w50" name="psw" type="text" v-model="parking.photo_path" placeholder="请输入抓拍图片保存路径">
               </p>
               <p class="clf">
                 <span class="fl">图片默认保存时长：</span>
-                <input class="fl ppsw w30" name="ppsw" type="text" v-model="parking.photo_save_time">
+                <input class="fl ppsw w30" name="ppsw" type="text" v-model="parking.photo_save_time" placeholder="请输入图片默认保存时长">
               </p>
               <p class="clf">
                 <span class="fl">车牌头字母：</span>
-                <input class="fl w30" type="text" v-model="parking.car_head">
+                <input class="fl w30" type="text" v-model="parking.car_head" placeholder="请输入车牌头字母">
               </p>
               <p class="clf">
                 <span class="fl">LED默认加载文字：</span>
-                <textarea class="fl tel w80" name="tel" maxlength="50" v-model="parking.led_load_str"></textarea>
+                <textarea class="fl tel w80" name="tel" maxlength="50" v-model="parking.led_load_str" placeholder="请输入LED默认加载文字"></textarea>
               </p>
               <p class="clf">
                 <span class="fl">固定卡初次授权开始日期：</span>
-                <input class="fl w30" type="text" v-model="parking.first_auth">
+                <input class="fl w30" type="text" v-model="parking.first_auth" placeholder="请输入固定卡初次授权开始日期">
               </p>
             </div>
             <div class="button clf">
@@ -171,13 +171,11 @@ export default {
         linkman: null,//     	Y	String	联系人
         tel: null,//         	Y	String	联系电话
         total_place: null,// 	Y	Int	总车位数
-        operator_id: User.info.id,// 	Y	String	操作员ID
         remark: null,//      	N	String	备注
         update_time:null,//
       },
       pay:{
         id:null,//             	Y	String	ID
-        project_id:null,//     	Y	String	项目ID
         pay_type:null,//       	Y	Int	支付方式(0：微信 1：支付宝)
         pay_account:null,//    	Y	Int	商家账号
         businesser_code:null,//	Y	String	商户号
@@ -186,19 +184,16 @@ export default {
         pay_private_key:null,//	Y	String	支付私钥
         token_url:null,//      	Y	String	token获取地址
         pay_url:null,//        	Y	String	支付URL
-        operator_id:null,//    	Y	String	操作员ID
         remark:null,//         	N	String	备注
       },
       parking:{
         id:null,//              	Y	String	ID
-        project_id:null,//      	Y	String	项目ID
         photo_path:null,//      	Y	String	抓拍图片保存路径
         photo_save_time:null,// 	Y	Int	图片默认保存时长(单位天,默认7天)
         car_head:null,//        	Y	String	车牌头字母
         led_load_str:null,//    	Y	String	LED默认加载文字(20个字内)
         first_auth:null,//      	Y	Int	固定卡初次授权开始日期
         pay_callback_url:null,//	Y	String	支付回调地址
-        operator_id:null,//     	Y	String	操作员ID
         park_count:null,
         remark:null,//          	N	String	备注
       },
@@ -209,8 +204,6 @@ export default {
       this.$api.sysconfig
       .editorpay(new RequestParams()
       .addAttributes(this.pay)
-      .addAttribute("project_id", User.info.project_id)
-      .addAttribute("operator_id", User.info.id)
       )
       .then(response=>{
         this.$message.success(response.message);
@@ -223,8 +216,6 @@ export default {
       this.$api.sysconfig
       .editor(new RequestParams()
       .addAttributes(this.parking)
-      .addAttribute("project_id", User.info.project_id)
-      .addAttribute("operator_id", User.info.id)
       )
       .then(response=>{
         this.$message.success(response.message)

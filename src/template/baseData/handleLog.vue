@@ -32,6 +32,7 @@
           <button class="plechoose fl" @click="selectedAll">请选择 <img src="../../assets/images/icon_9.png" alt="">
           </button>
           <button class="batchdel fl" @click="delLog(null)">批量删除</button>
+          <button class="blu-button fl">导出TXT</button>
           <div>共搜索到 <span>{{logs.attributes.tatal || 0}}</span> 条数据</div>
         </div>
         <div class="fr">
@@ -59,10 +60,10 @@
           </tr>
           <tr v-for="(item, index) of logs.dataItems" :key="index">
             <td><input type="checkbox" :value="index" v-model="selectedLogs"></td>
-            <td>{{item.resource_name}}</td>
-            <td>{{item.content}}</td>
-            <td>{{item.operator_time}}</td>
-            <td>{{item.user_name}}</td>
+            <td><div :title="item.resource_name">{{item.resource_name}}</div></td>
+            <td><div :title="item.content">{{item.content}}</div></td>
+            <td><div :title="item.operator_time">{{item.operator_time}}</div></td>
+            <td><div :title="item.user_name">{{item.user_name}}</div></td>
             <td>
               <a href="javascript:" class="view" @click="viewPopup(item)">查看</a>
               <a href="javascript:" class="delete" @click="delLog(item)">删除</a>
@@ -90,10 +91,22 @@
         <div class="bot">
           <div class="cet">
             <div class="clf">
-              <p class="clf"><span class="l fl">资源名称：</span><span class="fl">{{logData.resource_name}}</span></p>
-              <p class="clf"><span class="l fl">操作员：</span><span class="fl">admin</span></p>
-              <p class="clf"><span class="l fl">操作时间：</span><span class="fl">{{logData.operator_time}}</span></p>
-              <p class="clf"><span class="l fl">操作内容：</span><span class="fl">{{logData.content}}</span></p>
+              <p class="clf">
+                <span class="l fl">资源名称：</span>
+                <span class="fl" :title="logData.resource_name">{{logData.resource_name}}</span>
+              </p>
+              <p class="clf">
+                <span class="l fl">操作员：</span>
+                <span class="fl">admin</span>
+              </p>
+              <p class="clf">
+                <span class="l fl">操作时间：</span>
+                <span class="fl" :title="logData.operator_time">{{logData.operator_time}}</span>
+              </p>
+              <p class="clf">
+                <span class="l fl">操作内容：</span>
+                <span class="fl" :title="logData.content">{{logData.content}}</span>
+              </p>
             </div>
             <div class="clf">
               <span class="fl l">备注：</span>
@@ -217,7 +230,7 @@ export default {
     delLog (data) {
       let datas = data != null ? [data] : this.selectedLogs.map(o => this.logs.dataItems[o])
       if (datas.length) {
-        this.$confirm(`确定要删除[${datas.map(o => o.resource_name)}]吗?`, '提示', {
+        this.$confirm(`确定要删除吗?`, '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'

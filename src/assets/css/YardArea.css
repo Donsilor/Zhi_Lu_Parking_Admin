@@ -9,7 +9,7 @@
 .result .tab .yardarea-table tr td:first-child input[type=checkbox]:checked{background:url(../images/icon_6.png)no-repeat center/contain;border:none;}
 
 
-.depwd{width: 600px;left: 20%;top: 12%;}
+.depwd{width: 600px;left: calc(50% - 300px);top: calc(50% - 270px);}
 .bot{width:100%;background-color: #fff;padding-top:10px;}
 .cet{width:480px;margin: 0 auto;padding-top:5px;}
 .cet p{line-height: 30px;margin-bottom: 20px;position: relative;}
@@ -18,17 +18,17 @@
 .cet p .red-text{color: #FF0000;padding-left: 10px;}
 .cet p .position-red{position:absolute;top: 0;left:150px;font-size: 12px;}
 .cet p .choose{display: block;height: 30px;line-height: 30px;color:#1c7dfa;position: absolute;top:0;right: -45px;}
-.cet input[type=text]{font-size: 12px;width: 350px;height: 30px;border: 1px solid #999;color:#999;float: right;padding-left: 10px;border-radius: 5px;}
+.cet input[type=text]{width: 350px;border: 1px solid #999;float: right;}
 .icon-xingxing{font-size: 8px!important;color: #ff0000!important;}
 .bz>i{color: transparent!important;}
-.bz>input{height:85px!important;border: 1px solid #999;color:#999;float: right;padding-left:10px;border-radius: 5px;padding-bottom: 60px;}
+.bz > textarea{height:85px!important;border: 1px solid #999;color:#999;float: right;padding-left:10px;border-radius: 5px;padding-bottom: 60px;}
 .button{height: 30px;width: 100%;margin-top: 30px;}
 .qx{display: block;height:30px;width: 90px;color:#1c7dfa;border: 1px solid #1c7dfa;border-radius: 5px;text-align: center;line-height: 30px;}
 .qx:hover{cursor: pointer;}
 .qr{display: block;height:30px;width: 90px;color:#fff;background-color:#1c7dfa;border-radius: 5px;margin-left: 30px;text-align: center;line-height: 30px;}
 .qr:hover{cursor: pointer;}
 .cet .upload{display: block;position: absolute;top: 0;right: 0;width: 60px;height: 30px;text-align: center;color:#1c7dfa;cursor: pointer;}
-.cet select{font-size: 12px;width: 350px;height: 30px;border: 1px solid #999;color:#999;float: right;padding-left: 10px;border-radius: 5px;}
+.cet select{width: 350px;height: 30px;border: 1px solid #999;float: right;padding-left: 10px;border-radius: 3px;}
 .cet .choose-equ{display: block;color:#1c7dfa;line-height: 30px;float: right;}
 .ckb input{display: none;}
 .ckb input+label{display: inline-block;border-radius: 50%;border: 1px #aaa solid;width: 16px;height: 16px;}
@@ -39,7 +39,7 @@
 
 
 
-.main1 .depwd{width:930px;position: absolute;}
+.main1 .depwd{width:930px;left: calc(50% - 465px);}
 .main1 .bot{width:100%;background-color: #fff;padding-bottom: 30px;}
 .main1 .t-text{font-size: 14px;color: #fff;line-height: 60px;margin-left:25px;}
 
@@ -78,7 +78,7 @@
 
 
 
-.vehreg-main>.depwd{width:1180px;top: 15%;left: 10%;}
+.vehreg-main>.depwd{width:1180px;top: 15%;left: calc(50% - 540px);}
 .vehreg-main .bot{width:100%;background-color: #fff;padding-bottom: 30px;}
 .vehreg-main .t-text{font-size: 14px;color: #fff;line-height: 60px;margin-left:25px;}
 .vehreg-main .vc-cet{width:95%;margin: 0 auto;padding-top: 20px;}

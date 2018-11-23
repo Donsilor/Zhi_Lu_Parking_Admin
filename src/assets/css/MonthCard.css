@@ -20,7 +20,7 @@
 .cet input[type=text]{font-size: 12px;width: 350px;height: 30px;border: 1px solid #999;color:#999;float: right;padding-left: 10px;border-radius: 5px;}
 .icon-xingxing{font-size: 8px!important;color: #ff0000!important;}
 .bz>i{color: transparent!important;}
-.bz>input{height:85px!important;border: 1px solid #999;color:#999;float: right;padding-left:10px;border-radius: 5px;padding-bottom: 60px;}
+.bz > textarea{height:85px!important;border: 1px solid #999;color:#999;float: right;padding-left:10px;border-radius: 5px;padding-bottom: 60px;}
 .button{height: 30px;width: 100%;margin-top: 30px;}
 .qx{display: block;height:30px;width: 90px;color:#1c7dfa;border: 1px solid #1c7dfa;border-radius: 5px;text-align: center;line-height: 30px;}
 .qx:hover{cursor: pointer;}

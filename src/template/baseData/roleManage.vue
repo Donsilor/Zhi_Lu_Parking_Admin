@@ -38,14 +38,14 @@
       <div>
         <div class="name">状态：</div>
         <div class="role">
-          <label for="1"><input type="radio" id="0" value="0" v-model="roleData.status" name="radio">正常</label>
-          <label for="2"><input type="radio" id="1" value="1" v-model="roleData.status" name="radio">停用</label>
+          <label for="0"><input type="radio" id="0" value="0" v-model="roleData.status" name="radio">正常</label>
+          <label for="1"><input type="radio" id="1" value="1" v-model="roleData.status" name="radio">停用</label>
         </div>
       </div>
       <div>
         <div class="name">排序：</div>
         <div class="role">
-          <el-slider v-model="roleData.sorting" :format-tooltip="formatTooltip"></el-slider>
+          <el-slider v-model="roleData.sorting" :min="1"></el-slider>
         </div>
       </div>
       <div>
@@ -79,8 +79,7 @@
               }"
               :node-key="'id'"
               :ref="'tree'"
-              :show-checkbox="true"
-              @node-click="handleNodeClick">
+              :show-checkbox="true">
             </el-tree>
             <div class="button clf">
               <a class="qr" @click="assign()">确定</a>
@@ -105,7 +104,6 @@ export default {
       selectedParentIndex:-1,
       roleData:{
         id:null,//        	Y	String	ID
-        project_id:null,//	Y	String	项目ID
         pid:null,//       	Y	String	父级角色
         role_name:null,// 	Y	String	角色名称
         role_abb:null,//  	Y	String	角色标识
@@ -179,7 +177,7 @@ export default {
       this.$api.role
       .editor(new RequestParams()
       .addAttributes(this.roleData)
-      .addAttribute("project_id", User.info.project_id)
+      .addAttribute("project_id", 0)
       .addAttribute("pid", data ? data.id : 0))
       .then(response=>{
         this.$message.success(response.message)
@@ -190,12 +188,12 @@ export default {
     },
 
     delRole(id, name){
-      this.$confirm(`确定要删除[${name}]吗?`, '提示', {
+      this.$confirm(`确定要删除吗?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       })
-      .then(() => this.$api.role.delete(new RequestParams().addDataItemAttr(0,"id", id)))
+      .then(() => this.$api.role.delete(new RequestParams().addAttribute("id", id)))
       .then(response=>{
         this.$message.success("删除成功");
         this.loadRoleDatas();
@@ -244,16 +242,17 @@ export default {
         }
       });
     },
-    formatTooltip (val) {
-      return val / 100
-    },
 
     renderRoleNodeContent (h, {node, data, store}) {
       return (
         <span class="custom-tree-node">
           <span>{node.label}</span>
           <span class="handleBtns">
-            <a href="javascript:"><img src={require('../../assets/images/icon_10.png')} alt=""/></a>
+            <a href="javascript:" onclick={
+              function(){
+                console.log(123);
+              }.bind(this)
+            }><img src={require('../../assets/images/icon_10.png')} alt=""/></a>
             <a href="javascript:"><img src={require('../../assets/images/icon_11.png')} alt=""/></a>
           </span>
         </span>

@@ -17,7 +17,7 @@
           <span class="conditions-text">状态：</span>
           <input type="text" placeholder="请输入">
         </div>
-        <div class="condition">
+        <div class="cominput fl">
           <span class="conditions-text">车位：</span>
           <div class="custom-input">
             <input type="text" placeholder="请输入">
@@ -45,9 +45,9 @@
       </div>
       <div class="clf bottom">
         <div class="fl">
-          <button class="plechoose fl" @click="selectedAll()">请选择 <img src="../../assets/images/icon_9.png" alt=""></button>
-          <button class="batchdel fl">批量删除</button>
-          <button class="greenbut fl">配置车场收费标准</button>
+          <!--<button class="plechoose fl" @click="selectedAll()">请选择 <img src="../../assets/images/icon_9.png" alt=""></button>-->
+          <!--<button class="batchdel fl">批量删除</button>-->
+          <!--<button class="greenbut fl">配置车场收费标准</button>-->
           <div>共搜索到 <span>{{carDelays.attributes.tatal || 0}}</span> 条数据</div>
         </div>
         <div class="fr">
@@ -80,16 +80,16 @@
           </tr>
           <tr v-for="(car, index) in carDelays.dataItems" v-bind:key="index">
             <td><input type="checkbox" :value="index" v-model="selectedDelays"></td>
-            <td>{{car.car_no}}</td>
-            <td>{{car.household_name}}</td>
-            <td>{{car.room_no}}</td>
-            <td>{{car.tel}}</td>
-            <td>{{/*车辆类型(通过授权确认车辆类型，此类型由数据字典提供，选择输入，不能手动录入)*/car.car_type}}</td>
-            <td>{{car.car_place_no}}</td>
-            <td>{{car.end_time}}</td>
-            <td>{{["已过期","正常"][car.status]}}</td>
-            <td>{{car.update_time}}</td>
-            <td>{{car.user_name}}</td>
+            <td><div :title="car.car_no">{{car.car_no}}</div></td>
+            <td><div :title="car.household_name">{{car.household_name}}</div></td>
+            <td><div :title="car.room_no">{{car.room_no}}</div></td>
+            <td><div :title="car.tel">{{car.tel}}</div></td>
+            <td><div :title="car.car_type">{{/*车辆类型(通过授权确认车辆类型，此类型由数据字典提供，选择输入，不能手动录入)*/car.car_type}}</div></td>
+            <td><div :title="car.car_place_no">{{car.car_place_no}}</div></td>
+            <td><div :title="car.end_time">{{car.end_time}}</div></td>
+            <td><div :title="car.status">{{['正常','已过期'][car.status]}}</div></td>
+            <td><div :title="car.update_time">{{car.update_time}}</div></td>
+            <td><div :title="car.user_name">{{car.user_name}}</div></td>
             <td>
               <a href="javascript:" class="RenewalExtension" @click="showPostponedRenewal(car)">延期续费</a>
             </td>
@@ -119,23 +119,25 @@
           <div class="cet">
             <div class="clf">
 
-              <p class="clf"><span class="fl">车牌号码：</span><span class="p-text">{{carDelayData.car_no}}</span></p>
-              <p class="clf"><span class="fl">原有效期至：</span><span class="p-text">{{delayData.old_end_time = carDelayData.end_time}}</span></p>
-              <p class="clf"><span class="fl">新有效期至：</span><span class="p-text">
-                <el-date-picker
-                  v-model="delayData.new_end_time"
-                  type="date"
-                  placeholder="选择日期">
-                </el-date-picker>  
-              </span></p>
+              <p class="clf"><span class="fl">车牌号码：</span><span class="p-text" :asdasd="delayData.car_auth_id = carDelayData.id">{{carDelayData.car_no}}</span></p>
               <p class="clf"><span class="fl">授权月份：</span>
-                <select aria-placeholder="">
-                  <option value="" disabled selected>请选择,根据车辆类型及授权车位自动关联收费标准</option>
-                  <option value="">选择1</option>
+                <select v-model="standardData.amountData" @change="delayData.amount = standardData.amountData.fee">
+                  <option v-for="(item, index) in standardData.standard_content" :value="item" :key="index">{{item.count}}</option>
                 </select>
               </p>
-              <p class="clf"><span class="fl">收费金额：</span><input class="fl" type="text" value="请选择"></p>
-              <p class="bz clf"><span class="fl">备注：</span><input class="fl" type="text" value="请输入备注" id="inp"></p>
+              <p class="clf"><span class="fl">支付方式：</span>
+                <select v-model="delayData.pay_mode">
+                  <option value="0" selected>现金</option>
+                  <option value="1">微信公众号支付</option>
+                  <option value="2">微信刷卡支付</option>
+                  <option value="3">支付宝网页支付</option>
+                  <option value="4">支付宝刷卡支付</option>
+                </select>
+              </p>
+              <p class="clf"><span class="fl">原有效期至：</span><span class="p-text">{{delayData.old_end_time = carDelayData.end_time}}</span></p>
+              <p class="clf"><span class="fl">新有效期至：</span><span class="p-text">{{get_new_end_time}}</span></p>
+              <p class="clf"><span class="fl">收费金额：</span><input class="fl" disabled type="text" v-model="delayData.amount"></p>
+              <p class="bz clf"><span class="fl">备注：</span><input class="fl" type="text" v-model="delayData.remark" id="inp"></p>
             </div>
             <div class="button clf">
               <a class="qr fr" @click="postponedRenewal()">确定</a>
@@ -173,6 +175,7 @@
 
 <script>
 import { RequestParams, RequestDataItem,User, ExcelSheets, DataDictionary } from "../../assets/js/entity";
+import {array2Object} from "../../assets/js/common";
 import Pagination from "../Pagination";
 import moment from "moment";
   export default {
@@ -188,14 +191,12 @@ import moment from "moment";
         selectedDelays:[],
         delayData:{
           car_auth_id:null,//	Y	String	授权ID
-          project_id:null,//	N	String	项目ID 
           car_id:null,//	Y	String	车辆ID
           amount:null,//	Y	decimal(10,2)	收费金额
           pay_mode:null,//	Y	int	支付方式(0：现金1：微信公众号支付2：微信刷卡支付3：支付宝网页支付4：支付宝刷卡支付)
           old_end_time:null,//	Y	String	旧有效期至(格式：yyyy-MM-dd HH:mm:ss)
           new_end_time:null,//	Y	String	新有效期至(格式：yyyy-MM-dd HH:mm:ss)
           source:null,//	Y	String	来源：cloud(平台)、app(移动端)
-          operator_id:null,//	Y	String	操作员ID
           remark:null,//	N	String	备注
         },
         carDelayData:{
@@ -223,7 +224,7 @@ import moment from "moment";
 
           },
         },
-        standards:[],
+        standardData:{},
         dataDictionary:{},
         pickerOptions: {
           shortcuts: [{
@@ -252,11 +253,18 @@ import moment from "moment";
             }
           }]
         },
+        importExcelFile:{}
       };
     },
     components: {
       /**分页组件 */
       Pagination
+    },
+    computed:{
+      get_new_end_time(value){
+        if(!this.standardData.amountData) return "";
+        return this.delayData.new_end_time = moment(this.delayData.old_end_time).add(this.standardData.amountData.count, 'months').format("YYYY-MM-DD HH:mm:ss")
+      }
     },
     methods: {
       selectImportExcelFile({target}){
@@ -264,41 +272,42 @@ import moment from "moment";
       },
 
       importExcel(){
-        this.$confirm(`确定要导入[${this.importExcelFile.name}]吗?`, '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-        })
-        .then(()=>{
-          let excelSheets = new ExcelSheets();
-          for(let name in ExcelSheets.dictionary){
-            excelSheets.setSheetHeader(name, Object.keys(ExcelSheets.dictionary[name]));
-          }
-          return excelSheets.importExcel(this.importExcelFile).then(async ({车辆授权})=>{
-            车辆授权 = 车辆授权.map(o=>new RequestDataItem().addAttributes(o));
-            for(let o of 车辆授权){
-              let car = await this.$api.car.getlist(new RequestParams().addAttribute("car_no", o.attributes.car_no));
-              let delay = await this.$api.delay.getlist(new RequestParams().addAttribute("key", `and car_no = '${o.attributes.car_no}'`));
-              if(!delay.dataItems[0]){
-                return this.$message.error(`无法导入，请先为车辆[${o.attributes.car_no}]授权`);
-              }
-              if(!car.dataItems[0]){
-                return this.$message.error(`无法导入，请先添加车辆[${o.attributes.car_no}]`);
-              }
-              o.addAttribute("car_auth_id", delay.dataItems[0].attributes.id)
-              .addAttribute("car_id", car.dataItems[0].attributes.id)
-            }
-            return this.$api.delay.charge(new RequestParams().addDataItems(车辆授权))
-          })
-          .then(response => {
-            this.loadCarDelaysDatas();
-            this.$message.success(response.message)
-          })
-          .catch(response => this.$message.error(response.message));;
-        })
-        .catch((error) => (this.$message.info("文件不正确，导入失败") ,console.log(error)))
-        .catch(() => this.$message.info("已取消删除"))
-        .finally(()=>this.ifImportAuthorize = false);
+        // this.$confirm(`确定要导入[${this.importExcelFile.name}]吗?`, '提示', {
+        //     confirmButtonText: '确定',
+        //     cancelButtonText: '取消',
+        //     type: 'warning'
+        // })
+        // .then(()=>{
+        //   let excelSheets = new ExcelSheets();
+        //   for(let name in ExcelSheets.dictionary){
+        //     excelSheets.setSheetHeader(name, Object.keys(ExcelSheets.dictionary[name]));
+        //   }
+        //   return excelSheets.importExcel(this.importExcelFile).then(async ({月卡续费})=>{
+        //     月卡续费 = 月卡续费.map(o=>new RequestDataItem().addAttributes(o));
+        //     for(let o of 月卡续费){
+        //       let car = await this.$api.car.getlist(new RequestParams().addAttribute("car_no", o.attributes.car_no));
+        //       let delay = await this.$api.delay.getlist(new RequestParams().addAttribute("key", `and car_no = '${o.attributes.car_no}'`));
+        //       console.log(car, delay)
+        //       if(!delay.dataItems[0]){
+        //         return this.$message.error(`无法导入，请先为车辆[${o.attributes.car_no}]授权`);
+        //       }
+        //       if(!car.dataItems[0]){
+        //         return this.$message.error(`无法导入，请先添加车辆[${o.attributes.car_no}]`);
+        //       }
+        //       o.addAttribute("car_auth_id", delay.dataItems[0].attributes.id)
+        //       .addAttribute("car_id", car.dataItems[0].attributes.id)
+        //     }
+        //     return this.$api.delay.charge(new RequestParams().addDataItems(月卡续费))
+        //   })
+        //   .then(response => {
+        //     this.loadCarDelaysDatas();
+        //     this.$message.success(response.message)
+        //   })
+        //   .catch(response => this.$message.error(response.message));;
+        // })
+        // .catch((error) => (this.$message.info("文件不正确，导入失败") ,console.log(error)))
+        // .catch(() => this.$message.info("已取消删除"))
+        // .finally(()=>this.ifImportAuthorize = false);
       },
 
       selectedAll(){
@@ -311,18 +320,18 @@ import moment from "moment";
       showPostponedRenewal(data){
         if(data){
           this.carDelayData = data;
-          new DataDictionary(this.$api).ins().then(data=>{
-            this.dataDictionary = data;
-            /**
-             * 1. 根据车辆类型获取对应的收费标准
-             * 2. 每个收费标准
-             */
-            this.$api.standard.getlist()
-            .then(response => {
-              console.log(response)
-            })
-            .catch(response => this.$message.error(response.message));
+          this.$api.car.getlist(new RequestParams().addAttribute("car_no", data.car_no)).then(response=>{
+            console.log()
+            this.delayData.car_id = response.dataItems.map(o => o.attributes)[0].id;
+            this.delayData.source = "cloud";
+            return  this.$api.standard.getlist( new RequestParams().addAttribute("key", `and car_type = '${data.car_type}'`))
           })
+          .then(response => {
+            this.standardData = response.dataItems.map(o => o.attributes)[0];
+            this.standardData.standard_content = JSON.parse(this.standardData.standard_content);
+          })
+          .catch(response => this.$message.error(response.message));
+          ;
         }
         this.ifRegister = true;
       },
@@ -331,7 +340,6 @@ import moment from "moment";
         this.$api.delay.charge(new RequestParams()
           .addDataItem(new RequestDataItem()
           .addAttributes(this.delayData)
-          .addAttribute("project_id", User.info.project_id)
           .addAttribute("household_id", this.carDelayData.household_id)
           ))
           .then(response=>{

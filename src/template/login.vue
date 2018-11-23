@@ -3,7 +3,7 @@
     <div class="l_box">
       <div class="title">系统管理</div>
       <h6>用户登录</h6>
-      <form action="">
+      <div >
         <div class="user">
           <input type="text" placeholder="用户名" v-model="user_name" >
           <span><img src="../assets/images/icon_14.png" alt=""></span>
@@ -17,9 +17,9 @@
           <a href="javascript:"><img src="../assets/images/photo_2.jpg" alt=""></a>
         </div>
         <div class="btn"><input type="submit" value="登录" @click="login"></div>
-      </form>
+      </div>
     </div>
-    <router-link to="/home">登录</router-link>
+    <!-- <router-link to="/home">登录</router-link> -->
   </div>
 </template>
 
@@ -45,7 +45,18 @@ export default {
         this.$router.push(this.$route.query.redirect || "/");
         
       }).catch(data=>this.$message.error(data.message));
+    },
+    keydownEnter({code}){
+      if(code == "Enter"){
+        this.login();
+      }
     }
+  },
+  mounted(){
+    window.addEventListener("keydown", this.keydownEnter, false)
+  },
+  destroyed(){
+    window.removeEventListener("keydown", this.keydownEnter, false)
   }
 };
 </script>

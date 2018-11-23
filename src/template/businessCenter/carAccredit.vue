@@ -49,10 +49,11 @@
         <div class="fl">
           <button class="plechoose fl" @click="selectedAll">请选择 <img src="../../assets/images/icon_9.png" alt=""></button>
           <button class="batchdel fl" @click="delCars(null)">批量删除</button>
-          <button class="greenbut fl">配置车场收费标准</button>
+          <!--<button class="greenbut fl">配置车场收费标准</button>-->
           <div>共搜索到 <span>{{cars.attributes.tatal || 0}}</span> 条数据</div>
         </div>
         <div class="fr">
+          <button class="search-button blu-button">搜索</button>
           <button class="clear-button bluborder-button" @click="searchParams = {}, searchTimes = []">清除</button>
           <button class="ss transf-button" v-bind:class="{hide:!searchDivShow}" v-on:click="searchDivShow=!searchDivShow">
             <i><img src="../../assets/images/icon_t_arrow2.png" alt=""></i>
@@ -83,18 +84,18 @@
           </tr>
           <tr v-for="(car, index) in cars.dataItems" v-bind:key="index">
             <td class="ckb"><input class="rad" type="checkbox" :value="index" v-model="selecedCars" ></td>
-            <td>{{car.car_no}}</td>
-            <td>{{car.household_name}}</td>
-            <td>{{car.room_no}}</td>
-            <td>{{car.tel}}</td>
-            <td><span class="col black" :style="{ 'background-color': car.car_color}"></span></td>
-            <td>{{car.car_brand}}</td>
-            <td>{{car.car_mode}}</td>
+            <td><div :title="car.car_no">{{car.car_no}}</div></td>
+            <td><div :title="car.household_name">{{car.household_name}}</div></td>
+            <td><div :title="car.room_no">{{car.room_no}}</div></td>
+            <td><div :title="car.tel">{{car.tel}}</div></td>
+            <td><div :title="car.car_color"><span class="col black" :style="{ 'background-color': car.car_color}"></span></div></td>
+            <td><div :title="car.car_brand">{{car.car_brand}}</div></td>
+            <td><div :title="car.car_mode">{{car.car_mode}}</div></td>
             <td>{{["正常","冻结","注销"][car.status]}}</td>
-            <td>{{car.create_time}}</td>
-            <td>{{car.update_time}}</td>
-            <td>{{car.user_name}}</td>
-            <td> <a class="nonreg" href="javascript:;" @click="carData = car,ifAuthorize = true">{{/*是否已授权（已授权、未授权，通过判断车辆授权表是否有记录返回）*/"未授权"}}</a> </td>
+            <td><div :title="car.create_time">{{car.create_time}}</div></td>
+            <td><div :title="car.update_time">{{car.update_time}}</div></td>
+            <td><div :title="car.user_name">{{car.user_name}}</div></td>
+            <td> <a class="nonreg" href="javascript:;" @click="!car.is_oauth && (carData = car,ifAuthorize = true)">{{car.is_oauth?"已授权":"未授权"}}</a> </td>
             <td class="de detext">
               <a class="bj" href="javascript:;" @click="showEditCars(index)">编辑</a>
               <a class="delete" href="javascript:;" @click="delCars(index)">删除</a>
@@ -126,12 +127,17 @@
               <p class="clf">
                 <span class="fl">
                   <span class='red-text'>*</span>
-                  住户：{{[selecredHouseHoldData.full_name||"",selecredHouseHoldData.room_no||"",selecredHouseHoldData.tel||""]}}
+                  住户：{{selecredHouseHoldData.full_name||"",selecredHouseHoldData.room_no||"",selecredHouseHoldData.tel||""}}
                 </span>
                 <span class="plechoose" @click="ifVehreg = true, loadHouseHoldsDatas()">请选择</span>
               </p>
               <p class="clf"><span class="fl"><span class='red-text'>*</span>车牌号码：</span><input class="fl" type="text" v-model="carData.car_no" placeholder="请输入6-8位数字密码，必填"> </p>
-              <p class="clf"><span class="fl">车辆颜色：</span><span class="color-choose fl">颜色选择器<input class="fr" v-model="carData.car_color" type="color"></span> </p>
+              <p class="clf">
+                <span class="fl">车辆颜色：</span>
+                <span class="color-choose fl">
+                  <input type="text" placeholder="颜色选择器" v-model="carData.car_color">
+                </span>
+              </p >
               <p class="clf"><span class="fl">车辆品牌：</span><input class="fl" type="text" v-model="carData.car_brand" placeholder="请输入6-8位数字密码，必填"> </p>
               <p class="clf"><span class="fl">车辆型号：</span><input class="fl" type="text" v-model="carData.car_mode" placeholder="请输入6-8位数字密码，必填"> </p>
               <p class="bz clf"><span class="fl">备注：</span><input class="fl" type="text" v-model="carData.remark" placeholder="请输入备注" id="inp"></p>
@@ -144,27 +150,6 @@
         </div>
       </div>
     </div>
-    <!-- <div class="import-main" v-if="ifImportAuthorize">
-      <div class="depwd" v-drag.cursor="'#ImportAuthorize'">
-        <div class="top-nav" id="ImportAuthorize">
-          <p class="t-text fl">导入授权</p>
-          <p class="close fr" @click="ifImportAuthorize = false">x</p>
-        </div>
-        <div class="bot">
-          <div class="cet clf">
-            <div class="fl choose-file" >
-              选择文件
-              <input type="file" id="ImportAuthorizeFile"  @change="selectImportExcelFile"/>
-            </div>
-            <a class="fr downloadtemp" href="javascript:;" >下载模板</a>
-            <p>{{importExcelFile.name}}支持扩展名：.xls .xlsx</p>
-          </div>
-          <div class="button clf">
-            <a class="upload fr" href="javascript:;"  @click="importExcel()">上传</a>
-          </div>
-        </div>
-      </div>
-    </div> -->
     <div class="nonreg-main" v-if="ifAuthorize">
       <div class="depwd" v-drag.cursor="'#Authorize'">
         <div class="top-nav" id="Authorize">
@@ -176,35 +161,36 @@
           <div class="cet">
             <div class="clf">
 
-              <p class="clf"><span class="fl">车牌号码：</span><span class="p-text">{{carData.car_no}}</span></p>
-              <p class="clf"><span class="fl">车牌类型：</span>
-                <select>
-                  <option>选择1</option>
-                  <option>选择2</option>
+              <p class="clf"><span class="fl">车牌号码：</span><span class="p-text" :asd="caraccreditData.car_id = carData.id">{{carData.car_no}}</span></p>
+              <p class="clf"><span class="fl">授权车位：</span><span class="p-text fl" :asd="caraccreditData.is_group = placeData.car_group_id?1:0" :asdasd="caraccreditData.place_id = placeData.car_group_id || placeData.id">{{placeData.car_group_id || placeData.car_place_no}}<span hidden class="red-text">为车位组时显示车位组名称，并修改标题为授权车位组</span></span>
+                <a class="ap-choose" href="javascript:" @click="ifAuthorizedParking = true, loadPlaceDatas()">请选择</a>
+              </p>
+              <p class="clf"><span class="fl"  :pucker="pucker">车牌类型：</span>
+                <select v-model="caraccreditData.car_type">
+                  <option v-for="(item, key, index) in standards" :key="index" :value="key">{{item.name}}</option>
                 </select>
               </p>
-              <p class="clf"><span class="fl">授权车位：</span><span class="p-text fl">{{placeData.car_group_id || placeData.car_place_no}}<span hidden class="red-text">为车位组时显示车位组名称，并修改标题为授权车位组</span></span>
-                <a class="ap-choose" href="javascript:" @click="ifAuthorizedParking = true, loadPlaceDatas()">请选择</a>
+              <p class="clf"><span class="fl">收费标准：</span>
+                <select v-model="standardData">
+                  <option v-for="(item, index) in (standards[caraccreditData.car_type]||{list:[]}).list" :key="index" :value="item">{{item.standard_name}}</option>
+                </select>
               </p>
               <p class="clf">
                 <span class="fl">授权月份：</span>
-                <el-date-picker
-                  v-model="caraccreditData.autoMonth"
-                  type="month"
-                  class="p-text"
-                  placeholder="选择月">
-                </el-date-picker>
+                  <select v-model="caraccreditData.autoMonthData" @change="caraccreditData.amount = caraccreditData.autoMonthData.fee">
+                    <option v-for="(item, index) in standardData.standard_content" :key="index" :value="item">{{item.count}}</option>
+                  </select>
                 <span class="red-text position-red">根据车辆类型及授权车位自动关联收费标准</span>
               </p>
               <p class="clf"><span class="fl">收费金额：</span>
-                <input class="fl" type="text" v-model="caraccreditData.amount" placeholder="请输入备注" >
+                <input class="fl" type="text" disabled v-model="caraccreditData.amount" placeholder="请输入备注" >
               </p>
               <p class="clf"><span class="fl">可通行的设备：</span><span class="p-text">{{selecredDevices.map(o=>devices.dataItems[o].device_name)}}<a
                 class="choose-equ" @click="ifTraffic = true,loadDeviceDatas()" href="javascript:;">请选择</a></span></p>
               <p class="bz clf"><span class="fl">备注：</span><input class="fl" type="text" placeholder="请输入备注"></p>
             </div>
             <div class="button clf">
-              <a class="qr fr">确定</a>
+              <a class="qr fr" @click="editAuthorize()">确定</a>
               <a class="qx fr" @click="ifAuthorize = false">取消</a>
             </div>
           </div>
@@ -215,9 +201,9 @@
       <div class="depwd" v-drag.cursor="'#Vehreg'">
         <div class="top-nav" id="Vehreg">
           <p class="t-text fl"></p>
-          <p class="v-close fr" @click="ifVehreg = false">x</p>
+          <p class="close fr" @click="ifVehreg = false">x</p>
         </div>
-        <div class="bot">
+        <div class="bot clf">
           <div class="vc-cet">
             <div class="clf">
               <p class="clf">
@@ -253,15 +239,15 @@
                 <th>操作</th>
               </tr>
               <tr  v-for="(houseHold, index) in houseHolds.dataItems" v-bind:key="index">
-                <td>{{houseHold.full_name}}</td>
-                <td>{{["女","男"][houseHold.sex]}}</td>
-                <td>{{["亲属","业主","租客","朋友"/*住户类型(0：亲属1：业主2：租客3：朋友)*/][houseHold.household_type]}}</td>
-                <td>{{houseHold.tel}}</td>
-                <td>{{houseHold.identification_no}}</td>
-                <td>{{houseHold.addr}}</td>
-                <td>{{houseHold.birthday}}</td>
-                <td>{{houseHold.user_name}}</td>
-                <td>{{["正常","冻结","注销"/*(0：正常1：冻结2：注销)*/][houseHold.status]}}</td>
+                <td><div :title="houseHold.full_name">{{houseHold.full_name}}</div></td>
+                <td><div :title="houseHold.sex">{{['女','男'][houseHold.sex]}}</div></td>
+                <td><div :title="houseHold.household_type">{{['亲属','业主','租客','朋友'/*住户类型(0：亲属1：业主2：租客3：朋友)*/][houseHold.household_type]}}</div></td>
+                <td><div :title="houseHold.tel">{{houseHold.tel}}</div></td>
+                <td><div :title="houseHold.identification_no">{{houseHold.identification_no}}</div></td>
+                <td><div :title="houseHold.addr">{{houseHold.addr}}</div></td>
+                <td><div :title="houseHold.birthday">{{houseHold.birthday}}</div></td>
+                <td><div :title="houseHold.user_name">{{houseHold.user_name}}</div></td>
+                <td><div :title="houseHold.status">{{['正常','冻结','注销'/*(0：正常1：冻结2：注销)*/][houseHold.status]}}</div></td>
                 <td>
                   <a href="javascript:" class="v-choose" @click="selecredHouseHoldData = houseHold, ifVehreg = false">选择</a>
                 </td>
@@ -284,7 +270,7 @@
       <div class="depwd" v-drag.cursor="'#Traffic'">
         <div class="top-nav" id="Traffic">
           <p class="t-text fl">可通行设备</p>
-          <p class="traffic-close fr" @click="ifTraffic = false">x</p>
+          <p class="close fr" @click="ifTraffic = false">x</p>
         </div>
         <div class="bot">
           <div class="traffic-cet">
@@ -341,7 +327,7 @@
       <div class="depwd" v-drag.cursor="'#AuthorizedParking'">
         <div class="top-nav" id="AuthorizedParking">
           <p class="t-text fl">授权车位</p>
-          <p class="ap-close fr" @click="ifAuthorizedParking = false">x</p>
+          <p class="close fr" @click="ifAuthorizedParking = false">x</p>
         </div>
         <div class="bot">
           <div class="ap-cet">
@@ -364,7 +350,7 @@
                 <td>{{place.car_group_id/*车位组编号(GUID做为车位组编号，为空时没有车位组,导入时只要不大于32位字符即可)*/}}</td>
                 <td>{{place.car_place_no}}</td>
                 <td>
-                  <a class="choose-parkingnumber" @click="placeData = place, ifAuthorizedParking = false" href="javascript:;">选择</a>
+                  <a class="choose-parkingnumber" @click="placeData = place, loadStandardsDatas(), ifAuthorizedParking = false" href="javascript:;">选择</a>
                 </td>
               </tr>
             </table>
@@ -381,26 +367,17 @@
         </div>
       </div>
     </div>
-    <!-- <div class="delete_prompt" v-if="ifDel">
-      <div class="depwd">
-        <div class="text">你是否确认删除选中的记录</div>
-        <div class="button clf">
-          <a class="qr fr">确定</a>
-          <a class="qx fr" @click="ifDel = false">取消</a>
-        </div>
-      </div>
-    </div> -->
-    <!--弹窗-->
   </div>
 </template>
 
 <script>
-import { RequestParams, RequestDataItem ,User} from "../../assets/js/entity";
+import { RequestParams, RequestDataItem ,User, DataDictionary} from "../../assets/js/entity";
 import Pagination from "../Pagination";
 import moment from "moment";
   export default {
     data () {
       return {
+        pucker:false,
         searchDivShow: true,
         pickerOptions: {
           shortcuts: [{
@@ -431,7 +408,6 @@ import moment from "moment";
         },
         searchTimes:[],
         searchParams:{
-          project_id:null,
           car_no:null,
           household_name:null,
           room_no:null,
@@ -444,34 +420,27 @@ import moment from "moment";
           page_size:null
         },
         selecedCars:[],
+        standards:{},
         carData:{
           id:null,//          	Y	String	ID
-          project_id:null,//  	Y	String	项目ID
           household_id:null,//	Y	String	住户ID
           car_no:null,//      	Y	String	车牌号码
           car_color:null,//   	N	String	车辆颜色(如：#FFFFFF)
           car_brand:null,//   	N	String	车辆品牌
           car_mode:null,//    	N	String	车辆型号
-          operator_id:null,// 	Y	String	操作员ID
           remark:null,//      	N	String	备注
         },
+        standardData:{},
         caraccreditData:{
-          id:null,
-          autoMonth:null,
-          project_id:null,
-          car_id:null,
-          /**车辆类型(通过授权确认车辆类型，此类型由数据字典提供，选择输入，不能手动录入) */
-          car_type:null,
-          /**车位ID(为空时代码没有固定位的固定车,车位组时为车位组编号) */
-          place_id:null,
-          /**是否车位组授权(0：否1：是)在车位ID为车位组编号时，此字段内容为1 */
-          is_group:null,
-          /**授权描述 */
-          describe:null,
-          amount:null,
-          end_time:null,
-          operator_id:null,
-          remark:null,
+          id:null,//          	Y	String	ID
+          car_id:null,//	Y	String	车辆ID
+          car_type:null,//	Y	String	车辆类型(通过授权确认车辆类型，此类型由数据字典提供，选择输入，不能手动录入)
+          place_id:null,//	Y	String	车位ID(为空时代码没有固定位的固定车,车位组时为车位组编号)
+          is_group:null,//	Y	int	是否车位组授权(0：否1：是)在车位ID为车位组编号时，此字段内容为1
+          describe:null,//	N	String	授权描述
+          begin_time:null,//	Y	String	有效开始时间(格式：yyyy-MM-dd HH:mm:ss)
+          end_time:null,//	Y	String	有效结束时间(格式：yyyy-MM-dd HH:mm:ss)
+          remark:null,//	N	String	备注
         },
         cars:{
           attributes: {
@@ -525,11 +494,9 @@ import moment from "moment";
         },
         placeData:{
           id:null,
-          project_id:null,
           area_id:null,
           car_place_no:null,
           car_group_id:null,
-          operator_id:null,
           remark:null,
         },
         searchHouseHolds:{
@@ -539,7 +506,6 @@ import moment from "moment";
         },
         selecredHouseHoldData:{
           id:null,
-          project_id:null,
           house_id:null,
           household_type:null,
           room_no:null,
@@ -549,7 +515,6 @@ import moment from "moment";
           identification_no:null,
           addr:null,
           birthday:null,
-          operator_id:null,
           remark:null
         },
         houseHolds:{
@@ -592,13 +557,31 @@ import moment from "moment";
         this.ifEditRegister = true;
       },
 
+      editAuthorize(){
+        if(!this.selecredDevices.length){
+          return this.$message.error("请选择可通行设备")
+        }
+        this.$api.carauth.editor(new RequestParams().addDataItems(new RequestDataItem()
+        .addAttributes(this.caraccreditData)
+        .addAttribute("end_time", moment().add(this.caraccreditData.autoMonthData.count, 'months').format("YYYY-MM-DD HH:mm:ss"))
+        .addSubItems(this.selecredDevices.map(o=>new RequestDataItem()
+        .addAttribute("id", Math.random().toString().replace(/[.]/ig, ""))
+        .addAttribute("device_id", this.devices.dataItems[o].id)
+        ))
+        ))
+        .then(response=>{
+            this.$message.success(response.message)
+            this.ifAuthorize = false;
+            this.loadCarDatas();
+        })
+        .catch(({message}) => this.$message.error(message))
+      },
+
       editCars(){
         if(this.selecredHouseHoldData.id){
           this.$api.car.editor(new RequestParams()
           .addDataItem(new RequestDataItem()
           .addAttributes(this.carData)
-          .addAttribute("operator_id", User.info.id)
-          .addAttribute("project_id", User.info.project_id)
           .addAttribute("household_id", this.selecredHouseHoldData.id))
           )
           .then(response=>{
@@ -615,7 +598,7 @@ import moment from "moment";
           
         let datas = id != null ? [this.cars.dataItems[id]] : this.selecedCars.map(o=>this.cars.dataItems[o]);
         if(datas.length){
-          this.$confirm(`确定要删除车辆[${datas.map(o=>o.car_no)}]吗?`, '提示', {
+          this.$confirm(`确定要删除车辆吗?`, '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning'
@@ -633,15 +616,44 @@ import moment from "moment";
         else this.$message.info("请选择要删除的车辆");
       },
 
+      loadStandardsDatas(){
+        this.$api.standard
+          .getlist(new RequestParams().addAttribute("area_id", this.placeData.area_id).addAttribute("page_size", 1000000))
+          .then(response => {
+            new DataDictionary(this.$api).ins().then(datas => {
+
+              if(!datas.standard_type){
+                return this.$message.error("请先前往配置收费标准数据字典");
+              }
+
+              for(let item of response.dataItems.map(o => o.attributes)){
+                if(!this.standards[item.car_type]){
+                  this.standards[item.car_type] = {
+                    name:datas.car_type[item.car_type].dic_name,
+                    list:[]
+                  };
+                }
+                item.standard_name = datas.standard_type[item.standard_type].dic_name;
+                item.standard_content = JSON.parse(item.standard_content)
+                this.standards[item.car_type].list.push(item)
+              }
+
+              this.standards = this.standards;
+              this.pucker = !this.pucker;
+            })
+          })
+          .catch(response => this.$message.error(response.message));
+      },
+
       loadHouseHoldsDatas(pageNum = 1, params = {}) {
-        let key = "1 = 1 ";
+        let key = "and 1 = 1 ";
         for(let k in this.searchHouseHolds){
-          this.searchHouseHolds[k] && (key += ` OR ${k} link %${this.searchHouseHolds[k]}% `);
+          this.searchHouseHolds[k] && (key += ` OR ${k} like '%${this.searchHouseHolds[k]}%' `);
         }
         this.$api.household
           .getlist(new RequestParams()
           .addAttributes(params)
-          // .addAttribute("key", key)
+          .addAttribute("key", key)
           .addAttribute("page_index", pageNum)
           )
           .then(response => {
