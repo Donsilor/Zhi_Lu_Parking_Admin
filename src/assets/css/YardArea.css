@@ -55,7 +55,7 @@
 .main1 .bot .bot-right .nav-choose{width: 100%;}
 /*.main1 .bot .bot-right .nav-choose>div{width:50%;float: left;height: 30px;}*/
 .main1 .bot .bot-right .nav-choose>div:first-child{padding-left: 20px;}
-.main1 .bot .bot-right .nav-choose>div>span{font-size: 14px;line-height: 30px;}
+.main1 .bot .bot-right .nav-choose>div>span{font-size: 14px;line-height: 30px;float: left;}
 .main1 .bot .bot-right .nav-choose>div>select{width:200px;height: 30px;padding-left: 10px;line-height: 30px;font-size: 14px;border: 1px solid #999;border-radius: 5px;}
 .main1 .bot .bot-right .center-right{width: 100%;padding-left: 40px;padding-top: 30px;padding-right: 52px;}
 .main1 .bot .bot-right .center-right ul{width: 100%;}

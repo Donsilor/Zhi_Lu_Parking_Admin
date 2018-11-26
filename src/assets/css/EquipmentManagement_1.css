@@ -23,7 +23,7 @@
 .equipInfoTable a{color: #00479d;margin: 0 3px;}
 .equipInfoTable .tr:after{content: '';display: block;clear: both;}
 .equipInfoTable .td,
-.equipInfoTable .th{float: left;line-height: 50px;text-align: center;}
+.equipInfoTable .th{float: left;line-height: 50px;text-align: center;text-overflow:ellipsis;white-space:nowrap;overflow:hidden;}
 .equipInfoTable .tr:not(:last-of-type){border-bottom: 1px solid #e9e9e9;}
 .equipInfoTable .td:not(:last-of-type),
 .equipInfoTable .th:not(:last-of-type){border-right: 1px solid #e9e9e9;}
@@ -48,16 +48,17 @@
 .equipInfoTable .level1_ths > .th:nth-of-type(11){width: 6%;}
 
 .equipInfoTable .level2_ths > .th:nth-of-type(1){width: 3%;height: 50px;}
-.equipInfoTable .level2_ths > .th:nth-of-type(2){width: 14%;}
+.equipInfoTable .level2_ths > .th:nth-of-type(2){width: 13%;}
 .equipInfoTable .level2_ths > .th:nth-of-type(3){width: 8%;}
 .equipInfoTable .level2_ths > .th:nth-of-type(4){width: 7%;}
-.equipInfoTable .level2_ths > .th:nth-of-type(5){width: 10%;}
+.equipInfoTable .level2_ths > .th:nth-of-type(5){width: 9%;}
 .equipInfoTable .level2_ths > .th:nth-of-type(6){width: 9%;}
 .equipInfoTable .level2_ths > .th:nth-of-type(7){width: 9%;}
-.equipInfoTable .level2_ths > .th:nth-of-type(8){width: 13%;}
-.equipInfoTable .level2_ths > .th:nth-of-type(9){width: 13%;}
-.equipInfoTable .level2_ths > .th:nth-of-type(10){width: 7%;}
-.equipInfoTable .level2_ths > .th:nth-of-type(11){width: 7%;}
+.equipInfoTable .level2_ths > .th:nth-of-type(8){width: 12%;}
+.equipInfoTable .level2_ths > .th:nth-of-type(9){width: 12%;}
+.equipInfoTable .level2_ths > .th:nth-of-type(10){width: 6%;}
+.equipInfoTable .level2_ths > .th:nth-of-type(11){width: 6%;}
+.equipInfoTable .level2_ths > .th:nth-of-type(12){width: 6%;}
 
 .equipInfoTable .level3_ths > .th:nth-of-type(1){width: 11%;height: 50px;}
 .equipInfoTable .level3_ths > .th:nth-of-type(2){width: 10%;}
@@ -89,16 +90,17 @@
 .equipInfoTable .level1_dataItem > .td:nth-of-type(9){width: 6.2%;}
 .equipInfoTable .level1_dataItem > .td:nth-of-type(10){width: 6.1%;}
 
-.equipInfoTable .level2_dataItem > .td:nth-of-type(1){width: 14.4%;}
+.equipInfoTable .level2_dataItem > .td:nth-of-type(1){width: 13.3%;}
 .equipInfoTable .level2_dataItem > .td:nth-of-type(2){width: 8.3%;}
 .equipInfoTable .level2_dataItem > .td:nth-of-type(3){width: 7.2%;}
-.equipInfoTable .level2_dataItem > .td:nth-of-type(4){width: 10.3%;}
+.equipInfoTable .level2_dataItem > .td:nth-of-type(4){width: 9.3%;}
 .equipInfoTable .level2_dataItem > .td:nth-of-type(5){width: 9.3%;}
 .equipInfoTable .level2_dataItem > .td:nth-of-type(6){width: 9.3%;}
-.equipInfoTable .level2_dataItem > .td:nth-of-type(7){width: 13.4%;}
-.equipInfoTable .level2_dataItem > .td:nth-of-type(8){width: 13.35%;}
-.equipInfoTable .level2_dataItem > .td:nth-of-type(9){width: 7.2%;}
-.equipInfoTable .level2_dataItem > .td:nth-of-type(10){width: 7.2%;}
+.equipInfoTable .level2_dataItem > .td:nth-of-type(7){width: 12.4%;}
+.equipInfoTable .level2_dataItem > .td:nth-of-type(8){width: 12.35%;}
+.equipInfoTable .level2_dataItem > .td:nth-of-type(9){width: 6.2%;}
+.equipInfoTable .level2_dataItem > .td:nth-of-type(10){width: 6.2%;}
+.equipInfoTable .level2_dataItem > .td:nth-of-type(11){width: 6.1%;}
 
 .equipInfoTable .level3_dataItem > .td{height: 50px;}
 .equipInfoTable .level3_dataItem > .td:nth-of-type(1){width: 11%;}

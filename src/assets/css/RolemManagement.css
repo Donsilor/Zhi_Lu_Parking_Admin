@@ -71,7 +71,7 @@ textarea::-ms-input-placeholder{ /*Internet Explorer*/  color: #999;}
 
 
 select{color:#999;}
-select option{color:#999;}
+/*select option{color:#999;}*/
 select::-webkit-input-placeholder{ /*WebKit browsers*/  color: #999;}
 select::-moz-placeholder{ /*Mozilla Firefox*/  color: #999;}
 select::-ms-input-placeholder{ /*Internet Explorer*/  color: #999;}

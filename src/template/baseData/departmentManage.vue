@@ -43,9 +43,15 @@
           </tr>
           <tr v-for="(dept, index) in depts.dataItems" v-bind:key="index">
             <td><input type="checkbox" :value="index" v-model="selectedDepts"></td>
-            <td><div :title="dept.dept_code">{{dept.dept_code}}</div></td>
-            <td><div :title="dept.dept_name">{{dept.dept_name}}</div></td>
-            <td><div :title="dept.remark">{{dept.remark}}</div></td>
+            <td>
+              <div :title="dept.dept_code">{{dept.dept_code}}</div>
+            </td>
+            <td>
+              <div :title="dept.dept_name">{{dept.dept_name}}</div>
+            </td>
+            <td>
+              <div :title="dept.remark">{{dept.remark}}</div>
+            </td>
             <td>
               <a href="javascript:" class="edit" @click="showEditDept(index)">编辑</a>
               <a href="javascript:" class="delete" @click="delDept(index)">删除</a>
@@ -74,9 +80,18 @@
           <div class="cet">
             <div class="clf">
               <!-- <p class="red"><i class="iconfont icon-jian-tianchong"></i>错误提示的文案</p> -->
-              <p class="num"><span class='red-text'>*</span><span>编号：</span><input type="text" v-model="deptData.dept_code" placeholder="请输入编号，必填">  </p>
-              <p class="name"><span class='red-text'>*</span><span>名称：</span><input type="text"  v-model="deptData.dept_name" placeholder="请输入名称，必填"> </p>
-              <p class="bz"><span class='red-text'>*</span><span>备注：</span><textarea type="text"  v-model="deptData.remark" placeholder="请输入备注" id="inp"></textarea></p>
+              <p class="num">
+                <span class='red-text'>*</span><span>编号：</span>
+                <input type="text" v-model="deptData.temp_dept_code" placeholder="请输入编号，必填">
+              </p>
+              <p class="name">
+                <span class='red-text'>*</span><span>名称：</span>
+                <input type="text" v-model="deptData.temp_dept_name" placeholder="请输入名称，必填">
+              </p>
+              <p class="bz">
+                <span class='red-text'>*</span><span>备注：</span>
+                <textarea type="text" v-model="deptData.temp_remark" placeholder="请输入备注" id="inp"></textarea>
+              </p>
             </div>
             <div class="button clf">
               <a class="qr fr" @click="editDept">确定</a>
@@ -100,39 +115,44 @@
 </template>
 
 <script>
-import { RequestParams, RequestDataItem,User } from "../../assets/js/entity";
-import Pagination from "../Pagination";
-import moment from "moment";
-  export default {
-    data () {
-      return {
-        searchDivShow: true,
-        ifEditDepartment: false,
-        ifDel: false,
-        searchParam: "",
-        selectedDepts:[],
-        deptData:{
-          id:null,//         	Y	String	ID
-          dept_code:null,//  	Y	String	编号
-          dept_name:null,//  	Y	String	名称
-          remark:null,//     	N	String	备注
+import { RequestParams, RequestDataItem, User } from '../../assets/js/entity'
+import Pagination from '../Pagination'
+import { RegExpCheck } from '../../assets/js/common'
+import moment from 'moment'
+
+export default {
+  data () {
+    return {
+      searchDivShow: true,
+      ifEditDepartment: false,
+      ifDel: false,
+      searchParam: '',
+      selectedDepts: [],
+      deptData: {
+        id: null,//         	Y	String	ID
+        dept_code: null,//  	Y	String	编号
+        dept_name: null,//  	Y	String	名称
+        remark: null, //     	N	String	备注
+        temp_dept_code: null,
+        temp_dept_name: null,
+        temp_remark: null
+      },
+      depts: {
+        attributes: {
+          page_index: 1, //当前页码
+          page_size: 2, //当前页数
+          tatal: 10, //总条目数
+          total_pages: 10 //条页数
         },
-        depts: {
-          attributes: {
-            page_index: 1, //当前页码
-            page_size: 2, //当前页数
-            tatal: 10, //总条目数
-            total_pages: 10 //条页数
-          },
-          dataItems: []
-        }
-      };
-    },
-    components: {
-      /**分页组件 */
-      Pagination
-    },
-    methods: {
+        dataItems: []
+      }
+    }
+  },
+  components: {
+    /**分页组件 */
+    Pagination
+  },
+  methods: {
 
       selectedAll(){
         if(this.selectedDepts.length){
@@ -141,19 +161,30 @@ import moment from "moment";
         else this.selectedDepts = this.depts.dataItems.map((o,i)=>i);
       },
 
-      showEditDept(id){
-        this.deptData = this.depts.dataItems[id] || {};
-        this.ifEditDepartment = true;
-      },
+    showEditDept (id) {
+      this.deptData = this.depts.dataItems[id] || {}
+      this.ifEditDepartment = true
+      this.deptData.temp_dept_code = this.deptData.dept_code
+      this.deptData.temp_dept_name = this.deptData.dept_name
+      this.deptData.temp_remark = this.deptData.remark
+    },
 
-      editDept(){
-        
-        let adopt = null;
-        if(String(this.deptData.dept_code).trim() == "") adopt = "请填写部门编号";
-        if(String(this.deptData.dept_name).trim() == "") adopt = "请填写部门名称";
-        if(adopt) return this.$message.error(adopt);
+    editDept () {
 
-        this.$api.dept.editor(new RequestParams()
+      let adopt = null
+      // if (String(this.deptData.dept_code).trim() == '') adopt = '请填写部门编号'
+      // if (String(this.deptData.dept_name).trim() == '') adopt = '请填写部门名称'
+
+      if (!RegExpCheck.isNumber(String(this.deptData.temp_dept_code).trim())) adopt = '请填写正确的部门编号'
+      if (!RegExpCheck.isName(String(this.deptData.temp_dept_name).trim())) adopt = '请填写正确的部门名称'
+
+      if (adopt) return this.$message.error(adopt)
+
+      this.deptData.dept_code = this.deptData.temp_dept_code
+      this.deptData.dept_name = this.deptData.temp_dept_name
+      this.deptData.remark = this.deptData.temp_remark
+
+      this.$api.dept.editor(new RequestParams()
         .addAttributes(this.deptData)
         .addAttribute("project_id", 0)
         )
@@ -197,6 +228,7 @@ import moment from "moment";
           .then(response => {
             this.depts.attributes = response.attributes;
             this.depts.dataItems = response.dataItems.map(o => o.attributes)
+            this.selectedDepts = [];
           })
           .catch(response => this.$message.error(response.message));
       }

@@ -20,8 +20,7 @@
                 unlink-panels
                 range-separator="至"
                 start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                :picker-options="createTimeOptions">
+                end-placeholder="结束日期">
               </el-date-picker>
             </div>
           </div>
@@ -37,7 +36,7 @@
         </div>
         <div class="fr">
           <button class="search-button blu-button" @click="loadLogDatas()">搜索</button>
-          <button class="clear-button bluborder-button">清除</button>
+          <button class="clear-button bluborder-button" @click="searchParam = null, createTime = []">清除</button>
           <button class="ss transf-button" :class="{hide:!searchDivShow}" @click="searchDivShow=!searchDivShow">
             <i><img src="../../assets/images/icon_t_arrow2.png" alt=""></i>
             <span>{{searchDivShow === true ? '收起搜索' : '展开搜索'}}</span>
@@ -150,36 +149,9 @@ export default {
       /* 弹窗 */
       isViewPopupShow: false,
       //      isDelPopupShow: false,
-      searchParam:null,
+
       /* ele-ui时间插件 */
       createTime: '',
-      createTimeOptions: {
-        shortcuts: [{
-          text: '最近一周',
-          onClick (picker) {
-            const end = new Date()
-            const start = new Date()
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
-            picker.$emit('pick', [start, end])
-          }
-        }, {
-          text: '最近一个月',
-          onClick (picker) {
-            const end = new Date()
-            const start = new Date()
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
-            picker.$emit('pick', [start, end])
-          }
-        }, {
-          text: '最近三个月',
-          onClick (picker) {
-            const end = new Date()
-            const start = new Date()
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
-            picker.$emit('pick', [start, end])
-          }
-        }]
-      },
 
       /**日志列表的数据 */
       logs: {
@@ -262,6 +234,7 @@ export default {
       .then(data => {
         this.logs.attributes = data.attributes
         this.logs.dataItems = data.dataItems.map(o => o.attributes)
+        this.selectedLogs = [];
       })
       .catch(({message}) => this.$message.error(message))
     }

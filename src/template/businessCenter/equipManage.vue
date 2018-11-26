@@ -33,17 +33,18 @@
               <div class="td"><a href="javascript:" class="toggleBtn" @click="device.isShowChildren = !device.isShowChildren, pucker = !pucker" :pucker="pucker" >+</a></div>
               <div class="td">
                 <div class="tr level1_dataItem">
-                  <div class="td">{{device.device_code||"&nbsp;"}}</div>
-                  <div class="td">{{device.device_name||"&nbsp;"}}</div>
+                  <div class="td" :title="device.device_code">{{device.device_code||"&nbsp;"}}</div>
+                  <div class="td" :title="device.device_name">{{device.device_name||"&nbsp;"}}</div>
                   <div class="td">{{/*device.area_id*/0}}</div>
-                  <div class="td">{{/*设备类型(WORKS：工作站 INLET：入口　OUTLET：出口 CAMERA：摄像头 LED：LED显示屏 HORN：喇叭 BARRIERGATE：道闸,从数据字典获取，有层级关系，工作站为第一层，出入口为第二层，其他设备为第三层)*/
+                  <div class="td" :title="device.device_type">{{/*设备类型(WORKS：工作站 INLET：入口　OUTLET：出口 CAMERA：摄像头 LED：LED显示屏 HORN：喇叭
+                    BARRIERGATE：道闸,从数据字典获取，有层级关系，工作站为第一层，出入口为第二层，其他设备为第三层)*/
                     {WORKS:"工作站",INLET:"入口",OUTLET:"出口",CAMERA:"摄像头",LED:"LED显示屏",HORN:"喇叭",BARRIERGATE:"道闸"}[device.device_type]
                   }}</div>
-                  <div class="td">{{device.device_ip||"&nbsp;"}}</div>
-                  <div class="td">{{device.in_device_mac||"&nbsp;"}}</div>
-                  <div class="td">{{device.create_time||"&nbsp;"}}</div>
-                  <div class="td">{{device.update_time||"&nbsp;"}}</div>
-                  <div class="td">{{device.user_name||"&nbsp;"}}</div>
+                  <div class="td" :title="device.device_ip">{{device.device_ip||"&nbsp;"}}</div>
+                  <div class="td" :title="device.in_device_mac">{{device.in_device_mac||"&nbsp;"}}</div>
+                  <div class="td" :title="device.create_time">{{device.create_time||"&nbsp;"}}</div>
+                  <div class="td" :title="device.update_time">{{device.update_time||"&nbsp;"}}</div>
+                  <div class="td" :title="device.user_name">{{device.user_name||"&nbsp;"}}</div>
                   <div class="td">
                     <a href="javascript:" @click="showEditDevice(device)">编辑</a>
                     <a href="javascript:" @click="delDevice(device)">删除</a>
@@ -70,18 +71,18 @@
                         class="td"><a href="javascript:" class="toggleBtn" @click="device_.isShowChildren = !device_.isShowChildren, pucker = !pucker" :pucker="pucker">+</a></div>
                       <div class="td">
                         <div class="tr level2_dataItem">
-                          <div class="td">{{device_.device_code||"&nbsp;"}}</div>
-                          <div class="td">{{device_.device_name||"&nbsp;"}}</div>
+                          <div class="td" :title="device_.device_code">{{device_.device_code||"&nbsp;"}}</div>
+                          <div class="td" :title="device_.device_name">{{device_.device_name||"&nbsp;"}}</div>
                           <div class="td">{{/*设备类型(WORKS：工作站 INLET：入口　OUTLET：出口 CAMERA：摄像头 LED：LED显示屏 HORN：喇叭 BARRIERGATE：道闸,从数据字典获取，有层级关系，工作站为第一层，出入口为第二层，其他设备为第三层)*/
                             {WORKS:"工作站",INLET:"入口",OUTLET:"出口",CAMERA:"摄像头",LED:"LED显示屏",HORN:"喇叭",BARRIERGATE:"道闸"}[device_.device_type]
                           }}</div>
-                          <div class="td">{{device_.device_ip||"&nbsp;"}}</div>
-                          <div class="td">{{device_.in_device_mac||"&nbsp;"}}</div>
+                          <div class="td" :title="device_.device_ip">{{device_.device_ip||"&nbsp;"}}</div>
+                          <div class="td" :title="device_.in_device_mac">{{device_.in_device_mac||"&nbsp;"}}</div>
                           <div class="td">{{[/*开闸方式(0无1自动开闸2确认开闸)*/"无","自动开闸","确认开闸"][device_.cut_off_mode]}}</div>
-                          <div class="td">{{device_.load_para || "无"}}</div>
-                          <div class="td">{{device_.create_time||"&nbsp;"}}</div>
-                          <div class="td">{{device_.update_time||"&nbsp;"}}</div>
-                          <div class="td">{{device_.user_name||"&nbsp;"}}</div>
+                          <div class="td" :title="device_.load_para">{{device_.load_para || "无"}}</div>
+                          <div class="td" :title="device_.create_time">{{device_.create_time||"&nbsp;"}}</div>
+                          <div class="td" :title="device_.update_time">{{device_.update_time||"&nbsp;"}}</div>
+                          <div class="td" :title="device_.user_name">{{device_.user_name||"&nbsp;"}}</div>
                           <div class="td">
                             <a href="javascript:" @click="showEditDevice(device_)">编辑</a>
                             <a href="javascript:" @click="delDevice(device_)">删除</a>
@@ -104,17 +105,17 @@
                             <div class="tr level3_itemTable">
                               <div class="td">
                                 <div class="tr level3_dataItem">
-                                  <div class="td">{{device__.device_code||"&nbsp;"}}</div>
-                                  <div class="td">{{device__.device_name||"&nbsp;"}}</div>
+                                  <div class="td" :title="device__.device_code">{{device__.device_code||"&nbsp;"}}</div>
+                                  <div class="td" :title="device__.device_name">{{device__.device_name||"&nbsp;"}}</div>
                                   <div class="td">{{/*设备类型(WORKS：工作站 INLET：入口　OUTLET：出口 CAMERA：摄像头 LED：LED显示屏 HORN：喇叭 BARRIERGATE：道闸,从数据字典获取，有层级关系，工作站为第一层，出入口为第二层，其他设备为第三层)*/
                                     {WORKS:"工作站",INLET:"入口",OUTLET:"出口",CAMERA:"摄像头",LED:"LED显示屏",HORN:"喇叭",BARRIERGATE:"道闸"}[device__.device_type]
                                   }}</div>
-                                  <div class="td">{{device__.device_ip||"&nbsp;"}}</div>
-                                  <div class="td">{{device__.in_device_mac||"&nbsp;"}}</div>
-                                  <div class="td">{{device__.load_para||"&nbsp;"}}</div>
-                                  <div class="td">{{device__.create_time||"&nbsp;"}}</div>
-                                  <div class="td">{{device__.update_time||"&nbsp;"}}</div>
-                                  <div class="td">{{device__.user_name||"&nbsp;"}}</div>
+                                  <div class="td" :title="device__.device_ip">{{device__.device_ip||"&nbsp;"}}</div>
+                                  <div class="td" :title="device__.in_device_mac">{{device__.in_device_mac||"&nbsp;"}}</div>
+                                  <div class="td" :title="device__.load_para">{{device__.load_para||"&nbsp;"}}</div>
+                                  <div class="td" :title="device__.create_time">{{device__.create_time||"&nbsp;"}}</div>
+                                  <div class="td" :title="device__.update_time">{{device__.update_time||"&nbsp;"}}</div>
+                                  <div class="td" :title="device__.user_name">{{device__.user_name||"&nbsp;"}}</div>
                                   <div class="td">
                                     <a href="javascript:" @click="showEditDevice(device__)">编辑</a>
                                     <a href="javascript:" @click="delDevice(device__)">删除</a>
@@ -155,33 +156,52 @@
           <div class="cet">
             <div class="clf">
               <!-- <p class="clf"><span class="fl">项目ID：</span><input class="fl" type="text" placeholder="请输入项目ID，必填" v-model="deviceData.project_id"></p> -->
-              <p class="clf"><span class="fl">父级设备：</span>
+              <p class="clf">
+                <span class="fl">父级设备：</span>
                 <select v-model="selectedParentIndex">
                   <option  v-for="(device, index) in devices.dataItems" v-bind:key="index" :value="index">{{device.device_name}}</option>
                 </select>
               </p>
-              <p class="clf"><span class="fl">设备编号：</span><input class="fl" type="text" placeholder="请输入编号，必填" v-model="deviceData.device_code"></p>
-              <p class="clf"><span class="fl">设备名称：</span><input class="fl" type="text" placeholder="请输入" v-model="deviceData.device_name"></p>
-              <p class="clf"><span class="fl">设备类型：</span>
-                <select v-model="deviceData.device_type">
+              <p class="clf">
+                <span class="fl">设备编号：</span>
+                <input class="fl" type="text" placeholder="请输入编号，必填" v-model="deviceData.temp_device_code">
+              </p>
+              <p class="clf">
+                <span class="fl">设备名称：</span>
+                <input class="fl" type="text" placeholder="请输入" v-model="deviceData.temp_device_name">
+              </p>
+              <p class="clf">
+                <span class="fl">设备类型：</span>
+                <select v-model="deviceData.temp_device_type">
                   <option  v-for='(device, index) in {
                     WORKS:"工作站",INLET:"入口",OUTLET:"出口",CAMERA:"摄像头",LED:"LED显示屏",HORN:"喇叭",BARRIERGATE:"道闸"
                   }' v-bind:key="index" :value="index">{{device}}</option>
                 </select>
               </p>
-              <p class="clf"><span class="fl">所属区域：</span>
-                <select v-model="deviceData.cut_off_mode">
+              <p class="clf">
+                <span class="fl">所属区域：</span>
+                <select v-model="deviceData.temp_cut_off_mode">
                   <option v-for='(device, index) in ["无","自动开闸","确认开闸"]' v-bind:key="index" :value="index">{{device}}</option>
                 </select>
               </p>
-              <p class="clf"><span class="fl">所属区域：</span>
+              <p class="clf">
+                <span class="fl">所属区域：</span>
                 <select v-model="deviceData.area_id">
                   <option v-for='(area) in areas.dataItems' v-bind:key="area.id" :value="area.id">{{area.area_name}}</option>
                 </select>
               </p>
-              <p class="clf"><span class="fl">IP地址或机号：</span><input class="fl" type="text" placeholder="请输入" v-model="deviceData.device_ip"></p>
-              <p class="clf"><span class="fl">MAC地址：</span><input class="fl" type="text" placeholder="请输入" v-model="deviceData.in_device_mac"></p>
-              <p class="bz clf"><span class="fl">备注：</span><input class="fl" type="text" placeholder="请输入备注" v-model="deviceData.remark"></p>
+              <p class="clf">
+                <span class="fl">IP地址或机号：</span>
+                <input class="fl" type="text" placeholder="请输入" v-model="deviceData.temp_device_ip">
+              </p>
+              <p class="clf">
+                <span class="fl">MAC地址：</span>
+                <input class="fl" type="text" placeholder="请输入" v-model="deviceData.temp_in_device_mac">
+              </p>
+              <p class="bz clf">
+                <span class="fl">备注：</span>
+                <input class="fl" type="text" placeholder="请输入备注" v-model="deviceData.remark">
+              </p>
             </div>
             <div class="button clf">
               <a class="qr fr" @click="editDevice()">确定</a>
@@ -206,7 +226,7 @@
 
 <script>
 import { RequestParams,User, RequestDataItem } from "../../assets/js/entity";
-import { array2Descendants , isChildrensId} from "../../assets/js/common";
+import { array2Descendants , isChildrensId, RegExpCheck} from "../../assets/js/common";
 import Pagination from "../Pagination";
 import moment from "moment";
 export default {
@@ -235,6 +255,12 @@ export default {
         remark:null,//      	N	String	备注
         create_time:null,// 	Y	String	创建时间
         update_time:null,// 	Y	String	更新时间
+        temp_device_code: null,
+        temp_device_name: null,
+        temp_device_type: null,
+        temp_cut_off_mode: null,
+        temp_device_ip: null,
+        temp_in_device_mac: null
       },
       devices:{
         attributes: {
@@ -258,37 +284,6 @@ export default {
         dataItems: {
 
         },
-      },
-      pickerOptions: {
-        shortcuts: [
-          {
-            text: "最近一周",
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-              picker.$emit("pick", [start, end]);
-            }
-          },
-          {
-            text: "最近一个月",
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-              picker.$emit("pick", [start, end]);
-            }
-          },
-          {
-            text: "最近三个月",
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-              picker.$emit("pick", [start, end]);
-            }
-          }
-        ]
       }
     };
   },
@@ -305,15 +300,40 @@ export default {
         this.deviceData = data
       };
       this.ifEditInfo = true;
+      this.deviceData.temp_device_code = this.deviceData.device_code
+      this.deviceData.temp_device_name = this.deviceData.device_name
+      this.deviceData.temp_device_type = this.deviceData.device_type
+      this.deviceData.temp_cut_off_mode = this.deviceData.cut_off_mode
+      this.deviceData.temp_device_ip = this.deviceData.device_ip
+      this.deviceData.temp_in_device_mac = this.deviceData.in_device_mac
     },
 
     editDevice(){
+
+      let adopt = null;
+
+      if(!RegExpCheck.isNumber(String(this.deviceData.device_code).trim())) adopt = "请填写正确的设备编号";
+      if(!RegExpCheck.isName(String(this.deviceData.device_name).trim())) adopt = "请填写正确的设备名称";
+      if(!RegExpCheck.isIp(String(this.deviceData.device_ip).trim())) adopt = "请填写正确的IP地址或机号";
+      if(!RegExpCheck.isMACAddr(String(this.deviceData.in_device_mac).trim())) adopt = "请填写正确的MAC地址";
+      if(!RegExpCheck.isText(String(this.deviceData.remark).trim())) adopt = "请填写正确格式的备注";
+
+      if(adopt) return this.$message.error(adopt);
+
       let data = this.devices.dataItems[this.selectedParentIndex];
       if(data){
         if(isChildrensId(this.deviceData, data.id)){
           return this.$message.error("不能选择自己/下级元素")
         }
       }
+
+      this.deviceData.device_code = this.deviceData.temp_device_code
+      this.deviceData.device_name = this.deviceData.temp_device_name
+      this.deviceData.device_type = this.deviceData.temp_device_type
+      this.deviceData.cut_off_mode = this.deviceData.temp_cut_off_mode
+      this.deviceData.device_ip = this.deviceData.temp_device_ip
+      this.deviceData.in_device_mac = this.deviceData.temp_in_device_mac
+
       this.$api.device.editor(new RequestParams()
         .addAttributes(this.deviceData)
         .addAttribute("pid", data ? data.id : 0))

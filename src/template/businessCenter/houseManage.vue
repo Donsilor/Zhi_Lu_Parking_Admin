@@ -36,8 +36,7 @@
                 value-format="yyyy-MM-DD HH:mm:ss"
                 range-separator="至"
                 start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                :picker-options="pickerOptions">
+                end-placeholder="结束日期">
               </el-date-picker>
             </div>
           </div>
@@ -118,19 +117,19 @@
               </p>
               <p class="clf">
                 <span class="fl">庭院：</span>
-                <input class="fl" type="text" v-model="houseData.courtyard" placeholder="请输入编号，必填">
+                <input class="fl" type="text" v-model="houseData.temp_courtyard" placeholder="请输入编号，必填">
               </p>
               <p class="clf">
                 <span class="fl">楼栋：</span>
-                <input class="fl" v-model="houseData.building" type="text" placeholder="请输入6-8位数字密码，必填">
+                <input class="fl" v-model="houseData.temp_building" type="text" placeholder="请输入6-8位数字密码，必填">
               </p>
               <p class="clf">
                 <span class="fl">单元：</span>
-                <input class="fl" v-model="houseData.units" type="text" placeholder="请输入6-8位数字密码，必填">
+                <input class="fl" v-model="houseData.temp_units" type="text" placeholder="请输入6-8位数字密码，必填">
               </p>
               <p class="clf">
                 <span class="fl">房号：</span>
-                <input class="fl" type="text" v-model="houseData.room_no" placeholder="请输入6-8位数字密码，必填">
+                <input class="fl" type="text" v-model="houseData.temp_room_no" placeholder="请输入6-8位数字密码，必填">
               </p>
               <p class="clf">
                 <span class="fl">备注：</span>
@@ -148,7 +147,7 @@
           <div class="residents-table">
             <table>
               <tr>
-                <th></th>
+                <!--<th></th>-->
                 <th>姓名</th>
                 <th>性别</th>
                 <th>住户类型</th>
@@ -163,7 +162,7 @@
                 <th>操作</th>
               </tr>
               <tr  v-for="(houseHold, index) in houseHolds.dataItems" v-bind:key="index">
-                <td><input type="checkbox" :value="index" v-model="selectedHouseHolds" ></td>
+                <!--<td><input type="checkbox" :value="index" v-model="selectedHouseHolds" ></td>-->
                 <td><div :title="houseHold.full_name">{{houseHold.full_name}}</div></td>
                 <td><div :title="houseHold.sex">{{['女','男'][houseHold.sex]}}</div></td>
                 <td><div :title="houseHold.household_type">{{['亲属','业主','租客','朋友'/*住户类型(0：亲属1：业主2：租客3：朋友)*/][houseHold.household_type]}}</div></td>
@@ -191,15 +190,6 @@
             :pageSize="houseHolds.attributes.page_size"
             :tatal="houseHolds.attributes.tatal"
           ></Pagination>
-        </div>
-      </div>
-    </div>
-    <div class="delete_prompt" v-if="ifDel">
-      <div class="depwd">
-        <div class="text">你是否确认删除选中的记录</div>
-        <div class="button clf">
-          <a class="qr fr">确定</a>
-          <a class="qx fr" @click="ifDel = false">取消</a>
         </div>
       </div>
     </div>
@@ -233,17 +223,17 @@
               <p class="red" hidden><i class="iconfont icon-jian-tianchong"></i>错误提示的文案<span>x</span></p>
               <div class="clf">
                 <span class="fl">姓名：</span>
-                <input class="fl" type="text" placeholder="请输入编号，必填" v-model="houseHoldData.full_name">
+                <input class="fl" type="text" placeholder="请输入编号，必填" v-model="houseHoldData.temp_full_name">
               </div>
               <div class="clf">
                 <span class="fl">性别：</span>
-                <label><input type="radio" name="residentSex" value="1" v-model="houseHoldData.sex">男</label>
-                <label><input type="radio" name="residentSex" value="0" v-model="houseHoldData.sex">女</label>
+                <label><input type="radio" name="residentSex" value="1" v-model="houseHoldData.temp_sex">男</label>
+                <label><input type="radio" name="residentSex" value="0" v-model="houseHoldData.temp_sex">女</label>
                 <!--<input class="fl" type="text" placeholder="19000124000" v-model="houseHoldData.sex">-->
               </div>
               <div class="clf">
                 <span class="fl">住户类型：</span>
-                <select v-model="houseHoldData.household_type">
+                <select v-model="houseHoldData.temp_household_type">
                   <option value="0">亲属</option>
                   <option value="1">业主</option>
                   <option value="2">租客</option>
@@ -252,20 +242,20 @@
               </div>
               <div class="clf">
                 <span class="fl">电话号码：</span>
-                <input class="fl" type="text" placeholder="请输入6-8位数字密码，必填" v-model="houseHoldData.tel">
+                <input class="fl" type="text" placeholder="请输入6-8位数字密码，必填" v-model="houseHoldData.temp_tel">
               </div>
               <div class="clf">
                 <span class="fl">证件号码：</span>
-                <input class="fl" type="text" placeholder="请输入6-8位数字密码，必填" v-model="houseHoldData.identification_no">
+                <input class="fl" type="text" placeholder="请输入6-8位数字密码，必填" v-model="houseHoldData.temp_identification_no">
               </div>
               <div class="clf">
                 <span class="fl">证件地址：</span>
-                <input class="fl" type="text" placeholder="请输入6-8位数字密码，必填" v-model="houseHoldData.addr">
+                <input class="fl" type="text" placeholder="请输入6-8位数字密码，必填" v-model="houseHoldData.temp_addr">
               </div>
               <div class="clf">
                 <span class="fl">出生日期：</span>
                 <el-date-picker
-                  v-model="houseHoldData.birthday"
+                  v-model="houseHoldData.temp_birthday"
                   type="date"
                   placeholder="选择日期">
                 </el-date-picker>
@@ -291,7 +281,7 @@
 import { RequestParams, RequestDataItem,User, ExcelSheets } from "../../assets/js/entity";
 import Pagination from "../Pagination";
 import moment from "moment";
-import {array2Object} from "../../assets/js/common";
+import { array2Object, RegExpCheck } from '../../assets/js/common'
 import XLSX from 'xlsx';
 export default {
   data () {
@@ -302,33 +292,6 @@ export default {
       ifImportAuthorize: false,
       ifAddInhabitant: false,
       /* ele-ui时间插件 */
-      pickerOptions: {
-        shortcuts: [{
-          text: '最近一周',
-          onClick (picker) {
-            const end = new Date()
-            const start = new Date()
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
-            picker.$emit('pick', [start, end])
-          }
-        }, {
-          text: '最近一个月',
-          onClick (picker) {
-            const end = new Date()
-            const start = new Date()
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
-            picker.$emit('pick', [start, end])
-          }
-        }, {
-          text: '最近三个月',
-          onClick (picker) {
-            const end = new Date()
-            const start = new Date()
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
-            picker.$emit('pick', [start, end])
-          }
-        }]
-      },
       searchTimes:[],
       searchHouseHlodId:null,
       searchParams:{
@@ -348,6 +311,10 @@ export default {
         units:null,//       	Y	String	单元
         room_no:null,//     	Y	String	房号
         remark:null,//      	N	String	备注
+        temp_courtyard: null, //   	Y	String	庭院副本
+        temp_building: null, //    	Y	String	楼栋副本
+        temp_units: null, //       	Y	String	单元副本
+        temp_room_no: null //     	Y	String	房号副本
       },
       /**房屋住户数据 */
       houseHoldData:{
@@ -361,6 +328,13 @@ export default {
         addr:null,//             	N	String	证件地址
         birthday:null,//         	N	String	出生日期
         remark:null,//           	N	String	备注
+        temp_household_type:null,//   	Y	Int	住户类型(0：亲属1：业主2：租客3：朋友) 副本
+        temp_full_name:null,//        	Y	String	姓名 副本
+        temp_sex:null,//              	Y	Int	性别(0：女1：男) 副本
+        temp_tel:null,//              	Y	String	电话 副本
+        temp_identification_no:null,//	N	String	证件号码 副本
+        temp_addr:null,//             	N	String	证件地址 副本
+        temp_birthday:null,//         	N	String	出生日期 副本
       },
       houseHolds:{
         attributes: {
@@ -386,8 +360,7 @@ export default {
       ifAuthorize: false,
       ifVehreg: false,
       ifTraffic: false,
-      ifAuthorizedParking: false,
-      ifDel: false
+      ifAuthorizedParking: false
     };
   },
   components: {
@@ -454,15 +427,49 @@ export default {
       this.ifEditInfo = true;
       this.searchHouseHlodId = this.houseData.id;
       this.loadHouseHoldsDatas();
+      this.houseData.temp_courtyard = this.houseData.courtyard
+      this.houseData.temp_building = this.houseData.building
+      this.houseData.temp_units = this.houseData.units
+      this.houseData.temp_room_no = this.houseData.room_no
     },
 
     showEditHouseHolds(id){
       this.houseHoldData = this.houseHolds.dataItems[id] || {};
       this.ifAddInhabitant = true;
       this.searchHouseHlodId = this.houseData.id;
+      this.houseHoldData.temp_household_type = this.houseHoldData.household_type
+      this.houseHoldData.temp_full_name = this.houseHoldData.full_name
+      this.houseHoldData.temp_sex = this.houseHoldData.sex
+      this.houseHoldData.temp_tel = this.houseHoldData.tel
+      this.houseHoldData.temp_identification_no = this.houseHoldData.identification_no
+      this.houseHoldData.temp_addr = this.houseHoldData.addr
+      this.houseHoldData.temp_birthday = this.houseHoldData.birthday
     },
 
     editHouses(){
+
+      let adopt = null;
+
+      if(!RegExpCheck.isText(String(this.houseData.temp_room_no).trim())) adopt = "请填写正确的房号";
+      if(!RegExpCheck.isText(String(this.houseData.temp_units).trim())) adopt = "请填写正确的单元";
+      if(!RegExpCheck.isText(String(this.houseData.temp_building).trim())) adopt = "请填写正确的楼栋";
+      if(!RegExpCheck.isText(String(this.houseData.temp_courtyard).trim())) adopt = "请填写正确的庭院名称";
+
+      if(adopt) return this.$message.error(adopt);
+
+      this.houseData.courtyard = this.houseData.temp_courtyard
+      this.houseData.building = this.houseData.temp_building
+      this.houseData.units = this.houseData.temp_units
+      this.houseData.room_no = this.houseData.temp_room_no
+
+      this.houseHoldData.household_type = this.houseHoldData.temp_household_type
+      this.houseHoldData.full_name = this.houseHoldData.temp_full_name
+      this.houseHoldData.sex = this.houseHoldData.temp_sex
+      this.houseHoldData.tel = this.houseHoldData.temp_tel
+      this.houseHoldData.identification_no = this.houseHoldData.temp_identification_no
+      this.houseHoldData.addr = this.houseHoldData.temp_addr
+      this.houseHoldData.birthday = this.houseHoldData.temp_birthday
+
       this.$api.house.editor(new RequestParams()
       .addDataItem(new RequestDataItem()
       .addAttributes(this.houseData)
@@ -476,6 +483,16 @@ export default {
     },
 
     editHouseHlolds(){
+
+      let adopt = null;
+
+      if(!RegExpCheck.isFullName(String(this.houseHoldData.full_name).trim())) adopt = "请填写正确的姓名";
+      if(!RegExpCheck.isTel(String(this.houseHoldData.tel).trim())) adopt = "请填写正确的电话号码";
+      if(!RegExpCheck.isIdCard(String(this.houseHoldData.identification_no).trim())) adopt = "请填写正确的证件号码";
+      if(!RegExpCheck.isAddr(String(this.houseHoldData.addr).trim())) adopt = "请填写正确的证件地址";
+
+      if(adopt) return this.$message.error(adopt);
+
       this.$api.household.editor(new RequestParams()
       .addDataItem(new RequestDataItem()
       .addAttributes(this.houseHoldData)
@@ -545,6 +562,7 @@ export default {
         .then(response => {
           this.houses.attributes = response.attributes;
           this.houses.dataItems = response.dataItems.map(o => o.attributes);
+          this.selectedHouses = [];
         })
         .catch(response => this.$message.error(response.message));
     },
@@ -558,6 +576,7 @@ export default {
         .then(response => {
           this.houseHolds.attributes = response.attributes;
           this.houseHolds.dataItems = response.dataItems.map(o => o.attributes);
+          this.selectedHouseHolds = [];
         })
         .catch(response => this.$message.error(response.message));
     }
@@ -583,8 +602,8 @@ export default {
 
   .depwd
     width 800px
-    top 15%
-    left 30%
+    top calc(50% - 280px)
+    left calc(50% - 400px)
 
   .bot
     height 500px

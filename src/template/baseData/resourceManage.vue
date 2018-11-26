@@ -81,8 +81,8 @@
       </div>
 
       <div class="clf btn btn_modify">
-        <a href="javascript:" @click="editRes()"> {{resData.id ? "修改" : "新增"}}</a>
-        <a href="javascript:" @click="delRes(resData.id,resData.resource_name)">删除</a>
+        <a href="javascript:" @click="editRes()"> {{resData.id ? '修改' : '新增'}}</a>
+        <a href="javascript:" @click="delRes(resData.id,resData.resource_name)" v-if="resData.id">删除</a>
       </div>
 
       <div class="clf btn btn_determine">
@@ -117,10 +117,11 @@
 </template>
 
 <script>
-import { RequestParams, RequestDataItem, User } from "../../assets/js/entity";
-import { array2Descendants, isChildrensId } from "../../assets/js/common";
-import Pagination from "../Pagination";
-import moment from "moment";
+import { RequestParams, RequestDataItem, User } from '../../assets/js/entity'
+import { array2Descendants, isChildrensId, RegExpCheck } from '../../assets/js/common'
+import Pagination from '../Pagination'
+import moment from 'moment'
+
 export default {
   data() {
     return {
@@ -137,7 +138,8 @@ export default {
         resource_icon: null, //	Y	String	图标
         sorting: null, //      	Y	Int	排序
         remark: null, //       	N	string	备注
-        relativepath: null
+        relativepath: null,
+        temp_resource_name: null //         String  资源名称副本
       },
       selectedParentIndex: -1,
       ress: {
@@ -157,42 +159,38 @@ export default {
     };
   },
   methods: {
-    editRes() {
-      let adopt = null;
-      if (String(this.resData.relativepath).trim() == "")
-        adopt = "请选择资源图标";
-      if (String(this.resData.resource_code).trim() == "")
-        adopt = "请填写资源编码";
-      if (String(this.resData.resource_name).trim() == "")
-        adopt = "请填写资源名称";
-      if (String(this.resData.resource_type).trim() == "")
-        adopt = "请选择资源类型";
-      if (String(this.resData.resource_url).trim() == "")
-        adopt = "请填写资源链接";
-      if (String(this.resData.isshow).trim() == "")
-        adopt = "请选择资源是否显示";
-      if (String(this.resData.sorting).trim() == "") adopt = "请设置资源序号";
-      if (adopt) return this.$message.error(adopt);
 
-      let data = this.ress.dataItems[this.selectedParentIndex];
+    editRes () {
+      let adopt = null
+      if (String(this.resData.relativepath).trim() == '') adopt = '请选择资源图标'
+      // if (String(this.resData.resource_code).trim() == '') adopt = '请填写资源编码'
+      // if (String(this.resData.resource_name).trim() == '') adopt = '请填写资源名称'
+      if (String(this.resData.resource_type).trim() == '') adopt = '请选择资源类型'
+      if (String(this.resData.resource_url).trim() == '') adopt = '请填写资源链接'
+      if (String(this.resData.isshow).trim() == '') adopt = '请选择资源是否显示'
+      if (String(this.resData.sorting).trim() == '') adopt = '请设置资源序号'
+
+      if (!RegExpCheck.isNumber(String(this.resData.resource_code).trim())) adopt = '请填写正确的资源编号'
+      if (!RegExpCheck.isName(String(this.resData.temp_resource_name).trim())) adopt = '请填写正确的资源名称'
+
+      if (adopt) return this.$message.error(adopt)
+
+      let data = this.ress.dataItems[this.selectedParentIndex]
       if (data) {
         if (isChildrensId(this.resData, data.id)) {
-          return this.$message.error("不能选择自己/下级元素");
+          return this.$message.error('不能选择自己/下级元素')
         }
       }
+      this.resData.resource_name = this.resData.temp_resource_name
       this.$api.menu
-        .editor(
-          new RequestParams()
-            .addAttributes(this.resData)
-            .addAttribute("pid", data ? data.id : 0)
-            .addAttribute(
-              "resource_icon",
-              this.resData.relativepath || this.resData.resource_icon
-            )
+        .editor(new RequestParams()
+          .addAttributes(this.resData)
+          .addAttribute('pid', data ? data.id : 0)
+          .addAttribute('resource_icon', this.resData.relativepath || this.resData.resource_icon)
         )
         .then(response => {
-          this.$message.success(response.message);
-          this.loadResDatas();
+          this.$message.success(response.message)
+          this.loadResDatas()
         })
         .catch(({ message }) => this.$message.error(message));
     },
@@ -203,9 +201,7 @@ export default {
         cancelButtonText: "取消",
         type: "warning"
       })
-        .then(() =>
-          this.$api.menu.delete(new RequestParams().addAttribute("id", id))
-        )
+        .then(() => this.$api.menu.delete(new RequestParams().addAttribute('id', id)))
         .then(response => {
           this.$message.success("删除成功");
           this.loadResDatas();
@@ -237,8 +233,10 @@ export default {
         .catch(({ message }) => this.$message.error(message));
     },
     /**点击节点 */
-    handleNodeClick(data) {
-      this.resData = data;
+    handleNodeClick (data) {
+      console.log(data)
+      this.resData = data
+      this.resData.temp_resource_name = this.resData.resource_name
       this.ress.dataItems.forEach((o, i) => {
         if (o.id == data.pid) {
           this.selectedParentIndex = i;

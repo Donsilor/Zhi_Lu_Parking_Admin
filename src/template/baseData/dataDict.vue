@@ -80,11 +80,26 @@
           <div class="cet">
             <div class="clf">
               <!-- <p class="red"><i class="iconfont icon-jian-tianchong"></i>错误提示的文案</p> -->
-              <p class="clf"><span class="fl"><span class='red-text'>*</span>编号：</span><input class="fl" v-model="dictionaryData.dic_code" type="text" placeholder="请输入编号，必填"></p>
-              <p class="clf"><span class="fl"><span class='red-text'>*</span>名称：</span><input class="fl" v-model="dictionaryData.dic_name"  type="text" placeholder="请输入6-8位数字密码，必填"></p>
-              <p class="clf"><span class="fl">参数值：</span><input class="fl" v-model="dictionaryData.dic_key"  type="text" placeholder="请输入6-8位数字密码，必填"> </p>
-              <p class="clf"><span class="fl">描述：</span><input class="fl"  v-model="dictionaryData.depict" type="text" placeholder="请输入6-8位数字密码，必填"> </p>
-              <p class="bz clf"><span class="fl">备注：</span><input class="fl"  v-model="dictionaryData.remark" type="text" placeholder="请输入备注" id="inp"></p>
+              <p class="clf">
+                <span class="fl"><span class='red-text'>*</span>编号：</span>
+                <input class="fl" v-model="dictionaryData.temp_dic_code" type="text" placeholder="请输入编号，必填">
+              </p>
+              <p class="clf">
+                <span class="fl"><span class='red-text'>*</span>名称：</span>
+                <input class="fl" v-model="dictionaryData.temp_dic_name" type="text" placeholder="请输入6-8位数字密码，必填">
+              </p>
+              <p class="clf">
+                <span class="fl">参数值：</span>
+                <input class="fl" v-model="dictionaryData.temp_dic_key" type="text" placeholder="请输入6-8位数字密码，必填">
+              </p>
+              <p class="clf">
+                <span class="fl">描述：</span>
+                <input class="fl" v-model="dictionaryData.temp_depict" type="text" placeholder="请输入6-8位数字密码，必填">
+              </p>
+              <p class="bz clf">
+                <span class="fl">备注：</span>
+                <input class="fl" v-model="dictionaryData.temp_remark" type="text" placeholder="请输入备注" id="inp">
+              </p>
             </div>
             <div class="button clf">
               <a class="qr fr" @click="editDictionary">确定</a>
@@ -109,6 +124,7 @@
 
 <script>
 import { RequestParams ,RequestDataItem,User} from "../../assets/js/entity";
+import { RegExpCheck } from '../../assets/js/common'
 import Pagination from "../Pagination";
 import moment from "moment";
   export default {
@@ -128,6 +144,11 @@ import moment from "moment";
           dic_type:["PARK","PARK","PARK","SYS"][User.info.user_type],//  	Y	String	参数类型(SYS：系统参数PARK：项目参数)
           depict:null,//    	N	String	参数描述
           remark:null,//    	N	String	备注
+          temp_dic_code:null,//  	Y	String	参数编号副本
+          temp_dic_name:null,//  	Y	String	参数名称副本
+          temp_dic_key:null,//   	Y	String	参数值副本
+          temp_remark:null,//    	N	String	备注副本
+          temp_depict:null //    	N	String	参数描述副本
         },
         dictionarys: {
           attributes: {
@@ -159,6 +180,11 @@ import moment from "moment";
           this.dictionaryData = data;
         }
         this.ifEditDict = true;
+        this.dictionaryData.temp_dic_code = this.dictionaryData.dic_code
+        this.dictionaryData.temp_dic_name = this.dictionaryData.dic_name
+        this.dictionaryData.temp_dic_key = this.dictionaryData.dic_key
+        this.dictionaryData.temp_remark = this.dictionaryData.remark
+        this.dictionaryData.temp_depict = this.dictionaryData.depict
       },
 
       editDictionary(){
@@ -166,10 +192,18 @@ import moment from "moment";
         let adopt = null;
 
         if(String(this.dictionaryData.dic_code).trim() == "") adopt = "请填写参数编码";
-        if(String(this.dictionaryData.dic_name).trim() == "") adopt = "请填写参数名称";
+//        if(String(this.dictionaryData.dic_name).trim() == "") adopt = "请填写参数名称";
         if(String(this.dictionaryData.dic_key).trim() == "") adopt = "请填写参数值";
-        
+
+        if(!RegExpCheck.isName(String(this.dictionaryData.temp_dic_name).trim())) adopt = "请填写正确的参数名称";
+
         if(adopt) return this.$message.error(adopt);
+
+        this.dictionaryData.dic_code = this.dictionaryData.temp_dic_code
+        this.dictionaryData.dic_name = this.dictionaryData.temp_dic_name
+        this.dictionaryData.dic_key = this.dictionaryData.temp_dic_key
+        this.dictionaryData.remark = this.dictionaryData.temp_remark
+        this.dictionaryData.depict = this.dictionaryData.temp_depict
 
         this.$api.dictionary.editor(new RequestParams()
         .addAttributes(this.dictionaryData)
@@ -215,6 +249,7 @@ import moment from "moment";
           .then(response => {
             this.dictionarys.attributes = response.attributes;
             this.dictionarys.dataItems = response.dataItems.map(o => o.attributes);
+            this.selectedDictionarys = [];
           })
           .catch(response => this.$message.error(response.message));
       }

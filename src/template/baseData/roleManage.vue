@@ -33,7 +33,7 @@
       </div>
       <div>
         <div class="name">角色名称：</div>
-        <div class="role"><input type="text" placeholder="请输入" v-model="roleData.role_name"></div>
+        <div class="role"><input type="text" placeholder="请输入" v-model="roleData.temp_role_name"></div>
       </div>
       <div>
         <div class="name">状态：</div>
@@ -92,24 +92,26 @@
 </template>
 
 <script>
-import { RequestParams,RequestDataItem , User } from "../../assets/js/entity";
-import { array2Descendants, isChildrensId} from "../../assets/js/common";
-import Pagination from "../Pagination";
-import moment from "moment";
+import { RequestParams, RequestDataItem, User } from '../../assets/js/entity'
+import { array2Descendants, isChildrensId, RegExpCheck } from '../../assets/js/common'
+import Pagination from '../Pagination'
+import moment from 'moment'
+
 export default {
   data () {
     return {
       ifAllotPopup: false,
       addRole: false,
-      selectedParentIndex:-1,
-      roleData:{
-        id:null,//        	Y	String	ID
-        pid:null,//       	Y	String	父级角色
-        role_name:null,// 	Y	String	角色名称
-        role_abb:null,//  	Y	String	角色标识
-        sorting:null,//   	Y	Int	排序
-        status:null,//    	Y	Int	状态（0：正常1：停用）
-        remark:null,//    	N	String	备注
+      selectedParentIndex: -1,
+      roleData: {
+        id: null,//        	Y	String	ID
+        pid: null,//       	Y	String	父级角色
+        role_name: null,// 	Y	String	角色名称
+        role_abb: null,//  	Y	String	角色标识
+        sorting: null,//   	Y	Int	排序
+        status: null,//    	Y	Int	状态（0：正常1：停用）
+        remark: null, //    	N	String	备注
+        temp_role_name: null
       },
       selectedRess:[],
       ress: {
@@ -159,14 +161,17 @@ export default {
       else this.$message.error("请选择要分配的资源")
     },
 
-    editRole(){
+    editRole () {
+      let adopt = null
+      // if (String(this.roleData.role_name).trim() == '') adopt = '请填写角色名称'
+      // if (String(this.roleData.role_abb).trim() == '') adopt = '请填写角色标识'
+      if (String(this.roleData.status).trim() == '') adopt = '请选择角色状态'
+      if (String(this.roleData.sorting).trim() == '') adopt = '请设置角色序号'
 
-      let adopt = null;
-      if(String(this.roleData.role_name).trim() == "") adopt = "请填写角色名称";
-      if(String(this.roleData.role_abb).trim() == "") adopt = "请填写角色标识";
-      if(String(this.roleData.status).trim() == "") adopt = "请选择角色状态";
-      if(String(this.roleData.sorting).trim() == "") adopt = "请设置角色序号";
-      if(adopt) return this.$message.error(adopt);
+      if (!RegExpCheck.isRoleID(String(this.roleData.role_abb).trim())) adopt = '请填写正确的角色标识'
+      if (!RegExpCheck.isName(String(this.roleData.temp_role_name).trim())) adopt = '请填写正确的角色名称'
+
+      if (adopt) return this.$message.error(adopt)
 
       let data = this.roles.dataItems[this.selectedParentIndex];
       if(data){
@@ -174,6 +179,9 @@ export default {
           return this.$message.error("不能选择自己/下级元素")
         }
       }
+
+      this.roleData.role_name = this.roleData.temp_role_name
+
       this.$api.role
       .editor(new RequestParams()
       .addAttributes(this.roleData)
@@ -230,15 +238,17 @@ export default {
         .then(response => {
           this.ress.attributes = response.attributes;
           this.ress.tree = array2Descendants(response.dataItems.map((o,i) => (o.attributes.index = i,o.attributes)));
+          this.selectedRess = [];
         })
         .catch(({message}) => this.$message.error(message));
     },
 
     handleNodeClick (data) {
-      this.roleData = data;
-      this.roles.dataItems.forEach((o, i)=>{
-        if(o.id == data.pid){
-          this.selectedParentIndex = i;
+      this.roleData = data
+      this.roleData.temp_role_name = this.roleData.role_name
+      this.roles.dataItems.forEach((o, i) => {
+        if (o.id == data.pid) {
+          this.selectedParentIndex = i
         }
       });
     },

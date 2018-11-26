@@ -42,7 +42,7 @@
 .bz > i{color: transparent!important;}
 .bz > textarea{width: 330px;height:85px;border: 1px solid #999;float: right;}
 .button{height: 30px;width: 100%;margin-top: 30px;text-align: right;}
-.button a{display: inline-block;height:30px;width: 90px;color:#1c7dfa;border: 1px solid #1c7dfa;border-radius: 5px;text-align: center;line-height: 30px;}
+.button a{display: inline-block;height:30px;width: 90px;color:#1c7dfa;border: 1px solid #1c7dfa;border-radius: 5px;text-align: center;line-height: 30px;cursor: pointer;}
 .button .qr{color: #fff;background-color: #1c7dfa;margin-left: 30px;}
 .qx:hover{cursor: pointer;}
 .button .acknowledgement{display: block;height:30px;width: 90px;color:#fff;background-color:#1c7dfa;border-radius: 5px;margin-left: 30px;text-align: center;line-height: 30px;}

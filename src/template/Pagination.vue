@@ -1,12 +1,12 @@
 <template>
     <div class="page">
-        <a href="javascript:" v-on:click="__previousPage" ><img src="../assets/images/icon_l_arrow.png" alt=""></a>
-        <a href="javascript:" v-on:click="n!='...'?__skipPage(n):''" v-for="(n, i) in pagesCount"  v-bind:key="i" v-bind:class="{active:n==currentPage}" >{{n}}</a>
-        <a href="javascript:" v-on:click="__nextPage" ><img src="../assets/images/icon_r_arrow.png" alt=""></a>
-        <span>10条/页</span>
-        <span>跳至<input type="text" v-model="skipPageNumber">页</span>
-        <button class="go" v-on:click="__skipPage(skipPageNumber)" >Go</button>
-      </div>
+      <a href="javascript:" v-on:click="__previousPage" ><img src="../assets/images/icon_l_arrow.png" alt=""></a>
+      <a href="javascript:" v-on:click="n!='...'?__skipPage(n):''" v-for="(n, i) in pagesCount"  v-bind:key="i" v-bind:class="{active:n==currentPage}" >{{n}}</a>
+      <a href="javascript:" v-on:click="__nextPage" ><img src="../assets/images/icon_r_arrow.png" alt=""></a>
+      <span>10条/页</span>
+      <span>跳至<input type="text" v-model="skipPageNumber">页</span>
+      <button class="go" v-on:click="__skipPage(skipPageNumber)" >Go</button>
+    </div>
 </template>
 <script>
 export default {

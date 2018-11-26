@@ -32,44 +32,36 @@
       <div class="wrap-right fr">
         <ul>
           <li>
-            <video-player class="vjs-custom-skin" ref="videoPlayer" :options="{
+            <video-player class="vjs-custom-skin"  :options="{
               overNative: true,
               autoplay: true,
               controls: true,
-              techOrder: ['html5', 'flash'],
+              techOrder: ['flash', 'html5'],
+              pause:{},
               sourceOrder: true,
-              html5: { hls: { withCredentials: true } },
+              html5: { hls: { withCredentials: false } },
+              flash: { hls: { withCredentials: false } },
               sources: [{
-                type: 'rtsp/flv',
-                src: 'rtsp://192.168.55.101:554'
+                type: 'rtmp/flv',
+                src: 'rtmp://192.168.0.112:1935/live/asd'
               }]
             }"></video-player>
           </li>
           <li>
-            <video  src="rtsp://192.168.55.101:554" controls></video>
-            <!-- <object style="width: 100%;height: 100%" classid="clsid:9BE31822-FDAD-461B-AD51-BE1D1C159921" codebase="http://download.videolan.org/pub/videolan/vlc/last/win32/axvlc.cab"
-              id="vlc1" name="vlc1" class="vlcPlayer" events="True">
-                <param name="Src" id="p1" value="rtsp://192.168.55.101:554" />
-                <param name="ShowDisplay" value="True" />
-                <param name="AutoLoop" value="False" />
-                <param name="AutoPlay" value="True" />
-                <param name='fullscreen' value='false' />
-                <param name="wmode" value="transparent" />
-                <param name='controls' value='false' />
-                <embed  
-                  id="e1" 
-                  name="vlc1" 
-                  type="application/x-vlc-plugin" 
-                  version="VideoLAN.VLCPlugin.2" 
-                  autoplay="yes" 
-                  loop="no" 
-                  width="95%" 
-                  height="95%" 
-                  fullscreen="false" 
-                  wmode="transparent" 
-                  controls="false" 
-                  target="rtsp://192.168.55.101:554"/>
-            </object> -->
+            <video-player class="vjs-custom-skin"  :options="{
+              overNative: true,
+              autoplay: true,
+              controls: true,
+              techOrder: ['flash', 'html5'],
+              pause:{},
+              sourceOrder: true,
+              html5: { hls: { withCredentials: false } },
+              flash: { hls: { withCredentials: false } },
+              sources: [{
+                type: 'rtmp/flv',
+                src: 'rtmp://58.200.131.2:1935/livetv/hunantv'
+              }]
+            }"></video-player>
           </li>
         </ul>
       </div>
@@ -161,24 +153,20 @@
 </template>
 
 <script>
-  export default {
-    data () {
-      return {
-        ifDel: false,
-        equip_entry: false,
-        equip_output: false
-      };
-    },
-    methods: {
-      player() {
-        return this.$refs.videoPlayer.player
-      },
-    },
-    mounted(){
-    }
-  };
+import "videojs-contrib-hls/dist/videojs-contrib-hls";
+export default {
+  data() {
+    return {
+      ifDel: false,
+      equip_entry: false,
+      equip_output: false
+    };
+  },
+  methods: {},
+  mounted() {}
+};
 </script>
 
 <style scoped>
-  @import "../../assets/css/EquipmentMonitoring.css";
+@import "../../assets/css/EquipmentMonitoring.css";
 </style>

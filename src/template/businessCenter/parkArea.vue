@@ -38,8 +38,7 @@
                 unlink-panels
                 range-separator="至"
                 start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                :picker-options="pickerOptions">
+                end-placeholder="结束日期">
               </el-date-picker>
             </div>
           </div>
@@ -124,34 +123,52 @@
           <p class="red" hidden><i class="iconfont icon-jian-tianchong"></i>错误提示的文案<span>x</span></p>
           <div class="cet">
             <div class="clf">
-              <p class="clf"><span class="fl">编号：</span><input class="fl" type="text" v-model="areaDatas.area_code"
-                                                               placeholder="请输入编号，必填"></p>
-              <p class="clf"><span class="fl">名称：</span><input class="fl" type="text" v-model="areaDatas.area_name"
-                                                               placeholder="请输入"></p>
-              <p class="clf"><span class="fl">车场类型：</span>
-                <select name="" value="0" v-model="areaDatas.park_type">
-                  <option  v-for="(park,index)  in park_types" :value="index" :key="index">{{park}}</option>
+              <p class="clf">
+                <span class="fl">编号：</span>
+                <input class="fl" type="text" v-model="areaDatas.temp_area_code" placeholder="请输入编号，必填">
+              </p>
+              <p class="clf">
+                <span class="fl">名称：</span>
+                <input class="fl" type="text" v-model="areaDatas.temp_area_name" placeholder="请输入">
+              </p>
+              <p class="clf">
+                <span class="fl">车场类型：</span>
+                <select name="" value="0" v-model="areaDatas.temp_park_type">
+                  <option v-for="(park,index)  in park_types" :value="index" :key="index">{{park}}</option>
                 </select>
-              <p class="clf"><span class="fl">区域类型：</span>
-                <select name="" value="0" v-model="areaDatas.area_type">
-                  <option  v-for="(area,index)  in area_types[areaDatas.park_type||0]" :value="index" :key="index">{{area}}</option>
+              </p>
+              <p class="clf">
+                <span class="fl">区域类型：</span>
+                <select name="" value="0" v-model="areaDatas.temp_area_type">
+                  <option v-for="(area,index)  in area_types[areaDatas.park_type||0]" :value="index" :key="index">{{area}}</option>
                 </select>
               </p>
               <!-- <p class="clf"><span class="fl">区域车位数：</span><input class="fl" type="text" v-model="areaDatas.area_type" placeholder="请选择"></p> -->
-              <p class="clf"><span class="fl">是否限制临时车：</span>
+              <p class="clf">
+                <span class="fl">是否限制临时车：</span>
                 <span class="p-text">
-							<span class="flase fl ckb"><input class="rad" type="radio" id="deo1" v-model="areaDatas.temp_car_inout" name="radio" value="0"><label
-                for="deo1"></label></span>
-								<span class="rad-text fl">否</span>
-								<span class="true fl ckb"><input class="rad" type="radio" id="deo2" v-model="areaDatas.temp_car_inout" name="radio" value="1"><label
-                  for="deo2"></label></span>
-								<span class="rad-text fl">是</span>
+                  <span class="flase fl ckb">
+                    <input class="rad" type="radio" id="deo1" v-model="areaDatas.temp_tempCar_inout" name="radio"
+                           value="0">
+                    <label for="deo1"></label>
+                  </span>
+                  <span class="rad-text fl">否</span>
+                  <span class="true fl ckb">
+                    <input class="rad" type="radio" id="deo2" v-model="areaDatas.temp_tempCar_inout" name="radio"
+                           value="1">
+                    <label for="deo2"></label>
+                  </span>
+                  <span class="rad-text fl">是</span>
 								</span>
               </p>
-              <p class="clf"><span class="fl">进入限制时长：</span>
-                <input class="minute" type="text" value="5" v-model="areaDatas.in_time_long">分钟
+              <p class="clf">
+                <span class="fl">进入限制时长：</span>
+                <input class="minute" type="text" value="5" v-model="areaDatas.temp_in_time_long">分钟
               </p>
-              <p class="bz clf"><span class="fl">备注：</span><input class="fl" type="text" v-model="areaDatas.remark" placeholder="请输入备注" id="inp"></p>
+              <p class="bz clf">
+                <span class="fl">备注：</span>
+                <input class="fl" type="text" v-model="areaDatas.remark" placeholder="请输入备注" id="inp">
+              </p>
             </div>
             <div class="button clf">
               <a class="qr fr" @click="editParkArea">确定</a>
@@ -188,18 +205,28 @@
           </div>
           <div class="bot-right fr">
             <div class="nav-choose clf">
-              <div class="clf"><span>收费标准：</span>
+              <div class="clf">
+                <span>收费标准：</span>
                 <el-cascader
                   expand-trigger="hover"
                   :options="chargeStandardOptions"
-                  :props="{
-                    value:'dic_code',
-                    children:'children',
-                    label:'dic_name'
-                  }"
+                  :props="{value:'dic_code',children:'children',label:'dic_name'}"
                   v-model="chargeStandards"
                   @change="changeForm">
                 </el-cascader>
+                <br><br><br>
+                <span>车辆类型：</span>
+                <select class="fl" v-model="carTypeSelected">
+                  <option v-for="(item, index) in carTypeList" :key="index" :value="item.id">{{item.dic_name
+                    }}
+                  </option>
+                </select>
+                <span>收费标准：</span>
+                <select class="fl" v-model="feesSelected">
+                  <option v-for="(item, index) in (carTypeList[carTypeSelected.dic_name]||{list:[]}).children"
+                          :key="index" :value="item.id">{{item.name}}
+                  </option>
+                </select>
               </div>
             </div>
             <!-- 月卡 -->
@@ -467,53 +494,19 @@
 
 <script>
 // import { User } from "../../assets/js/common";
-import {
-  RequestParams,
-  RequestDataItem,
-  User,
-  DataDictionary
-} from "../../assets/js/entity";
-import Pagination from "../Pagination";
-import moment from "moment";
-import $ from 'jquery';
-import { array2Descendants } from "../../assets/js/common";
+import { RequestParams, RequestDataItem, User, DataDictionary } from '../../assets/js/entity'
+import { RegExpCheck } from '../../assets/js/common'
+import Pagination from '../Pagination'
+import moment from 'moment'
+import $ from 'jquery'
+import { array2Descendants } from '../../assets/js/common'
+
 export default {
   data() {
     return {
       pucker:false,
       toggleSearchText: "收起搜索",
       searchDivShow: true,
-      pickerOptions: {
-        shortcuts: [
-          {
-            text: "最近一周",
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-              picker.$emit("pick", [start, end]);
-            }
-          },
-          {
-            text: "最近一个月",
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-              picker.$emit("pick", [start, end]);
-            }
-          },
-          {
-            text: "最近三个月",
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-              picker.$emit("pick", [start, end]);
-            }
-          }
-        ]
-      },
       searchTimes: [],
       searchAreaHlodId: null,
       ifConfig: false,
@@ -560,12 +553,18 @@ export default {
         area_name: null,
         park_type: 0,
         area_type: 0,
-        temp_car_inout: null,
+        tempCar_inout: null,
         in_time_long: null,
         create_time: null,
         update_time: null,
         user_name: null,
-        remark: null
+        remark: null,
+        temp_area_code: null,
+        temp_area_name: null,
+        temp_park_type: null,
+        temp_area_type: null,
+        temp_tempCar_inout: null,
+        temp_in_time_long: null
       },
       park_types: ["普通车场", "大套小车场"],
       area_types: [["地面车库", "地下车库", "其他车库"], ["大车场", "小车场"]],
@@ -620,8 +619,14 @@ export default {
         
       },
       // 粘贴板上的内容
-      copys:null,
-    };
+      copys: null,
+
+      // 收费标准下拉联动
+      carTypeSelected: '',
+      carTypeList: [],
+      feesSelected: '',
+      feesList: []
+    }
   },
   components: {
     /**分页组件 */
@@ -664,9 +669,15 @@ export default {
       this.areaDatas = this.areas.dataItems[id] || {
         park_type: 0,
         area_type: 0
-      };
-      this.ifRenew = true;
-      this.searchAreaHlodId = this.areaDatas.id;
+      }
+      this.ifRenew = true
+      this.searchAreaHlodId = this.areaDatas.id
+      this.areaDatas.temp_area_code = this.areaDatas.area_code
+      this.areaDatas.temp_area_name = this.areaDatas.area_name
+      this.areaDatas.temp_park_type = this.areaDatas.park_type
+      this.areaDatas.temp_area_type = this.areaDatas.area_type
+      this.areaDatas.temp_tempCar_inout = this.areaDatas.tempCar_inout
+      this.areaDatas.temp_in_time_long = this.areaDatas.in_time_long
     },
     /**显示配置车场收费标准 */
     showEditParkAreaConfig(index) {
@@ -684,12 +695,25 @@ export default {
       this.loadCarsDatas();
     },
     /**新增或编辑车场区域数据 */
-    editParkArea() {
+    editParkArea () {
+
+      let adopt = null;
+
+      if(!RegExpCheck.isNumber(String(this.areaDatas.area_code).trim())) adopt = "请填写正确的编号";
+      if(!RegExpCheck.isName(String(this.areaDatas.area_name).trim())) adopt = "请填写正确的名称";
+      if(!RegExpCheck.isInteger(String(this.areaDatas.in_time_long).trim())) adopt = "请填写正确的限制时长";
+
+      if(adopt) return this.$message.error(adopt);
+
+      this.areaDatas.area_code = this.areaDatas.temp_area_code
+      this.areaDatas.area_name = this.areaDatas.temp_area_name
+      this.areaDatas.park_type = this.areaDatas.temp_park_type
+      this.areaDatas.area_type = this.areaDatas.temp_area_type
+      this.areaDatas.tempCar_inout = this.areaDatas.temp_tempCar_inout
+      this.areaDatas.in_time_long = this.areaDatas.temp_in_time_long
+
       this.$api.area
-        .editor(
-          new RequestParams()
-            .addAttributes(this.areaDatas)
-        )
+        .editor(new RequestParams().addAttributes(this.areaDatas))
         .then(response => {
           this.$message.success(response.message);
           this.ifRenew = false;
@@ -778,6 +802,7 @@ export default {
         .then(response => {
           this.cars.attributes = response.attributes;
           this.cars.dataItems = response.dataItems.map(o => o.attributes);
+          this.selectedCar = [];
         })
         .catch(response => this.$message.error(response.message));
     },
@@ -932,10 +957,29 @@ export default {
               }
               this.chargeStandardOptions.push(datas.car_type[name])
             }
-            this.chargeStandardOptions = this.chargeStandardOptions;
+//            this.chargeStandardOptions = this.chargeStandardOptions
           })
         })
-        .catch(response => this.$message.error(response.message));
+        .then(response => {
+          new DataDictionary(this.$api).ins().then(datas => {
+
+            for (let item of response.dataItems.map(o => o.attributes)) {
+              if (!this.carTypeList[item.dic_name]) {
+                this.carTypeList[item.dic_name] = {
+                  name: datas.dic_name[item.dic_name],
+                  list: []
+                }
+              }
+              item.name = datas.standard_type[item.standard_type]
+              item.standard_content = JSON.parse(item.standard_content)
+              this.carTypeList[item.dic_name].list.push(item)
+            }
+
+            this.carTypeList = this.chargeStandardOptions
+            console.log(this.carTypeList)
+          })
+        })
+        .catch(response => this.$message.error(response.message))
     },
     // 新增或编辑收费标准
     editStandar() {

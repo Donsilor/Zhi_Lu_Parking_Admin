@@ -1,6 +1,6 @@
 <template>
   <div id="admin">
-    <commonHeader></commonHeader>
+    <commonHeader @clickUserInfo="clickUserInfo"></commonHeader>
     <commonSideMenu></commonSideMenu>
     <div class="box">
       <div class="boxtop-nav">
@@ -16,22 +16,34 @@
       </div>
       <router-view></router-view>
     </div>
+    <user-info-dialog
+      v-if="showUserInfo"
+      @closeUserInfo="closeUserInfo"
+    ></user-info-dialog>
   </div>
 </template>
 
 <script>
-  import commonHeader from '../components/commonHeader';
-  import commonSideMenu from '../components/commonSideMenu';
+import commonHeader from '../components/commonHeader'
+import commonSideMenu from '../components/commonSideMenu'
+import userInfoDialog from '../components/userInfoDialog'
 
-  export default {
-    data () {
-      return {}
-    },
-    components: {
-      commonHeader,
-      commonSideMenu
+export default {
+  data () {
+    return {
+      showUserInfo: false
     }
+  },
+  components: {
+    commonHeader,
+    commonSideMenu,
+    userInfoDialog
+  },
+  methods: {
+    clickUserInfo () {this.showUserInfo = true},
+    closeUserInfo () {this.showUserInfo = false}
   }
+}
 </script>
 
 <style>

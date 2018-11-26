@@ -1,7 +1,7 @@
 <template>
   <div class="bk">
     <div class="l_box">
-      <div class="title">系统管理</div>
+      <div class="title">停车管理系统</div>
       <h6>用户登录</h6>
       <div >
         <div class="user">
@@ -47,7 +47,7 @@ export default {
       }).catch(data=>this.$message.error(data.message));
     },
     keydownEnter({code}){
-      if(code == "Enter"){
+      if(code == "Enter" || code == "NumpadEnter"){
         this.login();
       }
     }

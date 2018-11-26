@@ -38,8 +38,7 @@
                 value-format="yyyy-MM-DD HH:mm:ss"
                 range-separator="至"
                 start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                :picker-options="pickerOptions">
+                end-placeholder="结束日期">
               </el-date-picker>
             </div>
           </div>
@@ -127,20 +126,32 @@
               <p class="clf">
                 <span class="fl">
                   <span class='red-text'>*</span>
-                  住户：{{selecredHouseHoldData.full_name||"",selecredHouseHoldData.room_no||"",selecredHouseHoldData.tel||""}}
+                  住户：&emsp;&emsp;&emsp;{{selecredHouseHoldData.full_name||"",selecredHouseHoldData.room_no||"",selecredHouseHoldData.tel||""}}
                 </span>
                 <span class="plechoose" @click="ifVehreg = true, loadHouseHoldsDatas()">请选择</span>
               </p>
-              <p class="clf"><span class="fl"><span class='red-text'>*</span>车牌号码：</span><input class="fl" type="text" v-model="carData.car_no" placeholder="请输入6-8位数字密码，必填"> </p>
+              <p class="clf">
+                <span class="fl"><span class='red-text'>*</span>车牌号码：</span>
+                <input class="fl" type="text" v-model="carData.temp_car_no" placeholder="请输入6-8位数字密码，必填">
+              </p>
               <p class="clf">
                 <span class="fl">车辆颜色：</span>
                 <span class="color-choose fl">
-                  <input type="text" placeholder="颜色选择器" v-model="carData.car_color">
+                  <input type="text" placeholder="颜色选择器" v-model="carData.temp_car_color">
                 </span>
               </p >
-              <p class="clf"><span class="fl">车辆品牌：</span><input class="fl" type="text" v-model="carData.car_brand" placeholder="请输入6-8位数字密码，必填"> </p>
-              <p class="clf"><span class="fl">车辆型号：</span><input class="fl" type="text" v-model="carData.car_mode" placeholder="请输入6-8位数字密码，必填"> </p>
-              <p class="bz clf"><span class="fl">备注：</span><input class="fl" type="text" v-model="carData.remark" placeholder="请输入备注" id="inp"></p>
+              <p class="clf">
+                <span class="fl">车辆品牌：</span>
+                <input class="fl" type="text" v-model="carData.temp_car_brand" placeholder="请输入6-8位数字密码，必填">
+              </p>
+              <p class="clf">
+                <span class="fl">车辆型号：</span>
+                <input class="fl" type="text" v-model="carData.temp_car_mode" placeholder="请输入6-8位数字密码，必填">
+              </p>
+              <p class="bz clf">
+                <span class="fl">备注：</span>
+                <input class="fl" type="text" v-model="carData.remark" placeholder="请输入备注" id="inp">
+              </p>
             </div>
             <div class="button clf">
               <a class="qr fr" @click="editCars()">确定</a>
@@ -165,12 +176,14 @@
               <p class="clf"><span class="fl">授权车位：</span><span class="p-text fl" :asd="caraccreditData.is_group = placeData.car_group_id?1:0" :asdasd="caraccreditData.place_id = placeData.car_group_id || placeData.id">{{placeData.car_group_id || placeData.car_place_no}}<span hidden class="red-text">为车位组时显示车位组名称，并修改标题为授权车位组</span></span>
                 <a class="ap-choose" href="javascript:" @click="ifAuthorizedParking = true, loadPlaceDatas()">请选择</a>
               </p>
-              <p class="clf"><span class="fl"  :pucker="pucker">车牌类型：</span>
+              <p class="clf">
+                <span class="fl" :pucker="pucker">车牌类型：</span>
                 <select v-model="caraccreditData.car_type">
                   <option v-for="(item, key, index) in standards" :key="index" :value="key">{{item.name}}</option>
                 </select>
               </p>
-              <p class="clf"><span class="fl">收费标准：</span>
+              <p class="clf">
+                <span class="fl">收费标准：</span>
                 <select v-model="standardData">
                   <option v-for="(item, index) in (standards[caraccreditData.car_type]||{list:[]}).list" :key="index" :value="item">{{item.standard_name}}</option>
                 </select>
@@ -372,6 +385,7 @@
 
 <script>
 import { RequestParams, RequestDataItem ,User, DataDictionary} from "../../assets/js/entity";
+import { RegExpCheck } from '../../assets/js/common'
 import Pagination from "../Pagination";
 import moment from "moment";
   export default {
@@ -379,33 +393,6 @@ import moment from "moment";
       return {
         pucker:false,
         searchDivShow: true,
-        pickerOptions: {
-          shortcuts: [{
-            text: '最近一周',
-            onClick (picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-              picker.$emit('pick', [start, end]);
-            }
-          }, {
-            text: '最近一个月',
-            onClick (picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-              picker.$emit('pick', [start, end]);
-            }
-          }, {
-            text: '最近三个月',
-            onClick (picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-              picker.$emit('pick', [start, end]);
-            }
-          }]
-        },
         searchTimes:[],
         searchParams:{
           car_no:null,
@@ -429,6 +416,10 @@ import moment from "moment";
           car_brand:null,//   	N	String	车辆品牌
           car_mode:null,//    	N	String	车辆型号
           remark:null,//      	N	String	备注
+          temp_car_no:null,//      	Y	String	车牌号码 副本
+          temp_car_color:null,//   	N	String	车辆颜色(如：#FFFFFF) 副本
+          temp_car_brand:null,//   	N	String	车辆品牌 副本
+          temp_car_mode:null,//    	N	String	车辆型号 副本
         },
         standardData:{},
         caraccreditData:{
@@ -555,6 +546,10 @@ import moment from "moment";
         this.selecredHouseHoldData.tel = this.carData.tel
         this.selecredHouseHoldData.id = this.carData.household_id
         this.ifEditRegister = true;
+        this.carData.temp_car_no = this.carData.car_no
+        this.carData.temp_car_color = this.carData.car_color
+        this.carData.temp_car_brand = this.carData.car_brand
+        this.carData.temp_car_mode = this.carData.car_mode
       },
 
       editAuthorize(){
@@ -578,6 +573,18 @@ import moment from "moment";
       },
 
       editCars(){
+
+        let adopt = null;
+
+//        if(!RegExpCheck.isCarId(String(this.carData.car_no).trim())) adopt = "请填写正确的车牌号";
+
+        if(adopt) return this.$message.error(adopt);
+
+        this.carData.car_no = this.carData.temp_car_no
+        this.carData.car_color = this.carData.temp_car_color
+        this.carData.car_brand = this.carData.temp_car_brand
+        this.carData.car_mode = this.carData.temp_car_mode
+
         if(this.selecredHouseHoldData.id){
           this.$api.car.editor(new RequestParams()
           .addDataItem(new RequestDataItem()
@@ -672,9 +679,9 @@ import moment from "moment";
           .addAttribute("begin_time", this.searchTimes[0])
           .addAttribute("end_time", this.searchTimes[1]))
           .then(response => {
-
             this.cars.attributes = response.attributes;
             this.cars.dataItems = response.dataItems.map(o => o.attributes);
+            this.selecedCars = [];
           })
           .catch(response => this.$message.error(response.message));
       },
@@ -701,12 +708,13 @@ import moment from "moment";
           .addAttributes(params)
           .addAttribute("page_index", pageNum)
           .addAttribute("page_size", 100000)
-          // .addAttribute("key", `device_type in ("INLET","OUTLET")`)
+          // .addAttribute("key", `device_type in ('INLET','OUTLET')`)
           )
           .then(response => {
 
             this.devices.attributes = response.attributes;
             this.devices.dataItems = response.dataItems.map(o => o.attributes);
+            this.selecredDevices = []
           })
           .catch(response => this.$message.error(response.message));
       }

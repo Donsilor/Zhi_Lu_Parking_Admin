@@ -6,6 +6,7 @@ import APIS from "./serviceurls";
 import axion from "axios";
 import {queryParams} from "./common";
 import { ResponseBody, RequestParams , User} from "./entity";
+// import { Loading } from 'element-ui';
 
 const axion_instance = axion.create({
   // `baseURL` 将自动加在 `url` 前面，除非 `url` 是一个绝对 URL。
@@ -132,7 +133,6 @@ const axion_instance = axion.create({
   // cancelToken: new CancelToken(function (cancel) {
   // })
 });
-
 const axion_instance_method = {
   [HTTP_REQUEST_METHOD.GET]: axion_instance.get,
   [HTTP_REQUEST_METHOD.GETURL]: axion_instance.get,
@@ -156,6 +156,7 @@ export default (function createApis(apis) {
     /**为了运行时植入，只能这样了 */
     ///////////////////////////////////////////////////////
     return new Promise(function (resolve, reject) {
+      // let loadingInstance = Loading.service();
       let { url, method, param = {}, config = {} } = $.extend(true, {}, api);
       if (method == HTTP_REQUEST_METHOD.GETURL || method == HTTP_REQUEST_METHOD.POSTURL) {
         url = queryParams(url, params);
@@ -163,6 +164,7 @@ export default (function createApis(apis) {
       const axion_method = axion_instance_method[method];
       if (axion_method) {
         axion_method(url, new RequestParams($.extend(params, param)).getJsonParams(), config).then(response => {
+          // loadingInstance.close();
           if (response.data.resultCode == 0) {
             resolve(response.data);
           }

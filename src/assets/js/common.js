@@ -135,4 +135,101 @@ export const RegExpCheck = new class RegExpCheck {
     return /^\d+\.\d+\.\d+\.\d+$/ig.test(ip);
   }
 
+  /**
+   * 是否是 名称
+   * @param {*} name
+   */
+  isName (name) {
+    return /^[a-zA-Z0-9_\u4e00-\u9fa5]{1,32}$/.test(name)
+  }
+
+  /**
+   * 是否是 用户名
+   * @param {*} userName
+   */
+  isUserName (userName) {
+    return /^[a-zA-Z0-9_]{5,16}$/.test(userName)
+  }
+
+  /**
+   * 是否是 编号
+   * @param {*} number
+   */
+  isNumber (number) {
+    return /^[a-zA-Z0-9]{1,6}$/.test(number)
+  }
+
+  /**
+   * 是否是 角色标识
+   * @param {*} roleID
+   */
+  isRoleID (roleID) {
+    return /^[0-9]{1,3}$/.test(roleID)
+  }
+
+  /**
+   * 是否是 密码
+   * @param {*} password
+   */
+  isPassword (password) {
+    return /^[\S]{6,16}$/.test(password)
+  }
+
+  /**
+   * 是否是 姓名
+   * @param {*} fullName
+   */
+  isFullName (fullName) {
+    return /^[a-zA-Z0-9\u4e00-\u9fa5]{1,32}$/.test(fullName)
+  }
+
+  /**
+   * 是否是 正整数
+   * @param {*} integer
+   */
+  isInteger (integer) {
+    return /^\+?[1-9][0-9]*$/.test(integer)
+  }
+
+  /**
+   * 是否是 地址
+   * @param {*} addr
+   */
+  isAddr (addr) {
+    return /^[\u4e00-\u9fa5]{1,256}$/.test(addr)
+  }
+
+  /**
+   * 是否是 文本
+   * @param {*} addr
+   */
+  isText (text) {
+    return /^\S{1,64}$/.test(text)
+  }
+
+  /**
+   * 是否是 身份证号码
+   * @param {*} idCard
+   */
+  isIdCard (idCard) {
+    return /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(idCard)
+  }
+
+  /**
+   * 是否是 车牌号
+   * @param {*} idCard
+   */
+  isCarId (carId) {
+    const carIdRegExp = /^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[警京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼]{0,1}[A-Z0-9]{4}[A-Z0-9挂学警港澳]{1}$/
+    return carIdRegExp.test(carId)
+  }
+
+  /**
+   * 是否是 MAC地址
+   * @param {*} MACAddr
+   */
+  isMACAddr (MACAddr) {
+    const MACAddrRegExp = /^[A-F0-9]{2}(-[A-F0-9]{2}){5}$/
+    return MACAddrRegExp.test(MACAddr)
+  }
 }

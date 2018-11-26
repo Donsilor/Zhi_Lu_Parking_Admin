@@ -2,7 +2,7 @@
   margin-right: 15%;
 }
 
-.main .depwd{width:955px;position:absolute;top:7%;left:calc(50% - 477px);}
+.main .depwd{width:955px;position:absolute;top:calc(50% - 420px);left:calc(50% - 477px);}
 .bot{width:100%;background-color: #fff;}
 .cet{width:95%;margin: 0 auto;padding-top: 20px;}
 .cet p{line-height: 30px;margin-bottom: 20px;width: 50%;float:left}

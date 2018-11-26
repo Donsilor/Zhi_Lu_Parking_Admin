@@ -79,8 +79,8 @@
     </div>
     <!--弹窗-->
     <div class="main" v-bind:style="{display:addUserWindow?'block':'none'}">
-      <div class="depwd">
-        <div class="top-nav">
+      <div class="depwd" v-drag.cursor="'#UserInfo'">
+        <div class="top-nav" id="UserInfo">
           <p class="t-text fl">用户信息</p>
           <p class="close fr" v-on:click="addUserWindow = false">x</p>
         </div>
@@ -99,40 +99,46 @@
                 </el-select>
               </p>
               <!-- <p class="red" v-if="addErrorDesc!=''" ><i class="iconfont icon-jian-tianchong"></i>{{addErrorDesc}}</p> -->
-              <p class="clf"><span class="fl"><span class='red-text'>*</span>用户名：</span><input class="fl user" v-model="userData.user_name" name="user" type="text" placeholder="请输入编号，必填">
+              <p class="clf">
+                <span class="fl"><span class='red-text'>*</span>用户名：</span>
+                <input class="fl user" v-model="userData.temp_user_name" name="user" type="text" placeholder="请输入编号，必填">
               </p>
               <p class="clf">
                 <span class="fl"><span class='red-text'>*</span>密码：</span>
-                <input class="fl psw" name="psw" type="text" v-model="userData.password" placeholder="请输入6-8位数字密码，必填" >
+                <input class="fl psw" name="psw" type="password" v-model="userData.password" placeholder="请输入6-8位数字密码，必填">
                 <span class="pswremind remind">请输入正确信息</span>
               </p>
               <p class="clf">
                 <span class="fl"><span class='red-text'>*</span>确认密码：</span>
-                <input class="fl ppsw" name="ppsw" type="text" v-model="userData.password2" placeholder="请输入6-8位数字密码，必填" >
+                <input class="fl ppsw" name="ppsw" type="password" v-model="userData.password2" placeholder="请输入6-8位数字密码，必填">
                 <span class="ppswremind remind">请输入正确信息</span>
               </p>
-              <p class="clf"><span class="fl"><span class='red-text'>*</span>姓名：</span><input v-model="userData.full_name" class="fl" type="text" placeholder="请输入姓名，必填">
+              <p class="clf">
+                <span class="fl"><span class='red-text'>*</span>姓名：</span>
+                <input v-model="userData.temp_full_name" class="fl" type="text" placeholder="请输入姓名，必填">
               </p>
               <p class="clf">
                 <span class="fl"><span class='red-text'>*</span>电话：</span>
-                <input class="fl tel" type="text" name="tel" v-model="userData.tel"   placeholder="请输入电话号码，必填">
+                <input class="fl tel" type="text" name="tel" v-model="userData.temp_tel" placeholder="请输入电话号码，必填">
                 <span class="telremind remind">请输入正确信息</span>
               </p>
-              <p class="clf upload"><span class="fl">头像：</span>
-
-              <el-upload
-                class="up fl"
-                action="http://ceibs.54jj.cn/ZLParkingAdmin/server_file/file/fileUpload?folder=user"
-                :show-file-list="false"
-                :on-success="handleAvatarSuccess"
-                :before-upload="beforeAvatarUpload">
-                <img v-if="userData.photo" :src="userData.photo" class="up fl">
-                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-              </el-upload>
-
-              <span class="fl r-text">只能上传jpg/png文件</span>
+              <p class="clf upload">
+                <span class="fl">头像：</span>
+                <el-upload
+                  class="up fl"
+                  action="http://ceibs.54jj.cn/ZLParkingAdmin/server_file/file/fileUpload?folder=user"
+                  :show-file-list="false"
+                  :on-success="handleAvatarSuccess"
+                  :before-upload="beforeAvatarUpload">
+                  <img v-if="userData.photo" :src="userData.photo" class="up fl" alt="">
+                  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                </el-upload>
+                <span class="fl r-text">只能上传jpg/png文件</span>
               </p>
-              <p class="bz clf"><span class="fl">备注：</span><input class="fl" type="text"  v-model="userData.remark" placeholder="请输入备注" id="inp">
+              <p class="bz clf">
+                <span class="fl">备注：</span>
+                <input class="fl" type="text" v-model="userData.remark"
+                                                                  placeholder="请输入备注" id="inp">
               </p>
             </div>
             <div class="button clf">
@@ -157,7 +163,8 @@
                 children: 'children',
                 label: 'role_name'
               }"
-              @node-click="data=>selectedRoleData=data">
+              @node-click="data=>selectedRoleData=data"
+              show-checkbox>
             </el-tree>
             <div class="button clf">
               <a class="qx" @click="ifAssignRoles = false">取消</a>
@@ -242,8 +249,10 @@ export default {
         tree:[],
         dataItems: []
       },
-      depts:[]
-    };
+      depts: [],
+
+      showUserInfo: false
+    }
   },
   components: {
     /**分页组件 */
@@ -287,19 +296,22 @@ export default {
           this.$message.info("已取消添加");
         });
       }
-      this.userData = this.users.dataItems[id] || {};
-      this.addUserWindow = true;
+      this.userData = this.users.dataItems[id] || {}
+      this.addUserWindow = true
+      this.userData.temp_user_name = this.userData.user_name
+      this.userData.temp_full_name = this.userData.full_name
+      this.userData.temp_tel = this.userData.tel
     },
 
-    resetPassword(id, name){
-      this.$confirm(`确定要重置[${name}]的密码吗?`, '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        })
-        .then(() => this.$api.operator.resetpwd(new RequestParams().addAttribute("id", id)))
-        .then(response=>{
-          this.$message.success("重置成功");
+    resetPassword (id, name) {
+      this.$confirm(`是否要重置选中记录的密码为6个8?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => this.$api.operator.resetpwd(new RequestParams().addAttribute('id', id)))
+        .then(response => {
+          this.$message.success('重置成功')
         })
         .catch(({message}) => this.$message.error(message))
         .catch(() => {
@@ -311,16 +323,26 @@ export default {
       
       let adopt = null;
 
-      if(String(this.userData.dept_id).trim() == "") adopt = "请选择部门";
-      if(String(this.userData.user_name).trim() == "") adopt = "请填写用户名";
-      if(String(this.userData.full_name).trim() == "") adopt = "请填写姓名";
-      if(String(this.userData.tel).trim() == "") adopt = "请填写电话号码";
-      if(String(this.userData.relativepath).trim() == "") adopt = "请选择用户头像";
-      if(String(this.userData.password).trim() == "") adopt = "请填写密码";
-      
-      if(!RegExpCheck.isTel(String(this.userData.tel).trim())) adopt = "请填写正确的客户联系电话";
+      if (String(this.userData.dept_id).trim() == null) adopt = '请选择部门'
+      //      if (String(this.userData.user_name).trim() == '') adopt = '请填写用户名'
+      //      if (String(this.userData.full_name).trim() == '') adopt = '请填写姓名'
+      //      if (String(this.userData.tel).trim() == '') adopt = '请填写电话号码'
+      if (String(this.userData.relativepath).trim() == '') adopt = '请选择用户头像'
+      //      if (String(this.userData.password).trim() == '') adopt = '请填写密码'
 
-      if(adopt) return this.$message.error(adopt);
+      if (!RegExpCheck.isUserName(String(this.userData.temp_user_name).trim())) adopt = '请填写正确的用户名'
+      if (!RegExpCheck.isPassword(String(this.userData.password).trim())) adopt = '请填写正确的密码'
+      if (!RegExpCheck.isFullName(String(this.userData.temp_full_name).trim())) adopt = '请填写正确的姓名'
+      if (!RegExpCheck.isTel(String(this.userData.temp_tel).trim())) adopt = '请填写正确的客户联系电话'
+
+      if (RegExpCheck.isPassword(String(this.userData.password).trim()) &&
+        this.userData.password2 !== this.userData.password) adopt = '请确认密码'
+
+      if (adopt) return this.$message.error(adopt)
+
+      this.userData.user_name = this.userData.temp_user_name
+      this.userData.full_name = this.userData.temp_full_name
+      this.userData.tel = this.userData.temp_tel
 
       this.$api.operator.editor(new RequestParams()
       .addAttributes(this.userData)
@@ -392,6 +414,7 @@ export default {
       .then(response => {
         this.users.attributes = response.attributes;
         this.users.dataItems = response.dataItems.map(o => o.attributes);
+        this.selectedUsers = [];
       })
       .catch(response => this.$message.error(response.message));
     },

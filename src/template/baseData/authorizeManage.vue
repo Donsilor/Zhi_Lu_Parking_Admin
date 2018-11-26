@@ -84,15 +84,19 @@
           <div class="cet">
             <div class="clf">
               <!-- <p class="red"><i class="iconfont icon-jian-tianchong"></i>错误提示的文案</p> -->
-              <p class="clf"><span class="fl"><span class='red-text'>*</span>授权名称：</span><input v-model="authorizeData.oauth_name" class="fl user" name="user" type="text" placeholder="请输入编号，必填"> </p>
+              <p class="clf">
+                <span class="fl"><span class='red-text'>*</span>授权名称：</span>
+                <input v-model="authorizeData.temp_oauth_name" class="fl user" name="user" type="text"
+                       placeholder="请输入编号，必填">
+              </p>
               <p class="clf">
                 <span class="fl"><span class='red-text'>*</span>授权KEY：</span>
-                <input class="fl psw" v-model="authorizeData.oauth_key" name="psw" type="text" placeholder="请输入6-8位数字密码，必填">
+                <input class="fl psw" v-model="authorizeData.oauth_key" name="psw" type="password" placeholder="请输入6-8位数字密码，必填">
                 <span class="pswremind remind">请输入正确信息</span>
               </p>
               <p class="clf">
                 <span class="fl"><span class='red-text'>*</span>确认KEY：</span>
-                <input class="fl ppsw" v-model="authorizeData.oauth_key2" name="ppsw" type="text" placeholder="请输入6-8位数字密码，必填">
+                <input class="fl ppsw" v-model="authorizeData.oauth_key2" name="ppsw" type="password" placeholder="请输入6-8位数字密码，必填">
                 <span class="ppswremind remind">请输入正确信息</span>
               </p>
               <p class="clf">
@@ -110,14 +114,23 @@
                 >
                 </el-date-picker>
               </p>
-              <p class="clf"><span class="fl"><span class='red-text'>*</span>客户名称：</span><input class="fl" v-model="authorizeData.client_name" type="text" placeholder="请输入姓名，必填"> </p>
+              <p class="clf">
+                <span class="fl"><span class='red-text'>*</span>客户名称：</span>
+                <input class="fl" v-model="authorizeData.temp_client_name" type="text" placeholder="请输入姓名，必填">
+              </p>
               <p class="clf">
                 <span class="fl"><span class='red-text'>*</span>电话：</span>
-                <input class="fl tel" type="text" v-model="authorizeData.tel" name="tel" placeholder="请输入电话号码，必填">
+                <input class="fl tel" type="text" v-model="authorizeData.temp_tel" name="tel" placeholder="请输入电话号码，必填">
                 <span class="telremind remind">请输入正确信息</span>
               </p>
-              <p class="clf upload"><span class="fl">地址：</span><input class="fl" v-model="authorizeData.addr" type="text" placeholder="请输入备注"> </p>
-              <p class="bz clf"><span class="fl">备注：</span><input class="fl" v-model="authorizeData.remark" type="text" placeholder="请输入备注" id="inp"> </p>
+              <p class="clf upload">
+                <span class="fl">地址：</span>
+                <input class="fl" v-model="authorizeData.temp_addr" type="text" placeholder="请输入备注">
+              </p>
+              <p class="bz clf">
+                <span class="fl">备注：</span>
+                <input class="fl" v-model="authorizeData.remark" type="text" placeholder="请输入备注" id="inp">
+              </p>
             </div>
             <div class="button clf">
               <a class="acknowledgement fr" @click="editAuthorize">确定</a>
@@ -175,6 +188,10 @@ import moment from "moment";
           begin_time:null,// 	Y	String	有效期开始时间(格式：yyyy-MM-dd HH:mm:ss)
           end_time:null,//   	Y	String	有效期结束时间(格式：yyyy-MM-dd HH:mm:ss)
           remark:null,//     	N	String	备注
+          temp_oauth_name:null,// 	Y	String	授权名称
+          temp_client_name:null,//	Y	String	客户
+          temp_tel:null,//        	Y	String	电话
+          temp_addr:null //       	N	String	地址
         },
         authorizes:{
           attributes: {
@@ -204,6 +221,12 @@ import moment from "moment";
       showEditAuthorize(id){
         this.authorizeData = this.authorizes.dataItems[id] || {};
         this.ifAuthorize = true;
+
+        this.authorizeData.temp_oauth_name = this.authorizeData.oauth_name
+        this.authorizeData.temp_client_name = this.authorizeData.client_name
+        this.authorizeData.temp_tel = this.authorizeData.tel
+        this.authorizeData.temp_addr = this.authorizeData.addr
+
         this.$api.standard
           .getlist(
             new RequestParams()
@@ -262,19 +285,26 @@ import moment from "moment";
 
         this.authorizeData.begin_time = this.authorizeTimes[0];
         this.authorizeData.end_time = this.authorizeTimes[1];
-        
+
         let adopt = null;
 
-        if(String(this.authorizeData.oauth_name).trim() == "") adopt = "请填写授权名称";
+//        if(String(this.authorizeData.oauth_name).trim() == "") adopt = "请填写授权名称";
         if(String(this.authorizeData.oauth_key).trim() == "") adopt = "请填写授权KEY";
         if(String(this.authorizeData.oauth_key2).trim() == "") adopt = "请再次填写授权KEY";
-        if(String(this.authorizeData.client_name).trim() == "") adopt = "请填写客户名称";
+//        if(String(this.authorizeData.client_name).trim() == "") adopt = "请填写客户名称";
         if(String(this.authorizeData.begin_time).trim() == "") adopt = "请填写授权始终时间";
-        if(String(this.authorizeData.tel).trim() == "") adopt = "请填写客户联系电话";
-        
-        if(!RegExpCheck.isTel(String(this.authorizeData.tel).trim())) adopt = "请填写正确的客户联系电话";
-        
+//        if(String(this.authorizeData.tel).trim() == "") adopt = "请填写客户联系电话";
+
+        if(!RegExpCheck.isTel(String(this.authorizeData.temp_tel).trim())) adopt = "请填写正确的客户联系电话";
+        if(!RegExpCheck.isName(String(this.authorizeData.temp_oauth_name).trim())) adopt = "请填写正确的授权名称";
+        if(!RegExpCheck.isName(String(this.authorizeData.temp_client_name).trim())) adopt = "请填写正确的客户名称";
+
         if(adopt) return this.$message.error(adopt);
+
+        this.authorizeData.oauth_name = this.authorizeData.temp_oauth_name
+        this.authorizeData.client_name = this.authorizeData.temp_client_name
+        this.authorizeData.tel = this.authorizeData.temp_tel
+        this.authorizeData.addr = this.authorizeData.temp_addr
 
         this.$api.oauth.editor(new RequestParams()
         .addAttributes(this.authorizeData)
@@ -288,7 +318,7 @@ import moment from "moment";
       },
 
       resetPassword(id, name){
-        this.$confirm(`确定要重置[${name}]的密码吗?`, '提示', {
+        this.$confirm(`是否要重置选中记录的密码为6个8?`, '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning'

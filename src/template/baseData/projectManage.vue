@@ -24,8 +24,7 @@
                 value-format="yyyy-MM-DD HH:mm:ss"
                 range-separator="至"
                 start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                :picker-options="pickerOptions">
+                end-placeholder="结束日期">
               </el-date-picker>
             </div>
           </div>
@@ -112,26 +111,34 @@
           <div class="cet">
             <div class="clf">
               <!-- <p class="red" ><i class="iconfont icon-jian-tianchong"></i>错误提示的文案</p> -->
-              <p class="clf"><span class="fl"><span class='red-text'>*</span>项目编号：</span><input class="fl"
-                                                                                                v-model="projectData.project_code"
-                                                                                                placeholder="请输入编号，必填"
-                                                                                                type="text"></p>
-              <p class="clf"><span class="fl"><span class='red-text'>*</span>项目名称：</span><input class="fl"
-                                                                                                v-model="projectData.project_name"
-                                                                                                type="text"
-                                                                                                placeholder="请输入6-8位数字密码，必填">
+              <p class="clf">
+                <span class="fl"><span class='red-text'>*</span>项目编号：</span>
+                <input class="fl" v-model="projectData.temp_project_code" placeholder="请输入编号，必填" type="text">
               </p>
-              <p class="clf"><span class="fl">地址：</span><input class="fl" type="text" v-model="projectData.addr"
-                                                               placeholder="请输入6-8位数字密码，必填"></p>
-              <p class="clf"><span class="fl">联系人：</span><input class="fl" type="text" v-model="projectData.linkman"
-                                                                placeholder="请输入6-8位数字密码，必填"></p>
-              <p class="clf"><span class="fl">联系电话：</span><input class="fl" type="text" v-model="projectData.tel"
-                                                                 placeholder="请输入编号，必填"></p>
-              <p class="clf"><span class="fl">车位总数：</span><input class="fl" type="text"
-                                                                 v-model="projectData.total_place"
-                                                                 placeholder="请输入编号，必填"></p>
-              <p class="bz clf"><span class="fl">备注：</span><input class="fl" type="text" v-model="projectData.remark"
-                                                                  placeholder="请输入备注" id="inp"></p>
+              <p class="clf">
+                <span class="fl"><span class='red-text'>*</span>项目名称：</span>
+                <input class="fl" v-model="projectData.temp_project_name" type="text" placeholder="请输入6-8位数字密码，必填">
+              </p>
+              <p class="clf">
+                <span class="fl">地址：</span>
+                <input class="fl" type="text" v-model="projectData.temp_addr" placeholder="请输入6-8位数字密码，必填">
+              </p>
+              <p class="clf">
+                <span class="fl">联系人：</span>
+                <input class="fl" type="text" v-model="projectData.temp_linkman" placeholder="请输入6-8位数字密码，必填">
+              </p>
+              <p class="clf">
+                <span class="fl">联系电话：</span>
+                <input class="fl" type="text" v-model="projectData.temp_tel" placeholder="请输入编号，必填">
+              </p>
+              <p class="clf">
+                <span class="fl">车位总数：</span>
+                <input class="fl" type="text" v-model="projectData.temp_total_place" placeholder="请输入编号，必填">
+              </p>
+              <p class="bz clf">
+                <span class="fl">备注：</span>
+                <input class="fl" type="text" v-model="projectData.temp_remark" placeholder="请输入备注" id="inp">
+              </p>
             </div>
             <div class="button clf">
               <a class="qr fr" @click="editProject">确定</a>
@@ -181,7 +188,14 @@ export default {
         tel: null,//         	Y	String	联系电话
         total_place: null,// 	Y	Int	总车位数
         remark: null,//      	N	String	备注
-        resetPW: false
+        resetPW: false,
+        temp_project_code: null,//	Y	String	项目编号副本
+        temp_project_name: null,//	Y	String	项目名称副本
+        temp_addr: null,//        	N	String	项目地址副本
+        temp_linkman: null,//     	Y	String	联系人副本
+        temp_tel: null,//         	Y	String	联系电话副本
+        temp_total_place: null,// 	Y	Int     总车位数副本
+        temp_remark: null,//      	N	String	备注副本
       },
       projects: {
         attributes: {
@@ -192,37 +206,6 @@ export default {
         },
         dataItems: []
       },
-      pickerOptions: {
-        shortcuts: [
-          {
-            text: '最近一周',
-            onClick (picker) {
-              const end = new Date()
-              const start = new Date()
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
-              picker.$emit('pick', [start, end])
-            }
-          },
-          {
-            text: '最近一个月',
-            onClick (picker) {
-              const end = new Date()
-              const start = new Date()
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
-              picker.$emit('pick', [start, end])
-            }
-          },
-          {
-            text: '最近三个月',
-            onClick (picker) {
-              const end = new Date()
-              const start = new Date()
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
-              picker.$emit('pick', [start, end])
-            }
-          }
-        ]
-      }
     }
   },
   components: {
@@ -242,24 +225,44 @@ export default {
     showEditProject (id) {
       this.projectData = this.projects.dataItems[id] || {}
       this.ifEditInfo = true
+      this.projectData.temp_project_code = this.projectData.project_code
+      this.projectData.temp_project_name = this.projectData.project_name
+      this.projectData.temp_addr = this.projectData.addr
+      this.projectData.temp_linkman = this.projectData.linkman
+      this.projectData.temp_tel = this.projectData.tel
+      this.projectData.temp_total_place = this.projectData.total_place
+      this.projectData.temp_remark = this.projectData.remark
     },
 
     editProject () {
       
       let adopt = null;
-      if(String(this.projectData.project_code).trim() == "") adopt = "请填写项目编号";
-      if(String(this.projectData.project_name).trim() == "") adopt = "请填写项目名称";
-      if(String(this.projectData.linkman).trim() == "") adopt = "请填写联系人";
-      if(String(this.projectData.tel).trim() == "") adopt = "请填写联系方式";
-      if(String(this.projectData.total_place).trim() == "") adopt = "请填写总车位数";
-      
-      if(!RegExpCheck.isTel(String(this.projectData.tel).trim())) adopt = "请填写正确的联系方式";
+//      if(String(this.projectData.project_code).trim() == "") adopt = "请填写项目编号";
+//      if(String(this.projectData.project_name).trim() == "") adopt = "请填写项目名称";
+//      if(String(this.projectData.linkman).trim() == "") adopt = "请填写联系人";
+//      if(String(this.projectData.tel).trim() == "") adopt = "请填写联系方式";
+//      if(String(this.projectData.total_place).trim() == "") adopt = "请填写总车位数";
+
+      if(!RegExpCheck.isInteger(String(this.projectData.temp_total_place).trim())) adopt = "请填写正确的总车位数";
+      if(!RegExpCheck.isTel(String(this.projectData.temp_tel).trim())) adopt = "请填写正确的联系方式";
+      if(!RegExpCheck.isFullName(String(this.projectData.temp_linkman).trim())) adopt = "请填写正确的联系人";
+      if(!RegExpCheck.isAddr(String(this.projectData.temp_addr).trim())) adopt = "请填写正确的地址";
+      if(!RegExpCheck.isName(String(this.projectData.temp_project_name).trim())) adopt = "请填写正确的项目名称";
+      if(!RegExpCheck.isNumber(String(this.projectData.temp_project_code).trim())) adopt = "请填写正确的项目编号";
 
       if(adopt) return this.$message.error(adopt);
 
+      this.projectData.project_code = this.projectData.temp_project_code
+      this.projectData.project_name = this.projectData.temp_project_name
+      this.projectData.addr = this.projectData.temp_addr
+      this.projectData.linkman = this.projectData.temp_linkman
+      this.projectData.tel = this.projectData.temp_tel
+      this.projectData.total_place = this.projectData.temp_total_place
+      this.projectData.remark = this.projectData.temp_remark
+
       this.$api.project.editor(new RequestParams().addAttributes(this.projectData))
       .then(response=>{
-        this.$message.error(response.message)
+        this.$message.success(response.message)
         this.ifEditInfo = false
         this.loadProjectDatas()
       })
@@ -318,6 +321,7 @@ export default {
       .then(response => {
         this.projects.attributes = response.attributes
         this.projects.dataItems = response.dataItems.map(o => o.attributes)
+        this.selectedProjects = []
       })
       .catch(({message}) => this.$message.error(message))
     }
