@@ -30,7 +30,7 @@
       </div>
       <div>
         <div class="name">名称：</div>
-        <div class="role"><input type="text" placeholder="请输入" v-model="resData.resource_name"></div>
+        <div class="role"><input type="text" placeholder="请输入" v-model="resData.temp_resource_name"></div>
       </div>
       <div>
         <div class="name">类型：</div>

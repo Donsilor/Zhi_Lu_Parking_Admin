@@ -20,22 +20,25 @@ export default {
   },
   computed: {
     pagesCount() {
-      let start = this.currentPage;
-      let end = this.currentMeshNumber;
+      let i = 1;
+      let start = 1;
+      let end = 10;
       let list = [];
-      if (start > end / 2) {
-        start = start - end / 2 + 1;
-      }
-      else {
-        start = 1;
-      }
-      if (start > end - 7) {
-        list.push("...");
-      }
-      for (let i = 0; start < this.totalPages && i < end - 1; i++) {
-        list.push(start++);
-      }
-      list.push(start < this.totalPages - 7 ? "..." : start);
+
+      start = this.currentPage > 5 ? this.currentPage : 5;
+      if (this.currentPage + 5 >= this.totalPages) start = this.totalPages - 5;
+
+      for (i = 1; i < 5; i++) list.unshift(start--);
+      if (start > 1) list.unshift("...");
+      list.unshift(1);
+
+      start = this.currentPage > 5 ? this.currentPage : 5;
+      if (this.currentPage + 5 >= this.totalPages) start = this.totalPages - 5;
+
+      for (i = 1; i < 5; i++) list.push(++start);
+      if (start < this.totalPages-1) list.push("...");
+      list.push(this.totalPages);
+
       return list;
     }
   },
@@ -45,12 +48,12 @@ export default {
       this.$props.previousPage(--this.currentPage);
     },
     __nextPage() {
-      if (this.currentPage >= this.$props.totalPages) return;
+      if (this.currentPage >= this.totalPages) return;
       this.$props.nextPage(++this.currentPage);
     },
     __skipPage(v) {
-      if (this.currentPage < 1) return;
-      if (this.currentPage > this.$props.totalPages) return;
+      if (v < 1) v = 1;
+      if (v >= this.totalPages) v = this.totalPages;
       this.$props.nextPage((this.currentPage = v));
     }
   },
