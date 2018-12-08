@@ -5,7 +5,7 @@
 .result .tab .operationlog-table tr th:nth-child(5){width:20%;text-align:center;}
 .result .tab .operationlog-table tr th:nth-child(6){width:20%;text-align:center;}
 
-.result .tab .operationlog-table tr td{border-bottom:1px solid #e1e6eb;border-right:1px solid #e1e6eb;height:45px;font-size:14px;color:#999;}
+.result .tab .operationlog-table tr td{border-bottom:1px solid #e1e6eb;border-right:1px solid #e1e6eb;height:45px;}
 .result .tab .operationlog-table tr td:first-child{text-align:center;}
 .result .tab .operationlog-table tr td:nth-child(2){text-align:center;color:#52d669;}
 .result .tab .operationlog-table tr td:nth-child(3){text-align:center;}
@@ -19,10 +19,6 @@ input::-moz-placeholder {color: #999;}
 input::-ms-input-placeholder {color: #999;}
 
 
-.depwd{width: 600px;position: absolute;top: calc(50% - 211px);left: calc(50% - 300px);z-index: 666;}
-.bot{width:100%;background-color: #fff;}
-.t-text{font-size: 14px;color: #fff;line-height: 60px;margin-left:25px;}
-.cet{width: 420px;margin: 0 auto;padding-top: 40px;}
 .cet span{font-size: 14px;color: #000;line-height: 16px;max-height: 48px;display: -webkit-box;-webkit-line-clamp: 3;-webkit-box-orient: vertical;overflow:hidden;}
 .cet span:nth-of-type(2){max-width: 75%;}
 .l{display:block;text-align: right;width: 20%;margin-right: 20px;}

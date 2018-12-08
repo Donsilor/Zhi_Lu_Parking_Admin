@@ -73,7 +73,7 @@
     <div class="main" v-show="ifEditDict">
       <div class="depwd" v-drag.cursor="'#editDict'">
         <div class="top-nav" id="editDict">
-          <p class="t-text fl">数据字典</p>
+          <p class="t-text fl">{{dictionaryData.id ? "修改数据字典" : '新增数据字典'}}</p>
           <p class="close fr" @click="ifEditDict = false">x</p>
         </div>
         <div class="bot">
@@ -82,7 +82,7 @@
               <!-- <p class="red"><i class="iconfont icon-jian-tianchong"></i>错误提示的文案</p> -->
               <p class="clf">
                 <span class="fl"><span class='red-text'>*</span>编号：</span>
-                <input class="fl" v-model="dictionaryData.temp_dic_code" type="text" placeholder="请输入编号，必填">
+                <input class="fl" :disabled="!!dictionaryData.id" v-model="dictionaryData.temp_dic_code" type="text" placeholder="请输入编号，必填">
               </p>
               <p class="clf">
                 <span class="fl"><span class='red-text'>*</span>名称：</span>
@@ -128,6 +128,7 @@ import { RegExpCheck } from '../../assets/js/common'
 import Pagination from "../Pagination";
 import moment from "moment";
   export default {
+    name:"dataDict", 
     data () {
       return {
         RequestParams:RequestParams,
@@ -166,7 +167,6 @@ import moment from "moment";
       Pagination
     },
     methods: {
-
       selectedAll(){
         if(this.selectedDictionarys.length){
           this.selectedDictionarys = [];
@@ -178,17 +178,18 @@ import moment from "moment";
         this.dictionaryData.id = null;
         if(data){
           this.dictionaryData = data;
+          this.dictionaryData.temp_dic_code = this.dictionaryData.dic_code
+          this.dictionaryData.temp_dic_name = this.dictionaryData.dic_name
+          this.dictionaryData.temp_dic_key = this.dictionaryData.dic_key
+          this.dictionaryData.temp_remark = this.dictionaryData.remark
+          this.dictionaryData.temp_depict = this.dictionaryData.depict
         }
+        else this.dictionaryData = {};
         this.ifEditDict = true;
-        this.dictionaryData.temp_dic_code = this.dictionaryData.dic_code
-        this.dictionaryData.temp_dic_name = this.dictionaryData.dic_name
-        this.dictionaryData.temp_dic_key = this.dictionaryData.dic_key
-        this.dictionaryData.temp_remark = this.dictionaryData.remark
-        this.dictionaryData.temp_depict = this.dictionaryData.depict
       },
 
       editDictionary(){
-        
+
         let adopt = null;
 
         if(String(this.dictionaryData.dic_code).trim() == "") adopt = "请填写参数编码";
@@ -204,10 +205,10 @@ import moment from "moment";
         this.dictionaryData.dic_key = this.dictionaryData.temp_dic_key
         this.dictionaryData.remark = this.dictionaryData.temp_remark
         this.dictionaryData.depict = this.dictionaryData.temp_depict
-
         this.$api.dictionary.editor(new RequestParams()
         .addAttributes(this.dictionaryData)
-        .addAttribute("project_id" , 0)
+        .addAttribute("project_id" , User.info.project_id)
+        .addAttribute("dic_type" , ["PARK","PARK","PARK","SYS"][User.info.user_type])
         )
         .then(response=>{
           this.$message.success(response.message)
@@ -244,7 +245,7 @@ import moment from "moment";
           .getlist(new RequestParams()
           .addAttributes(params)
           .addAttribute("key", this.searchParam && `AND dic_code like '%${this.searchParam}%' OR dic_name like '%${this.searchParam}%'`)
-          .addAttribute("project_id", null)
+          .addAttribute("project_id", User.project_id)
           .addAttribute("page_index", pageNum))
           .then(response => {
             this.dictionarys.attributes = response.attributes;

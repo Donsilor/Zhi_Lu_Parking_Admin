@@ -9,7 +9,7 @@
         <div class="cet">
           <div class="userimage"></div>
           <div class="username">
-            <span>admin</span>
+            <span>{{user.user_name}}</span>
             <span class='updata' id="userNameUpdata" @click="editUserName = true">修改</span>
           </div>
           <div class="user-inf">
@@ -57,15 +57,24 @@
 </template>
 
 <script>
+
+import { RequestParams, RequestDataItem ,User} from "../assets/js/entity";
 export default {
   data () {
     return {
       editUserName: false,
-      editPassword: false
+      editPassword: false,
+      user:User.info,
+      project:{}
     }
   },
   methods: {
-    closeUserInfo () {this.$emit('closeUserInfo')}
+    closeUserInfo () {this.$emit('closeUserInfo')},
+    async loadDatas(){
+      this.project = ((await this.$api.project.getlist(
+        new RequestParams().addAttribute("key", `and id = '${User.info.project_id}'`)
+      )).dataItems[0] || {}).attributes || {};
+    },
   }
 }
 </script>

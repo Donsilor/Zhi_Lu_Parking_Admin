@@ -31,7 +31,7 @@
           <button class="plechoose fl" @click="selectedAll">请选择 <img src="../../assets/images/icon_9.png" alt="">
           </button>
           <button class="batchdel fl" @click="delLog(null)">批量删除</button>
-          <button class="blu-button fl">导出TXT</button>
+          <button class="blu-button fl" @click="exportExcel()">导出Excel</button>
           <div>共搜索到 <span>{{logs.attributes.tatal || 0}}</span> 条数据</div>
         </div>
         <div class="fr">
@@ -90,7 +90,7 @@
         <div class="bot">
           <div class="cet">
             <div class="clf">
-              <p class="clf">
+              <p class="clf" v-show="false">
                 <span class="l fl">资源名称：</span>
                 <span class="fl" :title="logData.resource_name">{{logData.resource_name}}</span>
               </p>
@@ -111,9 +111,9 @@
               <span class="fl l">备注：</span>
               <p class="fl bz">{{logData.remark}}</p>
             </div>
-            <div class="button clf">
+            <!-- <div class="button clf">
               <a class="qr fr">确定</a>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
@@ -134,10 +134,11 @@
 </template>
 
 <script>
-import { RequestParams, RequestDataItem } from '../../assets/js/entity'
+import { RequestParams, RequestDataItem,ExcelSheets } from '../../assets/js/entity'
 import Pagination from '../Pagination'
-
+import moment from "moment"
 export default {
+  name:"handleLog", 
   data () {
     return {
       /**是否显示搜索输入框 */
@@ -182,6 +183,34 @@ export default {
     Pagination
   },
   methods: {
+    exportExcel(){
+      this.$confirm(`确定要导出数据到[Excel]吗?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+      .then(()=>{
+        let loading = this.$loading({
+          lock: true,
+          text: '正在导出...',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        });
+        this.$api.log
+        .getlist(new RequestParams()
+        .addAttribute("page_size", -1))
+        .then(({dataItems})=>{
+          let excelSheets = new ExcelSheets();
+          excelSheets.setSheetHeader("日志管理",Object.keys(ExcelSheets.dictionary.日志管理))
+          excelSheets.addRow("日志管理", ExcelSheets.dictionary.日志管理);
+          excelSheets.addRows("日志管理", dataItems.map(o=>o.attributes))
+          excelSheets.exportExcel("系统日志列表");
+        })
+        .catch(({message}) => this.$message.error(message))
+        .finally(()=>loading.close());
+      })
+      .catch(() => { this.$message.info('已取消导出') })
+    },
     selectedAll () {
       if (this.selectedLogs.length) {
         this.selectedLogs = []
@@ -227,9 +256,9 @@ export default {
       this.$api.log
       .getlist(new RequestParams()
       .addAttributes(params)
-      .addAttribute("key", this.searchParam && ` AND resource_name like '%${this.searchParam}%'`)
-      .addAttribute("begin_time", this.createTime[0])
-      .addAttribute("end_time", this.createTime[1])
+      .addAttribute("resource_name", this.searchParam)
+      .addAttribute("begin_time", this.createTime[0] && moment(this.createTime[0]).format("YYYY-MM-DD"))
+      .addAttribute("end_time", this.createTime[1] && moment(this.createTime[1]).format("YYYY-MM-DD"))
       .addAttribute("page_index",pageNum))
       .then(data => {
         this.logs.attributes = data.attributes

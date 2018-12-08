@@ -32,7 +32,6 @@
                 type="daterange"
                 align="right"
                 unlink-panels
-                value-format="yyyy-MM-DD HH:mm:ss"
                 range-separator="至"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期">
@@ -49,8 +48,8 @@
           <div>共搜索到 <span>{{carDelays.attributes.tatal || 0}}</span> 条数据</div>
         </div>
         <div class="fr">
-          <button class="search-button blu-button">搜索</button>
-          <button class="clear-button bluborder-button">清除</button>
+          <button class="search-button blu-button" @click="loadCarDelaysDatas()">搜索</button>
+          <button class="clear-button bluborder-button" @click="searchParams = {},searchTimes = []">清除</button>
           <button class="ss transf-button"  v-bind:class="{hide:!searchDivShow}" v-on:click="searchDivShow=!searchDivShow">
             <i><img src="../../assets/images/icon_t_arrow2.png" alt=""></i>
             <span>{{searchDivShow === true ? "收起搜索" : "展开搜索"}}</span>
@@ -157,7 +156,7 @@
               选择文件
               <input type="file" @change="selectImportExcelFile" />
             </div>
-            <a class="fr downloadtemp" href="javascript:">下载模板</a>
+            <a class="fr downloadtemp"  href="./static/template-excel/月卡续费导入模板.xls">下载模板</a>
             <p>{{importExcelFile.name}}支持扩展名：.xls .xlsx</p>
           </div>
           <div class="button clf">
@@ -177,6 +176,7 @@ import {array2Object} from "../../assets/js/common";
 import Pagination from "../Pagination";
 import moment from "moment";
   export default {
+    name:"monthCard",
     data () {
       return {
         searchDivShow: true,
@@ -339,9 +339,9 @@ import moment from "moment";
           .addAttributes(this.searchParams)
           .addAttributes(params)
           .addAttribute("key", key)
-          .addAttribute("begin_time", this.searchTimes[0])
-          .addAttribute("end_time", this.searchTimes[1])
-          .addAttribute("page_index", this.pageNum))
+          .addAttribute("begin_time", this.searchTimes[0] && moment(this.searchTimes[0]).format("YYYY-MM-DD"))
+          .addAttribute("end_time", this.searchTimes[1] && moment(this.searchTimes[1]).format("YYYY-MM-DD"))
+          .addAttribute("page_index", pageNum))
           .then(response => {
 
             this.carDelays.attributes = response.attributes;

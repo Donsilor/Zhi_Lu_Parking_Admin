@@ -11,7 +11,7 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/server_api': {
-          target: 'http://119.29.152.124:8800', // 119.29.152.124
+          target: 'http://ccc:8800', // 119.29.152.124
           //secure: false,      // 如果是https接口，需要配置这个参数
           changeOrigin: true,     // 如果接口跨域，需要进行这个参数配置
           pathRewrite: {
@@ -26,14 +26,6 @@ module.exports = {
             '^/server_file': './'
           }
       },
-      '/server_rtsp': {
-          target: 'rtsp://192.168.55.101:554', // 119.29.152.124
-          //secure: false,      // 如果是https接口，需要配置这个参数
-          changeOrigin: true,     // 如果接口跨域，需要进行这个参数配置
-          pathRewrite: {
-            '^/server_rtsp': './'
-          }
-      }
     },
 
     // Various Dev Server settings

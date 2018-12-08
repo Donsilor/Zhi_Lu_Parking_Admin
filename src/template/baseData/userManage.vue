@@ -15,7 +15,7 @@
       </div>
       <div class="clf bottom">
         <div class="fl">
-          <button class="plechoose fl" @click="selectedAll">全选 <img src="../../assets/images/icon_9.png" alt=""></button>
+          <button class="plechoose fl" @click="selectedAll()">全选 <img src="../../assets/images/icon_9.png" alt=""></button>
           <button class="batchdel fl" @click="delUser(null)">批量删除</button>
           <div>共搜索到 <span>{{users.attributes.tatal || 0}}</span> 条数据</div>
         </div>
@@ -50,18 +50,18 @@
           <tbody>
             <tr v-for="(user, index) in users.dataItems" v-bind:key="index">
               <td><input type="checkbox" :value="index" v-model="selectedUsers"></td>
-              <td><span><img v-bind:src="user.photo" alt=""></span></td>
+              <td><img  :src="'http://119.29.152.124:8840/file/viewFile?relativePath='+user.photo" :title="'http://119.29.152.124:8840/file/viewFile?relativePath='+user.photo"></td>
               <td><div :title="user.user_name">{{user.user_name}}</div></td>
               <td><div :title="user.full_name">{{user.full_name}}</div></td>
               <td><div :title="user.tel">{{user.tel}}</div></td>
               <td><div :title="user.create_time">{{user.create_time}}</div></td>
               <td><div :title="user.update_time">{{user.update_time}}</div></td>
-              <td><span v-bind:class="{normal:user.status}">正常</span></td>
+              <td><a class="button" href="javascript:" @click="userData = user,dialogUserStatus = true" v-bind:class="{normal:!user.status}">{{["正常","停用","注销"][user.status]}}</a></td>
               <td>
                 <a href="javascript:" class="edit" @click="showEditUser(index)">编辑</a>
                 <a href="javascript:" class="delete" v-on:click="delUser(index)">删除</a>
                 <a href="javascript:" @click="resetPassword(user.id, user.user_name)">重置密码</a>
-                <a href="javascript:" @click="userData = user,ifAssignRoles = true">角色</a>
+                <a href="javascript:" @click="loadRoleDatas(user.id), userData = user,ifAssignRoles = true">角色</a>
               </td>
             </tr>
           </tbody>
@@ -81,7 +81,7 @@
     <div class="main" v-bind:style="{display:addUserWindow?'block':'none'}">
       <div class="depwd" v-drag.cursor="'#UserInfo'">
         <div class="top-nav" id="UserInfo">
-          <p class="t-text fl">用户信息</p>
+          <p class="t-text fl">{{userData.id ? "修改用户" : "新增用户"}}</p>
           <p class="close fr" v-on:click="addUserWindow = false">x</p>
         </div>
         <div class="bot">
@@ -101,16 +101,16 @@
               <!-- <p class="red" v-if="addErrorDesc!=''" ><i class="iconfont icon-jian-tianchong"></i>{{addErrorDesc}}</p> -->
               <p class="clf">
                 <span class="fl"><span class='red-text'>*</span>用户名：</span>
-                <input class="fl user" v-model="userData.temp_user_name" name="user" type="text" placeholder="请输入编号，必填">
+                <input class="fl user" :disabled="!!userData.id" v-model="userData.temp_user_name" name="user" type="text" placeholder="请输入编号，必填">
               </p>
               <p class="clf">
                 <span class="fl"><span class='red-text'>*</span>密码：</span>
-                <input class="fl psw" name="psw" type="password" v-model="userData.password" placeholder="请输入6-8位数字密码，必填">
+                <input class="fl psw" :disabled="!!userData.id" name="psw" type="password" v-model="userData.password" placeholder="请输入6-8位数字密码，必填">
                 <span class="pswremind remind">请输入正确信息</span>
               </p>
               <p class="clf">
                 <span class="fl"><span class='red-text'>*</span>确认密码：</span>
-                <input class="fl ppsw" name="ppsw" type="password" v-model="userData.password2" placeholder="请输入6-8位数字密码，必填">
+                <input class="fl ppsw" :disabled="!!userData.id" name="ppsw" type="password" v-model="userData.password2" placeholder="请输入6-8位数字密码，必填">
                 <span class="ppswremind remind">请输入正确信息</span>
               </p>
               <p class="clf">
@@ -126,7 +126,7 @@
                 <span class="fl">头像：</span>
                 <el-upload
                   class="up fl"
-                  action="http://ceibs.54jj.cn/ZLParkingAdmin/server_file/file/fileUpload?folder=user"
+                  action="http://119.29.152.124:8800/file/fileUpload?folder=user"
                   :show-file-list="false"
                   :on-success="handleAvatarSuccess"
                   :before-upload="beforeAvatarUpload">
@@ -163,7 +163,11 @@
                 children: 'children',
                 label: 'role_name'
               }"
+              :ref="'tree'"
+              :node-key="'id'"
               @node-click="data=>selectedRoleData=data"
+              @check="data=>selectedRoleData=data"
+              :default-checked-keys="selectedRoles"
               show-checkbox>
             </el-tree>
             <div class="button clf">
@@ -174,16 +178,21 @@
         </div>
       </div>
     </div>
-    <!-- <div class="delete_prompt" v-bind:style="{display:delUserWindow?'block':'none'}">
-      <div class="depwd">
-        <div class="text">你是否确认删除选中的记录</div>
-        <div class="button clf">
-          <a class="qr fr" v-on:click="delUser">确定</a>
-          <a class="qx fr" v-on:click="delUserWindow = false">取消</a>
-        </div>
-      </div>
-    </div> -->
-    <!--弹窗-->
+    <el-dialog
+      title="确认修改用户状态"
+      :visible.sync="dialogUserStatus"
+      width="20%"
+      >
+      <el-radio-group v-model="userData.status">
+        <el-radio :label="0">正常</el-radio>
+        <el-radio :label="1">停用</el-radio>
+        <el-radio :label="2">注销</el-radio>
+      </el-radio-group>
+      <span slot="footer" class="dialog-footer">
+        <el-button :style="{padding: '0 0'}" @click="dialogUserStatus = false">取 消</el-button>
+        <el-button :style="{padding: '0 0'}" type="primary" @click="updateStatus()">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -191,10 +200,14 @@
 import {array2Descendants, array2Object,RegExpCheck} from "../../assets/js/common";
 import {  User ,RequestParams, RequestDataItem } from "../../assets/js/entity";
 import Pagination from "../Pagination";
+import {GET_FILE_URL} from "../../assets/js/constants";
 
 export default {
+  name:"userManage",
   data() {
     return {
+      GET_FILE_URL:GET_FILE_URL,
+      dialogUserStatus:false,
       ifAssignRoles:false,
       /**是否显示搜索输入框 */
       searchDivShow: true,
@@ -239,6 +252,7 @@ export default {
         status:null,//    	Y	Int	状态（0：正常1：停用）
         remark:null,//    	N	String	备注
       },
+      selectedRoles:[],
       roles:{
         attributes: {
           page_index: 1, //当前页码
@@ -250,7 +264,7 @@ export default {
         dataItems: []
       },
       depts: [],
-
+      selectedDepts: [],
       showUserInfo: false
     }
   },
@@ -261,8 +275,9 @@ export default {
   methods: {
     handleAvatarSuccess(res, file) {
       this.userData.photo = URL.createObjectURL(file.raw);
-      this.userData.relativepath = res.relativepath;
+      this.userData.relativepath = res.attributes.relativepath;
     },
+
     beforeAvatarUpload(file) {
       const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
       const isLt2M = file.size / 1024 / 1024 < 2;
@@ -275,6 +290,7 @@ export default {
       }
       return isJPG && isLt2M;
     },
+
     selectedAll(){
       if(this.selectedUsers.length){
         this.selectedUsers = [];
@@ -296,7 +312,11 @@ export default {
           this.$message.info("已取消添加");
         });
       }
-      this.userData = this.users.dataItems[id] || {}
+      this.userData = this.users.dataItems[id] || {};
+      if(this.userData.photo && !this.userData.photo.indexOf("http") >= 0){
+        this.userData.photo = GET_FILE_URL+this.userData.photo;
+      }
+      
       this.addUserWindow = true
       this.userData.temp_user_name = this.userData.user_name
       this.userData.temp_full_name = this.userData.full_name
@@ -318,25 +338,35 @@ export default {
           this.$message.info("已取消重置");
         });
     },
-    
+
+    updateStatus(){
+      this.$api.operator.updatestatus(new RequestParams()
+      .addAttribute("id", this.userData.id)
+      .addAttribute("status", this.userData.status))
+      .then(({message}) => this.$message.success(message))
+      .catch(({message}) => this.$message.error(message))
+      .finally(()=>this.dialogUserStatus = false);
+    },
+
     editUser(){
-      
+
       let adopt = null;
 
-      if (String(this.userData.dept_id).trim() == null) adopt = '请选择部门'
+      if (!adopt && String(this.userData.dept_id || "").trim() == null) adopt = '请选择部门'
       //      if (String(this.userData.user_name).trim() == '') adopt = '请填写用户名'
       //      if (String(this.userData.full_name).trim() == '') adopt = '请填写姓名'
       //      if (String(this.userData.tel).trim() == '') adopt = '请填写电话号码'
-      if (String(this.userData.relativepath).trim() == '') adopt = '请选择用户头像'
+      if (!adopt && String(this.userData.relativepath || "").trim() == '') adopt = '请选择用户头像'
       //      if (String(this.userData.password).trim() == '') adopt = '请填写密码'
 
-      if (!RegExpCheck.isUserName(String(this.userData.temp_user_name).trim())) adopt = '请填写正确的用户名'
-      if (!RegExpCheck.isPassword(String(this.userData.password).trim())) adopt = '请填写正确的密码'
-      if (!RegExpCheck.isFullName(String(this.userData.temp_full_name).trim())) adopt = '请填写正确的姓名'
-      if (!RegExpCheck.isTel(String(this.userData.temp_tel).trim())) adopt = '请填写正确的客户联系电话'
-
-      if (RegExpCheck.isPassword(String(this.userData.password).trim()) &&
-        this.userData.password2 !== this.userData.password) adopt = '请确认密码'
+      if (!adopt && !RegExpCheck.isFullName(String(this.userData.temp_full_name || "").trim())) adopt = '请填写正确的姓名'
+      if (!adopt && !RegExpCheck.isTel(String(this.userData.temp_tel || "").trim())) adopt = '请填写正确的客户联系电话'
+      if(!this.userData.id){
+        if (!adopt && !RegExpCheck.isUserName(String(this.userData.temp_user_name || "").trim())) adopt = '请填写正确的用户名'
+        if (!adopt && !RegExpCheck.isPassword(String(this.userData.password || "").trim())) adopt = '请填写正确的密码'
+        if (!adopt && RegExpCheck.isPassword(String(this.userData.password || "").trim()) &&
+          this.userData.password2 !== this.userData.password || "") adopt = '请确认密码'
+      }
 
       if (adopt) return this.$message.error(adopt)
 
@@ -346,9 +376,9 @@ export default {
 
       this.$api.operator.editor(new RequestParams()
       .addAttributes(this.userData)
-      .addAttribute("status", 0)
+      .addAttribute("status", this.userData.status || 0)
       .addAttribute("photo", this.userData.relativepath)
-      .addAttribute("user_type", User.info.user_type))
+      .addAttribute("user_type", this.userData.user_type || 0))
       .then(response=>{
         this.$message.success(response.message)
         this.addUserWindow = false;
@@ -358,18 +388,19 @@ export default {
     },
 
     selectedRole(){
-      this.$api.operator.assign(new RequestParams()
-        .addDataItemAttr(0, "id", "0")
-        .addDataItemAttr(0, "user_id", this.userData.id)
-        .addDataItemAttr(0, "role_id", this.selectedRoleData.id)
-      ).then(response=>{
+      this.$api.operator.assign(new RequestParams().addDataItems([...this.$refs.tree.getHalfCheckedKeys() || [], ...this.$refs.tree.getCheckedKeys() || []].map(o=>new RequestDataItem()
+        .addAttribute("id", "0")
+        .addAttribute("user_id", this.userData.id)
+        .addAttribute("role_id", o)
+      )))
+      .then(response=>{
         this.$message.success(response.message)
         this.ifAssignRoles = false;
       }).catch(({message}) => this.$message.error(message))
     },
 
     delUser(id){
-        
+
       let datas = id != null ? [this.users.dataItems[id]] : this.selectedUsers.map(o=>this.users.dataItems[o]);
       if(datas.length){
         this.$confirm(`确定要删除吗?`, '提示', {
@@ -390,17 +421,23 @@ export default {
       else this.$message.info("请选择要删除的用户");
     },
     /**加载项目列表数据 */
-    loadRoleDatas(pageNum = 1, params = {}) {
+    loadRoleDatas(userid) {
+      this.selectedRoles = [];
       this.$api.role
         .getlist(new RequestParams()
-        .addAttributes(params)
-        .addAttribute("page_index", pageNum)
-        .addAttribute("page_size", 1000000)
+        .addAttribute("user_id", userid)
+        .addAttribute("status", 0)
+        .addAttribute("page_size", -1)
         )
         .then(response => {
-          this.roles.attributes = response.attributes;
-          this.roles.tree = array2Descendants(response.dataItems.map((o,i) => (o.attributes.index = i,o.attributes)));
-          this.roles.dataItems = response.dataItems.map(o => o.attributes);
+          if(userid){
+            this.selectedRoles = response.dataItems.map(o => o.attributes.id);
+          }
+          else {
+            this.roles.attributes = response.attributes;
+            this.roles.tree = array2Descendants(response.dataItems.map((o,i) => (o.attributes.index = i,o.attributes)));
+            this.roles.dataItems = response.dataItems.map(o => o.attributes);
+          }
         })
         .catch(({message}) => this.$message.error(message));
     },
@@ -418,14 +455,14 @@ export default {
       })
       .catch(response => this.$message.error(response.message));
     },
-  
+
     /**加载用户列表数据 */
     loadDeptsDatas(pageNum = 1, params = {}) {
       this.$api.dept
         .getlist(new RequestParams()
         .addAttributes(params)
         .addAttribute("page_index", pageNum)
-        .addAttribute("page_size", 10000000))
+        .addAttribute("page_size", -1))
         .then(response => {
           this.depts = array2Object(response.dataItems.map(o => o.attributes));
         })

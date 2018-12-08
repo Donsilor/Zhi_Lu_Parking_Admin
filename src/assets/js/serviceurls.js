@@ -54,6 +54,13 @@ export default {
       param: {
         serviceId: "operator.assign"
       }
+    },
+    updatestatus:{
+      url: "/operator/updatestatus",
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: "operator.updatestatus"
+      }
     }
   },
   /**
@@ -89,6 +96,13 @@ export default {
       method: HTTP_REQUEST_METHOD.POST,
       param: {
         serviceId: "project.resetpwd"
+      }
+    },
+    updatestatus:{
+      url: "/project/updatestatus",
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: "project.updatestatus"
       }
     }
   },
@@ -279,6 +293,13 @@ export default {
         serviceId: "carauth.editor"
       }
     },
+    delete:{
+      url: "/carauth/delete",
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: "carauth.delete"
+      }
+    }
   },
   /**月卡续费管理 */
   delay: {
@@ -401,6 +422,13 @@ export default {
       method: HTTP_REQUEST_METHOD.POST,
       param: {
         serviceId: "oauth.resetpwd"
+      }
+    },
+    updatestatus:{
+      url: "/oauth/updatestatus",
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: "oauth.updatestatus"
       }
     }
   },
@@ -540,6 +568,50 @@ export default {
         serviceId: 'standard.delete'
       }
     },
+  },
+  monitor:{
+    incarquery:{
+      url: '/monitor/incarquery',
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: 'monitor.incarquery'
+      }
+    },
+    changeshifts:{
+      url: '/monitor/changeshifts',
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: 'monitor.changeshifts'
+      }
+    },
+    carrevise:{
+      url: '/monitor/carrevise',
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: 'monitor.carrevise'
+      }
+    },
+    tempoffixed:{
+      url: '/monitor/tempoffixed',
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: 'monitor.tempoffixed'
+      }
+    },
+    confirminpark:{
+      url: '/monitor/confirminpark',
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: 'monitor.confirminpark'
+      }
+    },
+    confirmoutpark:{
+      url: '/monitor/confirmoutpark',
+      method: HTTP_REQUEST_METHOD.POST,
+      param: {
+        serviceId: 'monitor.confirmoutpark'
+      }
+    }
   }
 
 }

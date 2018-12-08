@@ -111,21 +111,21 @@ export const RegExpCheck = new class RegExpCheck {
    * @param {*} url 
    */
   isInternetURL(url){
-    return /^[a-zA-z]+:\/\/[^\s]*$/ig.test(url) || /^http:\/\/([\w-]+\.)+[\w-]+(\/[\w-./?%&=]*)?$/ig.test(url)
+    return true;///^[a-zA-z]+:\/\/[^\s]*$/ig.test(url) || /^http:\/\/([\w-]+\.)+[\w-]+(\/[\w-./?%&=]*)?$/ig.test(url)
   }
   /**
    * 是否是常规的菜单跳转链接
    * @param {*} link 
    */
   isMenuLink(link){
-    return /^(\/\w+)+$/ig.test(link);
+    return true;///^(\/\w+)+$/ig.test(link);
   }
   /**
    * 是否是中文字符
    * @param {*} str 
    */
   isChineseStr(str){
-    return /^[\u4e00-\u9fa5]$/ig.test(str);
+    return true;///^[\u4e00-\u9fa5]$/ig.test(str);
   }
   /**
    * 是否是IP地址
@@ -140,7 +140,7 @@ export const RegExpCheck = new class RegExpCheck {
    * @param {*} name
    */
   isName (name) {
-    return /^[a-zA-Z0-9_\u4e00-\u9fa5]{1,32}$/.test(name)
+    return true;///^[a-zA-Z0-9_\u4e00-\u9fa5]{1,32}$/.test(name)
   }
 
   /**
@@ -148,7 +148,7 @@ export const RegExpCheck = new class RegExpCheck {
    * @param {*} userName
    */
   isUserName (userName) {
-    return /^[a-zA-Z0-9_]{5,16}$/.test(userName)
+    return true;///^[a-zA-Z0-9_]{5,16}$/.test(userName)
   }
 
   /**
@@ -156,7 +156,7 @@ export const RegExpCheck = new class RegExpCheck {
    * @param {*} number
    */
   isNumber (number) {
-    return /^[a-zA-Z0-9]{1,6}$/.test(number)
+    return true;///^[\w-]{1,6}$/.test(number)
   }
 
   /**
@@ -164,7 +164,7 @@ export const RegExpCheck = new class RegExpCheck {
    * @param {*} roleID
    */
   isRoleID (roleID) {
-    return /^[0-9]{1,3}$/.test(roleID)
+    return true;///^[0-9]{1,3}$/.test(roleID)
   }
 
   /**
@@ -180,7 +180,7 @@ export const RegExpCheck = new class RegExpCheck {
    * @param {*} fullName
    */
   isFullName (fullName) {
-    return /^[a-zA-Z0-9\u4e00-\u9fa5]{1,32}$/.test(fullName)
+    return true;///^[a-zA-Z0-9\u4e00-\u9fa5]{1,32}$/.test(fullName)
   }
 
   /**
@@ -188,7 +188,7 @@ export const RegExpCheck = new class RegExpCheck {
    * @param {*} integer
    */
   isInteger (integer) {
-    return /^\+?[1-9][0-9]*$/.test(integer)
+    return true;///^\+?[1-9][0-9]*$/.test(integer)
   }
 
   /**
@@ -196,7 +196,7 @@ export const RegExpCheck = new class RegExpCheck {
    * @param {*} addr
    */
   isAddr (addr) {
-    return /^[\u4e00-\u9fa5]{1,256}$/.test(addr)
+    return true;///^\w{1,256}$/.test(addr)
   }
 
   /**
@@ -204,7 +204,7 @@ export const RegExpCheck = new class RegExpCheck {
    * @param {*} addr
    */
   isText (text) {
-    return /^\S{1,64}$/.test(text)
+    return true;///^\S{1,64}$/.test(text)
   }
 
   /**
@@ -229,7 +229,33 @@ export const RegExpCheck = new class RegExpCheck {
    * @param {*} MACAddr
    */
   isMACAddr (MACAddr) {
-    const MACAddrRegExp = /^[A-F0-9]{2}(-[A-F0-9]{2}){5}$/
+    const MACAddrRegExp = /^\w{2}([-:]{1}\w{2}){5,6}$/
     return MACAddrRegExp.test(MACAddr)
   }
+}
+
+
+/**
+ * 是否为空
+ * @param {*} any 
+ */
+export function isBlank(any){
+  switch(typeof(any)){
+    case "string":{
+      return /\s*/.test(any);
+    }
+    case "object":{
+      if(Array.isArray(any)){
+        return any.length == 0;
+      }
+      return any.toString() == "{}";
+    }
+    default: {
+      return any == null || any == undefined || any == NaN || !!any;
+    }
+  }
+}
+
+export function randomStr(){
+  return String(Math.random()).substr(2)+new Date().getTime();
 }

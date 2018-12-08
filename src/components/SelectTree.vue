@@ -40,7 +40,7 @@ export default {
 
   props: {
     // 接收绑定参数
-    value: String,
+    value: String|Number,
     // 输入框宽度
     width: String,
     // 选项数据
@@ -60,7 +60,7 @@ export default {
       required: false,
       default: () => ({
         parent: 'pid',
-        value: 'index',
+        value: 'id',
         label: 'resource_name',
         children: 'children'
       })
@@ -68,31 +68,30 @@ export default {
   },
 //
 //  // 设置绑定参数
-//  model: {
-//    prop: 'value',
-//    event: 'selected'
-//  },
+ model: {
+   prop: 'value',
+   event: 'selected'
+ },
 
   computed: {
 
     // 若非树状结构，则转化为树状结构数据
     data () {
-      console.log(this.datas)
       return this.datas
     }
   },
 
-//  watch: {
-//    labelModel (val) {
-//      if (!val) {
-//        this.valueModel = ''
-//      }
-//      this.$refs.tree.filter(val)
-//    },
-//    value (val) {
-//      this.labelModel = this.queryTree(this.data, val)
-//    }
-//  },
+  watch: {
+    labelModel(val) {
+      if (!val) {
+        this.valueModel = '';
+      }
+      this.$refs.tree.filter(val);
+    },
+    value(val) {
+      this.labelModel = this.queryTree(this.data, val);
+    },
+  },
 
   data () {
     return {
@@ -111,6 +110,7 @@ export default {
     // 检测输入框原有值并显示对应 label
     if (this.value) {
       this.labelModel = this.queryTree(this.data, this.value)
+      console.log(this.value, this.labelModel)
     }
     // 获取输入框宽度同步至树状菜单宽度
     this.$nextTick(() => {
@@ -121,8 +121,8 @@ export default {
   methods: {
     // 单击节点
     onClickNode (data, node) {
-      this.labelModel = node.label
-      this.valueModel = node.value
+      this.labelModel = data[this.props.label];
+      this.valueModel = data[this.props.value];
       this.onCloseTree()
     },
 
@@ -158,7 +158,7 @@ export default {
         if (temp[this.props.children]) {
           stark = stark.concat(temp[this.props.children])
         }
-        if (temp[this.props.value] === id) {
+        if (temp[this.props.value] == id) {
           return temp[this.props.label]
         }
       }

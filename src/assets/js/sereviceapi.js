@@ -3,12 +3,12 @@
 /**常量 */
 import { HOST, HTTP_REQUEST_METHOD, CLIENT_SIDE_TIMESTAMP } from "./constants";
 import APIS from "./serviceurls";
-import axion from "axios";
-import {queryParams} from "./common";
-import { ResponseBody, RequestParams , User} from "./entity";
-// import { Loading } from 'element-ui';
+import axios from "axios";
+import { queryParams } from "./common";
+import { ResponseBody, RequestParams, User } from "./entity";
+import { MessageBox,Loading } from 'element-ui';
 
-const axion_instance = axion.create({
+const axios_instance = axios.create({
   // `baseURL` 将自动加在 `url` 前面，除非 `url` 是一个绝对 URL。
   // 它可以通过设置一个 `baseURL` 便于为 axios 实例的方法传递相对 URL
   baseURL: HOST,
@@ -133,11 +133,11 @@ const axion_instance = axion.create({
   // cancelToken: new CancelToken(function (cancel) {
   // })
 });
-const axion_instance_method = {
-  [HTTP_REQUEST_METHOD.GET]: axion_instance.get,
-  [HTTP_REQUEST_METHOD.GETURL]: axion_instance.get,
-  [HTTP_REQUEST_METHOD.POST]: axion_instance.post,
-  [HTTP_REQUEST_METHOD.POSTURL]: axion_instance.post,
+const axios_instance_method = {
+  [HTTP_REQUEST_METHOD.GET]: axios_instance.get,
+  [HTTP_REQUEST_METHOD.GETURL]: axios_instance.get,
+  [HTTP_REQUEST_METHOD.POST]: axios_instance.post,
+  [HTTP_REQUEST_METHOD.POSTURL]: axios_instance.post,
 };
 /**后端接口 */
 export default (function createApis(apis) {
@@ -152,24 +152,54 @@ export default (function createApis(apis) {
    * @param 接口入参
    */
   else apis = function (params = new RequestParams()) {
-    /////////////////////////////////////////////////////
-    /**为了运行时植入，只能这样了 */
-    ///////////////////////////////////////////////////////
     return new Promise(function (resolve, reject) {
-      // let loadingInstance = Loading.service();
-      let { url, method, param = {}, config = {} } = $.extend(true, {}, api);
+
+      let loadingInstance = Loading.service({ 
+        fullscreen: true,
+        lock:true,
+        background:'rgba(0, 0, 0, 0.2)'
+      });
+      
+      let token = JSON.parse(localStorage.getItem("token")) || false;
+      if (!(["login"].some(o=>api.url.indexOf(o) >= 0))) {
+        let toKetMessage = !token ? "请先登陆!" : new Date().getTime() > token.expires_in - (1000 * 10 * 60) ? "登陆已过期，请重新登陆!" : null;
+        if (toKetMessage) return MessageBox.alert(toKetMessage, "警告", {
+          callback: e => {
+            loadingInstance.close();
+            User.empty();
+            location.href = "/"
+          }
+        })
+      }
+
+      let { url, method, param = {}, config = {} } = $.extend(true, {
+        config: { 
+          headers: { 
+            Authorization: token ? token.token_type + " " + token.access_token : "" 
+          } 
+        }
+      }, api);
+
       if (method == HTTP_REQUEST_METHOD.GETURL || method == HTTP_REQUEST_METHOD.POSTURL) {
         url = queryParams(url, params);
       }
-      const axion_method = axion_instance_method[method];
-      if (axion_method) {
-        axion_method(url, new RequestParams($.extend(params, param)).getJsonParams(), config).then(response => {
-          // loadingInstance.close();
+      const axios_method = axios_instance_method[method];
+      if (axios_method) {
+        axios_method(url, new RequestParams($.extend(params, param)).getJsonParams(), config).then(response => {
+          loadingInstance.close();
           if (response.data.resultCode == 0) {
             resolve(response.data);
           }
+          else if(response.data.resultCode == 401){
+            return MessageBox.alert("登陆已过期，请重新登陆!", "警告", {
+              callback: e => {
+                User.empty();
+                location.href = "/"
+              }
+            })
+          }
           else {
-            reject(response.data);
+            reject(new ResponseBody(response.data.message || `服务器出错辣!`));
           }
         }).catch(error => {
           reject(new ResponseBody({
@@ -179,10 +209,10 @@ export default (function createApis(apis) {
           }));
         });
       }
-      else reject(new ResponseBody({
-        message: `无效请求方法-method[${method}]!`,
-        resultCode: 1
-      }));
+      else {
+        loadingInstance.close();
+        reject(new ResponseBody(`无效请求方法-method[${method}]!`))
+      };
     });
   };
 

@@ -24,31 +24,23 @@
 
 .box .content .right{float:left;width:calc(99% - 15.625rem);height:85vh;background:#fff;padding-top:1.875rem;}
 .box .content .right > div{overflow:hidden;margin-bottom:1.5625rem;}
-.box .content .right > div .name{float:left;width:20%;text-align:right;font-size:1rem;color:#333;line-height:1.875rem;}
+.box .content .right > div .name{float:left;width:20%;text-align:right;color:#333;line-height:1.875rem;}
 .box .content .right > div .role{float:left;width:21.875rem;height:1.875rem;margin-left:1rem;border:1px solid #333;border-radius:.3125rem;}
 .box .content .right > div .role input[type=text]{display:block;width:100%;height:100%;background:none;font-size:0.875rem;padding-left:5%;}
-.box .content .right > div:first-child .role{background:url(../images/icon_12.png)no-repeat 95% center;}
+/*.box .content .right > div:first-child .role{background:url(../images/icon_12.png)no-repeat 95% center;}*/
 .box .content .right > div .role select{-moz-appearance:none;-webkit-appearance:none;appearance:none;width:100%;height:100%;background:none;padding-left:5%;color:#000;}
 
 
 
 
 
-.box .content .right > div:nth-child(4) .role{border:0;line-height:1.875rem;}
-.box .content .right > div:nth-child(4) .role input[type=radio]{width:1rem;height:1rem;border:1px solid #333;border-radius:50%;
-    -webkit-appearance:none; -moz-appearance: none; appearance: none;vertical-align:middle;margin-right:.625rem;}
-.box .content .right > div:nth-child(4) .role input[type=radio]:checked{border:none;background:url(../images/icon_13.png)no-repeat center;width:1rem;height:1rem;border-radius:50%;overflow:hidden;}
-.box .content .right > div:nth-child(4) .role label{font-size:0.875rem;color:#333;margin-right:80px;}
-.box .content .right > div:nth-child(5) .role{border:0;}
-.box .content .right > div:nth-child(5) .role .bottom_line{width:21.875rem;height:2px;background:#132336;margin-top:1rem;position:relative;}
-.box .content .right > div:nth-child(5) .role .left_line{position:absolute;left:0;top:-4px;background:#333;width:1px;height:.625rem;}
-.box .content .right > div:nth-child(5) .role .right_line{position:absolute;right:0;top:-4px;background:#132336;width:1px;height:.625rem;}
-.box .content .right > div:nth-child(5) .role .top_line{position:absolute;top:0;left:0;width:20%;height:2px;background:#333;}
-.box .content .right > div:nth-child(5) .role .top_line i{position:absolute;width:.75rem;height:.75rem;background:#333;border-radius:50%;top:-.3125rem;right:0;cursor:pointer;}
+.box .content .right > div .role.noBorder{border:0;line-height:1.875rem;height: auto;}
 
+.box .content .right > div .role input[type=radio]{width:1rem;height:1rem;border:1px solid #333;border-radius:50%;-webkit-appearance:none; -moz-appearance: none; appearance: none;vertical-align:text-top;margin-right:5px;}
+.box .content .right > div .role input[type=radio]:checked{border:none;background:url(../images/icon_13.png)no-repeat center;width:1rem;height:1rem;border-radius:50%;overflow:hidden;}
+.box .content .right > div .role label{margin-right:80px;cursor: pointer;}
 
-.box .content .right > div:nth-child(6) .role{width:auto;height:auto;border:0;}
-.box .content .right > div:nth-child(6) .role textarea{resize:none;width:21.875rem;height:6.25rem;border:1px solid #333;border-radius:.3125rem;background:none;padding:.625rem 1rem;font-size:0.875rem;color:#333;}
+.box .content .right > div .role textarea{resize:none;width:21.875rem;height:6.25rem;border:1px solid #333;border-radius:.3125rem;background:none;padding:.625rem 1rem;color:#333;}
 .box .content .right > .btn{padding-left:21.2%;}
 .box .content .right > .btn a{float:left;display:block;font-size:0.875rem;color:#fff;width:5.625rem;height:1.875rem;border-radius:.3125rem;margin-right:40px;text-align:center;}
 .box .content .right > .btn a:nth-child(1){background:#1c7dfa;color:#fff;line-height:1.875rem;}
@@ -84,7 +76,7 @@ select::-ms-input-placeholder{ /*Internet Explorer*/  color: #999;}
 
 
 
-.depwd{height: 620px;width: 430px;position: absolute;top: calc(50% - 310px);left: calc(50% - 215px);}
+.depwd{height: 620px;width: 430px;top: calc(50% - 310px);left: calc(50% - 215px);}
 .bot{width:100%;height: 560px;background-color: #fff;}
 .t-text{font-size: 14px;color: #fff;line-height: 60px;margin-left:25px;}
 .cet{width:300px;margin: 0 auto;padding-top: 15px;}

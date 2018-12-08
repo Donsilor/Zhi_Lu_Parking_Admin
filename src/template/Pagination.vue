@@ -4,8 +4,8 @@
       <a href="javascript:" v-on:click="n!='...'?__skipPage(n):''" v-for="(n, i) in pagesCount"  v-bind:key="i" v-bind:class="{active:n==currentPage}" >{{n}}</a>
       <a href="javascript:" v-on:click="__nextPage" ><img src="../assets/images/icon_r_arrow.png" alt=""></a>
       <span>10条/页</span>
-      <span>跳至<input type="text" v-model="skipPageNumber">页</span>
-      <button class="go" v-on:click="__skipPage(skipPageNumber)" >Go</button>
+      <span>跳至<input type="number" v-model="skipPageNumber">页</span>
+      <button class="go" v-on:click="__skipPage(Number(skipPageNumber))" >Go</button>
     </div>
 </template>
 <script>
@@ -15,7 +15,7 @@ export default {
       /**当前条目数 */
       currentMeshNumber: 10,
       currentPage: this.$props.pageIndex,
-      skipPageNumber: 10
+      skipPageNumber: null
     };
   },
   computed: {
@@ -24,20 +24,23 @@ export default {
       let start = 1;
       let end = 10;
       let list = [];
+      let count = 5
 
       start = this.currentPage > 5 ? this.currentPage : 5;
       if (this.currentPage + 5 >= this.totalPages) start = this.totalPages - 5;
+      if(this.totalPages <= 10) count = start = this.totalPages;
 
-      for (i = 1; i < 5; i++) list.unshift(start--);
+      for (i = 1; i < count; i++) list.unshift(start--);
       if (start > 1) list.unshift("...");
       list.unshift(1);
 
       start = this.currentPage > 5 ? this.currentPage : 5;
       if (this.currentPage + 5 >= this.totalPages) start = this.totalPages - 5;
-
-      for (i = 1; i < 5; i++) list.push(++start);
-      if (start < this.totalPages-1) list.push("...");
-      list.push(this.totalPages);
+      if(this.totalPages > 10){
+        for (i = 1; i < count; i++) list.push(++start);
+        if (start < this.totalPages-1) list.push("...");
+        list.push(this.totalPages);
+      };
 
       return list;
     }

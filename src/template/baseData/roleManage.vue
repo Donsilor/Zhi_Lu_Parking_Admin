@@ -19,14 +19,15 @@
       </div>
     </div>
     <div class="right clf fl">
-      <div>
+      <!-- <div>
         <div class="name">父级：</div>
         <div class="role">
-          <select  v-model="selectedParentIndex">
-            <option  v-for="(role, index) in roles.dataItems" v-bind:key="index" :value="index">{{role.role_name}}</option>
+          <select  v-model="selectedParentIndex" v-bind:disabled="!!roleData.id">
+            <option :value="0">请选择</option>
+            <option  v-for="(role, index) in roles.dataItems.filter(o=>roleData.id != o.id && !childrens(roleData.id ? roleData.children : []).some(oo=>oo.id==o.id))" v-bind:key="index" :value="role.id">{{role.role_name}}</option>
           </select>
         </div>
-      </div>
+      </div> -->
       <div>
         <div class="name">角色标识：</div>
         <div class="role"><input type="text" placeholder="请输入" v-model="roleData.role_abb"></div>
@@ -37,20 +38,20 @@
       </div>
       <div>
         <div class="name">状态：</div>
-        <div class="role">
+        <div class="role noBorder">
           <label for="0"><input type="radio" id="0" value="0" v-model="roleData.status" name="radio">正常</label>
           <label for="1"><input type="radio" id="1" value="1" v-model="roleData.status" name="radio">停用</label>
         </div>
       </div>
       <div>
         <div class="name">排序：</div>
-        <div class="role">
+        <div class="role noBorder">
           <el-slider v-model="roleData.sorting" :min="1"></el-slider>
         </div>
       </div>
       <div>
         <div class="name">备注：</div>
-        <div class="role">
+        <div class="role noBorder">
           <textarea name="" id="" cols="30" rows="10" placeholder="请输入备注" v-model="roleData.remark"></textarea>
         </div>
       </div>
@@ -58,7 +59,7 @@
       <div class="clf btn">
         <a href="javascript:" v-if="!roleData.id" @click="editRole()">新增</a>
         <a href="javascript:" v-else @click="editRole()">修改</a>
-        <a href="javascript:" v-show="roleData.id" @click="ifAllotPopup = true">配置资源</a>
+        <a href="javascript:" v-show="roleData.id" @click="loadResDatas(roleData.id), ifAllotPopup = true">配置资源</a>
         <a href="javascript:" v-show="roleData.id" @click="delRole(roleData.id, roleData.role_name)">删除</a>
       </div>
 
@@ -77,6 +78,7 @@
                 children: 'children',
                 label: 'resource_name'
               }"
+              :default-checked-keys="selectedRess"
               :node-key="'id'"
               :ref="'tree'"
               :show-checkbox="true">
@@ -98,11 +100,12 @@ import Pagination from '../Pagination'
 import moment from 'moment'
 
 export default {
+  name:"roleManage",
   data () {
     return {
       ifAllotPopup: false,
       addRole: false,
-      selectedParentIndex: -1,
+      selectedParentIndex: 0,
       roleData: {
         id: null,//        	Y	String	ID
         pid: null,//       	Y	String	父级角色
@@ -142,23 +145,28 @@ export default {
   },
   methods: {
 
-    assign(){
-      this.selectedRess = this.$refs.tree.getCheckedKeys();
-      if(this.selectedRess.length){
-        this.$api.role
-        .assign(new RequestParams()
-        .addDataItems(this.selectedRess.map(o=>new RequestDataItem()
-        .addAttribute("id", Math.random().toString().replace(/[.]/ig, ""))
-        .addAttribute("role_id", this.roleData.id)
-        .addAttribute("resource_id", o)
-        )))
-        .then(response=>{
-          this.$message.success(response.message)
-          this.ifAllotPopup = false;
-        })
-        .catch(({message}) => this.$message.error(message))
+    childrens(objs, list = []){
+      for(let o of objs){
+        if(o.children.length){
+          list = list.concat(this.childrens(o.children, list));
+        }
+        list.push(o)
       }
-      else this.$message.error("请选择要分配的资源")
+      return list;
+    },
+    assign(){
+      this.$api.role
+      .assign(new RequestParams()
+      .addDataItems([...this.$refs.tree.getHalfCheckedKeys() || [], ...this.$refs.tree.getCheckedKeys() || []].map(o=>new RequestDataItem()
+      .addAttribute("id", Math.random().toString().substr(2))
+      .addAttribute("role_id", this.roleData.id)
+      .addAttribute("resource_id", o)
+      )))
+      .then(response=>{
+        this.$message.success(response.message)
+        this.ifAllotPopup = false;
+      })
+      .catch(({message}) => this.$message.error(message))
     },
 
     editRole () {
@@ -173,20 +181,12 @@ export default {
 
       if (adopt) return this.$message.error(adopt)
 
-      let data = this.roles.dataItems[this.selectedParentIndex];
-      if(data){
-        if(isChildrensId(this.roleData, data.id)){
-          return this.$message.error("不能选择自己/下级元素")
-        }
-      }
-
       this.roleData.role_name = this.roleData.temp_role_name
 
       this.$api.role
       .editor(new RequestParams()
       .addAttributes(this.roleData)
-      .addAttribute("project_id", 0)
-      .addAttribute("pid", data ? data.id : 0))
+      .addAttribute("pid", this.selectedParentIndex || 0))
       .then(response=>{
         this.$message.success(response.message)
         this.loadRoleDatas();
@@ -204,6 +204,7 @@ export default {
       .then(() => this.$api.role.delete(new RequestParams().addAttribute("id", id)))
       .then(response=>{
         this.$message.success("删除成功");
+        this.roleData = {};
         this.loadRoleDatas();
       })
       .catch(({message}) => this.$message.error(message))
@@ -216,8 +217,9 @@ export default {
       this.$api.role
         .getlist(new RequestParams()
         .addAttributes(params)
+        .addAttribute("user_id", null)
         .addAttribute("page_index", pageNum)
-        .addAttribute("page_size", 1000000)
+        .addAttribute("page_size", -1)
         )
         .then(response => {
           this.roles.attributes = response.attributes;
@@ -228,17 +230,22 @@ export default {
     },
 
     /**加载项目列表数据 */
-    loadResDatas(pageNum = 1, params = {}) {
+    loadResDatas(role_id) {
+      this.selectedRess = [];
       this.$api.menu
         .getlist(new RequestParams()
-        .addAttributes(params)
-        .addAttribute("page_index", pageNum)
-        .addAttribute("page_size", 1000000)
+        .addAttribute("user_id", null)
+        .addAttribute("role_id", role_id)
+        .addAttribute("page_size", -1)
         )
         .then(response => {
-          this.ress.attributes = response.attributes;
-          this.ress.tree = array2Descendants(response.dataItems.map((o,i) => (o.attributes.index = i,o.attributes)));
-          this.selectedRess = [];
+          if(role_id){
+            this.selectedRess = response.dataItems.filter(o=>o.attributes.pid!=0).map(o=>o.attributes.id);
+          }
+          else {
+            this.ress.attributes = response.attributes;
+            this.ress.tree = array2Descendants(response.dataItems.map((o,i) => (o.attributes.index = i,o.attributes)).filter(o=>+o.isshow));
+          }
         })
         .catch(({message}) => this.$message.error(message));
     },
@@ -246,28 +253,22 @@ export default {
     handleNodeClick (data) {
       this.roleData = data
       this.roleData.temp_role_name = this.roleData.role_name
-      this.roles.dataItems.forEach((o, i) => {
-        if (o.id == data.pid) {
-          this.selectedParentIndex = i
-        }
-      });
+      this.selectedParentIndex = data.pid;
+      this.loadRoleDatas();
     },
 
     renderRoleNodeContent (h, {node, data, store}) {
       return (
         <span class="custom-tree-node">
+          {this.addRole}
           <span>{node.label}</span>
           <span class="handleBtns">
-            <a href="javascript:" onclick={
-              function(){
-                console.log(123);
-              }.bind(this)
-            }><img src={require('../../assets/images/icon_10.png')} alt=""/></a>
-            <a href="javascript:"><img src={require('../../assets/images/icon_11.png')} alt=""/></a>
+            <a href="javascript:" onClick={this.delRole.bind(this, data.id)} ><img src={require('../../assets/images/icon_11.png')} alt=""/></a>
           </span>
         </span>
       )
     }
+    
   },
   mounted(){
     this.loadRoleDatas();

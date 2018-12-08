@@ -53,8 +53,8 @@
             <td><div :title="authorize.addr">{{authorize.addr}}</div></td>
             <td><div :title="authorize.create_time">{{authorize.create_time}}</div></td>
             <td><div :title="authorize.update_time">{{authorize.update_time}}</div></td>
-            <td><div :title="authorize.tel">{{authorize.tel}}</div></td>
-            <td><span v-bind:class="{normal:authorize.status}">正常</span></td>
+            <td><div :title="authorize.user_name">{{authorize.user_name}}</div></td>
+            <td><a href="javascript:" @click="authorizeData = authorize,dialogAuthorizeStatus = true" class="buttion" v-bind:class="{normal:!authorize.status}">{{["正常","冻结","停止"][authorize.status]}}</a></td>
             <td>
               <a href="javascript:" class="edit"  @click="showEditAuthorize(index)">编辑</a>
               <a href="javascript:" class="delete"  @click="delAuthorize(index)">删除</a>
@@ -86,8 +86,7 @@
               <!-- <p class="red"><i class="iconfont icon-jian-tianchong"></i>错误提示的文案</p> -->
               <p class="clf">
                 <span class="fl"><span class='red-text'>*</span>授权名称：</span>
-                <input v-model="authorizeData.temp_oauth_name" class="fl user" name="user" type="text"
-                       placeholder="请输入编号，必填">
+                <input v-model="authorizeData.temp_oauth_name" :disabled="!!authorizeData.id" class="fl user" name="user" type="text" placeholder="请输入编号，必填">
               </p>
               <p class="clf">
                 <span class="fl"><span class='red-text'>*</span>授权KEY：</span>
@@ -107,7 +106,6 @@
                   type="daterange"
                   align="right"
                   unlink-panels
-                  value-format="yyyy-MM-DD HH:mm:ss"
                   range-separator="至"
                   start-placeholder="授权起始日期"
                   end-placeholder="授权结束日期"
@@ -140,25 +138,21 @@
         </div>
       </div>
     </div>
-    <!-- <div class="delete_prompt" v-if="ifDel">
-      <div class="depwd">
-        <div class="text">你是否确认删除选中的记录</div>
-        <div class="button clf">
-          <a href="javascript:" class="qr fr">确定</a>
-          <a href="javascript:" class="qx fr" @click="ifDel = false">取消</a>
-        </div>
-      </div>
-    </div>
-    <div class="resetPW" v-if="resetPW">
-      <div class="depwd">
-        <div class="text">密码已重新设置为888888</div>
-        <div class="button clf">
-          <a class="qr fr">确定</a>
-          <a class="qx fr" @click="resetPW = false">取消</a>
-        </div>
-      </div>
-    </div> -->
-    <!--弹窗-->
+    <el-dialog
+      title="确认修改授权状态"
+      :visible.sync="dialogAuthorizeStatus"
+      width="20%"
+      >
+      <el-radio-group v-model="authorizeData.status">
+        <el-radio :label="0">正常</el-radio>
+        <el-radio :label="1">冻结</el-radio>
+        <el-radio :label="2">停止</el-radio>
+      </el-radio-group>
+      <span slot="footer" class="dialog-footer">
+        <el-button :style="{padding: '0 0'}" @click="dialogAuthorizeStatus = false">取 消</el-button>
+        <el-button :style="{padding: '0 0'}" type="primary" @click="updateStatus()">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -169,8 +163,10 @@ import {RegExpCheck} from "../../assets/js/common";
 import Pagination from "../Pagination";
 import moment from "moment";
   export default {
+    name:"authorizeManage",
     data () {
       return {
+        dialogAuthorizeStatus:false,
         searchDivShow: true,
         ifAuthorize: false,
         ifDel: false,
@@ -211,6 +207,15 @@ import moment from "moment";
     },
     methods: {
 
+      updateStatus(){
+        this.$api.oauth.updatestatus(new RequestParams()
+        .addAttribute("id", this.authorizeData.id)
+        .addAttribute("status", this.authorizeData.status))
+        .then(({message}) => this.$message.success(message))
+        .catch(({message}) => this.$message.error(message))
+        .finally(()=>this.dialogAuthorizeStatus = false);
+      },
+
       selectedAll(){
         if(this.selectedAthorizes.length){
           this.selectedAthorizes = [];
@@ -227,64 +232,64 @@ import moment from "moment";
         this.authorizeData.temp_tel = this.authorizeData.tel
         this.authorizeData.temp_addr = this.authorizeData.addr
 
-        this.$api.standard
-          .getlist(
-            new RequestParams()
-              .addAttributes(this.searchStandard)
-              .addAttribute("key", "")
-              .addAttribute("page_size", 1000000)
-          )
-          .then(response => {
-            this.standards.attributes = response.attributes;
-            this.standards.dataItems = response.dataItems.map(o => o.attributes);
-            this.standards.tree = [];
-            this.chargeStandardOptions = [];
-            new DataDictionary(this.$api).ins().then(datas => {
-              this.searchStandards = datas;
-              if(!datas.standard_type){
-                this.ifConfig = false;
-                return this.$message.error("请先前往配置收费标准数据字典");
-              }
-              let tempTree = {};
-              for(let item of this.standards.dataItems){
-                item.iid = item.id;
-                item.depict = JSON.parse(item.standard_content);
-                item.remark = datas.standard_type[item.standard_type].remark;
-                item.base = {};
-                if(!tempTree[item.car_type]){
-                  tempTree[item.car_type] = {
-                    remark:datas.car_type[item.car_type].remark,
-                    children:[]
-                  };
-                  this.standards.tree.push(tempTree[item.car_type]);
-                }
-                tempTree[item.car_type].children.push(item);
-              }
+        // this.$api.standard
+        //   .getlist(
+        //     new RequestParams()
+        //       .addAttributes(this.searchStandard)
+        //       .addAttribute("key", "")
+        //       .addAttribute("page_size", 1000000)
+        //   )
+        //   .then(response => {
+        //     this.standards.attributes = response.attributes;
+        //     this.standards.dataItems = response.dataItems.map(o => o.attributes);
+        //     this.standards.tree = [];
+        //     this.chargeStandardOptions = [];
+        //     new DataDictionary(this.$api).ins().then(datas => {
+        //       this.searchStandards = datas;
+        //       if(!datas.standard_type){
+        //         this.ifConfig = false;
+        //         return this.$message.error("请先前往配置收费标准数据字典");
+        //       }
+        //       let tempTree = {};
+        //       for(let item of this.standards.dataItems){
+        //         item.iid = item.id;
+        //         item.depict = JSON.parse(item.standard_content);
+        //         item.remark = datas.standard_type[item.standard_type].remark;
+        //         item.base = {};
+        //         if(!tempTree[item.car_type]){
+        //           tempTree[item.car_type] = {
+        //             remark:datas.car_type[item.car_type].remark,
+        //             children:[]
+        //           };
+        //           this.standards.tree.push(tempTree[item.car_type]);
+        //         }
+        //         tempTree[item.car_type].children.push(item);
+        //       }
 
-              for(let name in datas.car_type){
-                datas.car_type[name].children = datas.car_type[name].depict.split(",").map(o=>{
-                  if(typeof(datas.standard_type[o].depict) == "string"){
-                    datas.standard_type[o].depict = JSON.parse(datas.standard_type[o].depict);
-                    datas.standard_type[o].base = {};
-                  }
-                  return datas.standard_type[o]
-                })
-                datas.car_type[name].getChildrenKey = function(code){
-                  return this.children.filter(o=>o.dic_code==code)[0];
-                }
-                this.chargeStandardOptions.push(datas.car_type[name])
-              }
-              this.chargeStandardOptions = this.chargeStandardOptions;
-            })
-          })
-          .catch(response => this.$message.error(response.message));
+        //       for(let name in datas.car_type){
+        //         datas.car_type[name].children = datas.car_type[name].depict.split(",").map(o=>{
+        //           if(typeof(datas.standard_type[o].depict) == "string"){
+        //             datas.standard_type[o].depict = JSON.parse(datas.standard_type[o].depict);
+        //             datas.standard_type[o].base = {};
+        //           }
+        //           return datas.standard_type[o]
+        //         })
+        //         datas.car_type[name].getChildrenKey = function(code){
+        //           return this.children.filter(o=>o.dic_code==code)[0];
+        //         }
+        //         this.chargeStandardOptions.push(datas.car_type[name])
+        //       }
+        //       this.chargeStandardOptions = this.chargeStandardOptions;
+        //     })
+        //   })
+        //   .catch(response => this.$message.error(response.message));
       
       },
       
       editAuthorize(){
 
-        this.authorizeData.begin_time = this.authorizeTimes[0];
-        this.authorizeData.end_time = this.authorizeTimes[1];
+        this.authorizeData.begin_time = this.authorizeTimes[0]
+        this.authorizeData.end_time = this.authorizeTimes[1]
 
         let adopt = null;
 
@@ -305,6 +310,8 @@ import moment from "moment";
         this.authorizeData.client_name = this.authorizeData.temp_client_name
         this.authorizeData.tel = this.authorizeData.temp_tel
         this.authorizeData.addr = this.authorizeData.temp_addr
+        this.authorizeData.begin_time = this.authorizeTimes[0] && moment(this.authorizeTimes[0]).format("YYYY-MM-DD");
+        this.authorizeData.end_time = this.authorizeTimes[1] && moment(this.authorizeTimes[1]).format("YYYY-MM-DD");
 
         this.$api.oauth.editor(new RequestParams()
         .addAttributes(this.authorizeData)

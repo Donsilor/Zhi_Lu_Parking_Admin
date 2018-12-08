@@ -111,6 +111,7 @@
 
 <script>
 export default {
+  name:"home",
   data () {
     return {}
   },
@@ -480,7 +481,6 @@ export default {
   },
   mounted () {
     this.initEcharts()
-    console.log(this.$echarts)
   }
 }
 </script>

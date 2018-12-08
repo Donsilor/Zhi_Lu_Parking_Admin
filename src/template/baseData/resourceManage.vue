@@ -19,14 +19,16 @@
       <div>
         <div class="name">父级：</div>
         <div class="role">
-          <select v-model="selectedParentIndex">
-            <option  v-for="(res, index) in ress.dataItems" v-bind:key="index" :value="index">{{res.resource_name}}</option>
-          </select>
+          <!-- <select v-model="selectedParentIndex" v-bind:disabled="!!resData.id">
+            <option :value="0">请选择</option>
+            <option  v-for="(res, index) in ress.dataItems.filter(o=>resData.id != o.id && !childrens(resData.id ? resData.children : []).some(oo=>oo.id==o.id))" v-bind:key="index" :value="res.id">{{res.resource_name}}</option>
+          </select> -->
+          <select-tree :datas="ress.tree" v-model="selectedParentIndex"></select-tree>
         </div>
       </div>
-      <div>
+      <div >
         <div class="name">编号：</div>
-        <div class="role"><input type="text" placeholder="请输入" v-model="resData.resource_code"></div>
+        <div class="role"><input type="text" v-bind:disabled="!!resData.id" placeholder="请输入" v-model="resData.resource_code"></div>
       </div>
       <div>
         <div class="name">名称：</div>
@@ -34,7 +36,7 @@
       </div>
       <div>
         <div class="name">类型：</div>
-        <div class="role">
+        <div class="role noBorder">
           <label for="menu"><input type="radio" id="menu"  value="menu" v-model="resData.resource_type" name="radio">菜单</label>
           <label for="button"><input type="radio" id="button"  value="button" v-model="resData.resource_type" name="radio" checked="checked">按钮</label>
         </div>
@@ -45,7 +47,7 @@
       </div>
       <div>
         <div class="name">是否显示：</div>
-        <div class="role">
+        <div class="role noBorder">
           <label for="3"><input type="radio" value="1" v-model="resData.isshow" id="3" name="radio1">显示</label>
           <label for="4"><input type="radio" id="4"  value="0" v-model="resData.isshow" name="radio1" checked="checked">不显示</label>
         </div>
@@ -56,12 +58,12 @@
         <div class="role-icon">
           <el-upload
             class="up fl"
-            action="http://ceibs.54jj.cn/ZLParkingAdmin/server_file/file/fileUpload?folder=resource_ico"
+            action="http://119.29.152.124:8800/file/fileUpload?folder=resource_ico"
             :show-file-list="false"
             :on-success="handleAvatarSuccess"
             :before-upload="beforeAvatarUpload">
             <img v-if="resData.resource_icon" :src="resData.resource_icon" class="up fl">
-            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            <i v-else class="el-icon-plus avatar-uploader-icon">{{resData.resource_icon}}</i>
           </el-upload>
 
           <span class="fl r-text">只能上传jpg/png文件</span>
@@ -69,13 +71,13 @@
       </div>
       <div>
         <div class="name">排序：</div>
-        <div class="role">
+        <div class="role noBorder">
           <el-slider v-model="resData.sorting" :min="1"></el-slider>
         </div>
       </div>
       <div>
         <div class="name">备注：</div>
-        <div class="role">
+        <div class="role noBorder">
           <textarea name="" id="" cols="30" rows="10" placeholder="请输入备注" v-model="resData.remark"></textarea>
         </div>
       </div>
@@ -121,10 +123,14 @@ import { RequestParams, RequestDataItem, User } from '../../assets/js/entity'
 import { array2Descendants, isChildrensId, RegExpCheck } from '../../assets/js/common'
 import Pagination from '../Pagination'
 import moment from 'moment'
+import {GET_FILE_URL} from "../../assets/js/constants";
+import SelectTree from '../../components/SelectTree'
 
 export default {
+  name:"resourceManage",
   data() {
     return {
+      GET_FILE_URL:GET_FILE_URL,
       ifAllotPopup: false,
       resData: {
         id: null, //           	Y	string	ID
@@ -141,7 +147,7 @@ export default {
         relativepath: null,
         temp_resource_name: null //         String  资源名称副本
       },
-      selectedParentIndex: -1,
+      selectedParentIndex: 0,
       ress: {
         attributes: {
           page_index: 1, //当前页码
@@ -158,7 +164,24 @@ export default {
       }
     };
   },
+  components: {
+    SelectTree
+  },
   methods: {
+
+    log(data){
+      console.log(data)
+    },
+
+    childrens(objs, list = []){
+      for(let o of objs){
+        if(o.children.length){
+          list = list.concat(this.childrens(o.children, list));
+        }
+        list.push(o)
+      }
+      return list;
+    },
 
     editRes () {
       let adopt = null
@@ -175,17 +198,11 @@ export default {
 
       if (adopt) return this.$message.error(adopt)
 
-      let data = this.ress.dataItems[this.selectedParentIndex]
-      if (data) {
-        if (isChildrensId(this.resData, data.id)) {
-          return this.$message.error('不能选择自己/下级元素')
-        }
-      }
       this.resData.resource_name = this.resData.temp_resource_name
       this.$api.menu
         .editor(new RequestParams()
           .addAttributes(this.resData)
-          .addAttribute('pid', data ? data.id : 0)
+          .addAttribute('pid', this.selectedParentIndex || 0)
           .addAttribute('resource_icon', this.resData.relativepath || this.resData.resource_icon)
         )
         .then(response => {
@@ -201,15 +218,16 @@ export default {
         cancelButtonText: "取消",
         type: "warning"
       })
-        .then(() => this.$api.menu.delete(new RequestParams().addAttribute('id', id)))
+        .then(() => {this.$api.menu.delete(new RequestParams().addAttribute('id', id))
         .then(response => {
           this.$message.success("删除成功");
           this.loadResDatas();
+          this.resData = {};
         })
-        .catch(({ message }) => this.$message.error(message))
+        .catch(({ message }) => this.$message.error(message))})
         .catch(() => {
           this.$message.info("已取消删除");
-        });
+        })
     },
 
     /**加载项目列表数据 */
@@ -218,8 +236,9 @@ export default {
         .getlist(
           new RequestParams()
             .addAttributes(params)
+            .addAttribute("user_id", null)
             .addAttribute("page_index", pageNum)
-            .addAttribute("page_size", 1000000)
+            .addAttribute("page_size", -1)
         )
         .then(response => {
           this.ress.attributes = response.attributes;
@@ -234,18 +253,18 @@ export default {
     },
     /**点击节点 */
     handleNodeClick (data) {
-      console.log(data)
       this.resData = data
       this.resData.temp_resource_name = this.resData.resource_name
-      this.ress.dataItems.forEach((o, i) => {
-        if (o.id == data.pid) {
-          this.selectedParentIndex = i;
-        }
-      });
+      this.selectedParentIndex = data.pid;
+
+      if(this.resData.resource_icon && !this.resData.resource_icon.indexOf("http") >= 0){
+        this.resData.resource_icon = GET_FILE_URL+this.resData.resource_icon;
+      }
+      this.loadResDatas();
     },
     handleAvatarSuccess(res, file) {
       this.resData.resource_icon = URL.createObjectURL(file.raw);
-      this.resData.relativepath = res.relativepath;
+      this.resData.relativepath = res.attributes.relativepath;
     },
     beforeAvatarUpload(file) {
       const isJPG = file.type === "image/jpeg" || file.type === "image/png";

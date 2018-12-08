@@ -12,16 +12,16 @@
         <div class="cominput fl">
           <span class="conditions-text">车场类型：</span> 
             <select name="" v-model="searchParams.park_type">
-                <option value="null">请选择</option>
-                <option  v-for="(park,index)  in park_types" :value="index" :key="index">{{park}}</option>
+              <option value="null">请选择</option>
+              <option  v-for="(park,index)  in park_types" :value="index" :key="index">{{park}}</option>
             </select>
         </div>
         <div class="cominput fl normargin">
           <span class="conditions-text">区域类型：</span>
-              <select name="" v-model="searchParams.area_type">
-                <option value="null">请选择</option>
-                <option  v-for="(area,index)  in area_types[searchParams.park_type]" :value="index" :key="index">{{area}}</option>
-              </select>
+            <select name="" v-model="searchParams.area_type">
+              <option value="null">请选择</option>
+              <option  v-for="(area,index)  in area_types[searchParams.park_type]" :value="index" :key="index">{{area}}</option>
+            </select>
         </div>
         <div class="cominput fl">
           <span class="conditions-text">名称：</span>
@@ -88,7 +88,7 @@
             <td><div>{{[['地面车库','地下车库','其他车库']/*普通车场时：0地面车库 1地下车库 2其他车库（如机械车库等）*/,['大车场','小车场']/*(大套小车场时：0大车场
                 1小车场)*/][area.park_type][area.area_type]}}
               </div></td>
-            <td>{{'没有返回这个字段'}}</td>
+            <td>{{area.place_count || " "}}</td>
             <td><div :title="area.temp_car_inout">{{['不限制','限制'/*是否限制临时车(0：不限制1：限制)*/][area.temp_car_inout]}}</div></td>
             <td><div :title="area.create_time">{{area.create_time}}</div></td>
             <td><div :title="area.update_time">{{area.update_time}}</div></td>
@@ -96,7 +96,7 @@
             <td>
               <a href="javascript:" class="bj" @click="showEditParkArea(index)">编辑</a>
               <a href="javascript:" class='delete' @click="delPark(index)">删除</a>
-              <a href="javascript:" @click="showCarManager(index)">管理车位</a>
+              <a href="javascript:" @click="searchCars.key = null, showCarManager(index)">管理车位</a>
               <a href="javascript:" class="fees" @click="showEditParkAreaConfig(index)">收费标准</a>
             </td>
           </tr>
@@ -123,9 +123,9 @@
           <p class="red" hidden><i class="iconfont icon-jian-tianchong"></i>错误提示的文案<span>x</span></p>
           <div class="cet">
             <div class="clf">
-              <p class="clf">
+              <p class="clf" >
                 <span class="fl">编号：</span>
-                <input class="fl" type="text" v-model="areaDatas.temp_area_code" placeholder="请输入编号，必填">
+                <input class="fl" type="text" :disabled="!!areaDatas.id" v-model="areaDatas.temp_area_code" placeholder="请输入编号，必填">
               </p>
               <p class="clf">
                 <span class="fl">名称：</span>
@@ -133,35 +133,35 @@
               </p>
               <p class="clf">
                 <span class="fl">车场类型：</span>
-                <select name="" value="0" v-model="areaDatas.temp_park_type">
+                <select name="" value="0" v-model="areaDatas.park_type">
                   <option v-for="(park,index)  in park_types" :value="index" :key="index">{{park}}</option>
                 </select>
               </p>
               <p class="clf">
                 <span class="fl">区域类型：</span>
-                <select name="" value="0" v-model="areaDatas.temp_area_type">
+                <select name="" value="0" v-model="areaDatas.area_type">
                   <option v-for="(area,index)  in area_types[areaDatas.park_type||0]" :value="index" :key="index">{{area}}</option>
                 </select>
               </p>
-              <!-- <p class="clf"><span class="fl">区域车位数：</span><input class="fl" type="text" v-model="areaDatas.area_type" placeholder="请选择"></p> -->
+              <p class="clf" hidden><span class="fl">区域车位数：</span><input class="fl" type="text" v-model="areaDatas.place_count" placeholder="请选择"></p>
               <p class="clf">
                 <span class="fl">是否限制临时车：</span>
                 <span class="p-text">
                   <span class="flase fl ckb">
-                    <input class="rad" type="radio" id="deo1" v-model="areaDatas.temp_tempCar_inout" name="radio"
+                    <input class="rad" type="radio" id="deo1" v-model="areaDatas.temp_car_inout" name="radio"
                            value="0">
                     <label for="deo1"></label>
                   </span>
                   <span class="rad-text fl">否</span>
                   <span class="true fl ckb">
-                    <input class="rad" type="radio" id="deo2" v-model="areaDatas.temp_tempCar_inout" name="radio"
+                    <input class="rad" type="radio" id="deo2" v-model="areaDatas.temp_car_inout" name="radio"
                            value="1">
                     <label for="deo2"></label>
                   </span>
                   <span class="rad-text fl">是</span>
 								</span>
               </p>
-              <p class="clf">
+              <p class="clf" v-if="areaDatas.area_type>0">
                 <span class="fl">进入限制时长：</span>
                 <input class="minute" type="text" value="5" v-model="areaDatas.temp_in_time_long">分钟
               </p>
@@ -206,26 +206,21 @@
           <div class="bot-right fr">
             <div class="nav-choose clf">
               <div class="clf">
-                <span>收费标准：</span>
-                <el-cascader
+                <!-- <span>收费标准：</span> -->
+                <!-- <el-cascader
                   expand-trigger="hover"
                   :options="chargeStandardOptions"
                   :props="{value:'dic_code',children:'children',label:'dic_name'}"
                   v-model="chargeStandards"
                   @change="changeForm">
-                </el-cascader>
-                <br><br><br>
+                </el-cascader> -->
                 <span>车辆类型：</span>
-                <select class="fl" v-model="carTypeSelected">
-                  <option v-for="(item, index) in carTypeList" :key="index" :value="item.id">{{item.dic_name
-                    }}
-                  </option>
+                <select class="fl" v-model="carTypeSelected" @change="pucker = !pucker">
+                  <option v-for="(item, index) in chargeStandardOptions" :key="index" :value="index">{{item.dic_name}}</option>
                 </select>
                 <span>收费标准：</span>
-                <select class="fl" v-model="feesSelected">
-                  <option v-for="(item, index) in (carTypeList[carTypeSelected.dic_name]||{list:[]}).children"
-                          :key="index" :value="item.id">{{item.name}}
-                  </option>
+                <select class="fl" v-model="chargeStandards" @change="changeForm(chargeStandards)" :pucker="pucker" >
+                  <option v-for="(item, index) in (chargeStandardOptions[carTypeSelected]||{children:[]}).children" :selected="!index" :key="index" :value="[chargeStandardOptions[carTypeSelected].dic_code,item.dic_code]">{{item.dic_name}} </option>
                 </select>
               </div>
             </div>
@@ -355,7 +350,7 @@
                   <td>{{item.unitTimeFee}}</td>
                   <td>{{item.unitTime}}</td>
                   <td>
-                    <a href="javascript:" @click="standardData.base = item, pucker=!pucker" :pucker="pucker">编辑</a>
+                    <a href="javascript:" @click="item.id = 1, standardData.base = Object.assign({},item), pucker=!pucker" :pucker="pucker">编辑</a>
                     <a href="javascript:" @click="standardData.depict.timeIntervalFeeList.splice(index, 1), pucker=!pucker" :pucker="pucker">删除</a>
                   </td>
                 </tr>
@@ -381,7 +376,7 @@
                     <span>分钟</span>
                   </li>
                   <li class="widthMax btns">
-                    <a href="javascript:" class="addBtn" @click="addTimeIntervalFeeList(),  pucker=!pucker">添加</a>
+                    <a href="javascript:" class="addBtn" @click="addTimeIntervalFeeList(),  pucker=!pucker">{{standardData.base.id?"修改":"添加"}}</a>
                     <a href="javascript:" @click="standardData.base = {},  pucker=!pucker">清空</a>
                   </li>
                 </ul>
@@ -414,7 +409,7 @@
                 <input type="text" v-model="placeDatas.car_place_no">
               </p>
               <p class="button clf">
-                <a class="v-qr fl" @click="editCarsDatas()">添加车位</a>
+                <a class="v-qr fl" @click="editCarsDatas()">{{placeDatas.id ? "修改车位" : "添加车位"}}</a>
                 <a class="v-qr fl" @click="ifImportAuthorize = true">导入车位</a>
               </p>
             </div>
@@ -479,12 +474,12 @@
         </div>
         <div class="bot">
           <div class="cet clf">
-            <div class="fl choose-file">选择文件<input type="file" accept=".xls,.xlsx"  /></div>
-            <a class="fr downloadtemp" href="javascript:">下载模板</a>
-            <p>支持扩展名：.xls .xlsx</p>
+            <div class="fl choose-file">选择文件<input type="file"  accept=".xls,.xlsx" @change="selectImportExcelFile" /></div>
+            <a class="fr downloadtemp"   href="./static/template-excel/车位导入模板.xls">下载模板</a>
+            <p>{{importExcelFile.name || "支持扩展名：.xls .xlsx"}}</p>
           </div>
           <div class="button clf">
-            <a class="upload fr" href="javascript:">上传</a>
+            <a class="upload fr" href="javascript:" @click="importExcel()">上传</a>
           </div>
         </div>
       </div>
@@ -494,7 +489,7 @@
 
 <script>
 // import { User } from "../../assets/js/common";
-import { RequestParams, RequestDataItem, User, DataDictionary } from '../../assets/js/entity'
+import { RequestParams, RequestDataItem, User, DataDictionary, ExcelSheets } from '../../assets/js/entity'
 import { RegExpCheck } from '../../assets/js/common'
 import Pagination from '../Pagination'
 import moment from 'moment'
@@ -502,8 +497,12 @@ import $ from 'jquery'
 import { array2Descendants } from '../../assets/js/common'
 
 export default {
+  name:"parkArea",
   data() {
     return {
+      selected_car_type:0,
+      selected_standard_type:0,
+      importExcelFile:{},
       pucker:false,
       toggleSearchText: "收起搜索",
       searchDivShow: true,
@@ -553,7 +552,7 @@ export default {
         area_name: null,
         park_type: 0,
         area_type: 0,
-        tempCar_inout: null,
+        temp_car_inout: null,
         in_time_long: null,
         create_time: null,
         update_time: null,
@@ -633,6 +632,44 @@ export default {
     Pagination
   },
   methods: {
+
+
+    selectImportExcelFile({target}){
+      this.importExcelFile = target.files[0];
+    },
+
+    importExcel(){
+      this.$confirm(`确定要导入[${this.importExcelFile.name}]吗?`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+      })
+      .then(()=>{
+        let loading = this.$loading({
+          lock: true,
+          text: '正在导入...',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        });
+        let excelSheets = new ExcelSheets();
+        excelSheets.setSheetHeader("车位列表", ["car_place_no","car_group_id"]);
+        excelSheets.importExcel(this.importExcelFile)
+        .then(({车位列表})=>{
+          this.$api.place
+          .editor(new RequestParams().addDataItems(车位列表.map(o=>new RequestDataItem().addAttributes(o).addAttribute("area_id",this.placeDatas.area_id))))
+          .then(response => {
+            this.$message.success(response.message);
+            this.loadCarsDatas();
+          })
+          .catch(({ message }) => this.$message.error(message));
+        })
+        .catch((error) => (this.$message.info("文件不正确，导入失败") ,console.log(error)))
+        .finally(()=>loading.close());
+      })
+      .catch(() => this.$message.info("已取消删除"))
+      .finally(()=>this.ifImportAuthorize = false);
+    },
+
     addTimeIntervalFeeList(){
       if(this.standardData.base.unitTimeFee && 
       this.standardData.base.unitTime && 
@@ -676,7 +713,7 @@ export default {
       this.areaDatas.temp_area_name = this.areaDatas.area_name
       this.areaDatas.temp_park_type = this.areaDatas.park_type
       this.areaDatas.temp_area_type = this.areaDatas.area_type
-      this.areaDatas.temp_tempCar_inout = this.areaDatas.tempCar_inout
+      this.areaDatas.temp_car_inout = this.areaDatas.temp_car_inout
       this.areaDatas.temp_in_time_long = this.areaDatas.in_time_long
     },
     /**显示配置车场收费标准 */
@@ -684,6 +721,7 @@ export default {
       this.searchStandard.area_id =
         index != null ? this.areas.dataItems[index].id : null;
       this.ifConfig = true;
+      this.chargeStandards = [];
       this.loadStandardDatas();
     },
     /**显示车位管理 */
@@ -707,9 +745,7 @@ export default {
 
       this.areaDatas.area_code = this.areaDatas.temp_area_code
       this.areaDatas.area_name = this.areaDatas.temp_area_name
-      this.areaDatas.park_type = this.areaDatas.temp_park_type
-      this.areaDatas.area_type = this.areaDatas.temp_area_type
-      this.areaDatas.tempCar_inout = this.areaDatas.temp_tempCar_inout
+      this.areaDatas.temp_car_inout = this.areaDatas.temp_car_inout
       this.areaDatas.in_time_long = this.areaDatas.temp_in_time_long
 
       this.$api.area
@@ -784,13 +820,10 @@ export default {
     },
     // 加载车位数据
     loadCarsDatas(pageNum = 1, params = {}) {
-      let keys = "and 1=1 ";
+      let keys = ` and area_id = '${this.placeDatas.area_id}'`;
       if(this.searchCars.key){
-        keys += ` OR car_place_no like '%${this.searchCars.key}%'`;
-        keys += ` OR car_group_id like '%${this.searchCars.key}%'`;
-      }
-      if(this.placeDatas.area_id){
-        keys += ` and area_id = '${this.placeDatas.area_id}'`;
+        keys += ` and (car_place_no like '%${this.searchCars.key}%'`;
+        keys += ` OR car_group_id like '%${this.searchCars.key}%')`;
       }
       this.$api.place
         .getlist(
@@ -818,7 +851,7 @@ export default {
     },
     // 编辑或新建车位信息
     editCarsDatas() {
-      this.$api.place
+      this.placeDatas.car_place_no && this.$api.place
         .editor(
           new RequestParams().addDataItem(
             new RequestDataItem().addAttributes(this.placeDatas)
@@ -840,7 +873,9 @@ export default {
           ? [this.cars.dataItems[id]]
           : this.selectedCar.map(o => this.cars.dataItems[o]);
       if (datas.length) {
-        let car_group_id = datas.map(o=>o.car_place_no).join("") + String(new Date().getTime())
+        if(datas.length < 2) return this.$message.info("至少选择两个车位");
+
+        let car_group_id = String(new Date().getTime())
         this.$confirm(
           `确定要合并车位号[${datas.map(o => o.car_place_no)}]吗?`,
           "提示",
@@ -911,8 +946,9 @@ export default {
     // 收费标准节点点击
     handleNodeClick(data, a, c, v) {
       if(data.depict){
-        this.chargeStandards = [0, data.standard_type];
         this.standardData = data;
+        this.chargeStandards = [data.car_type, data.standard_type];
+        this.carTypeSelected = this.chargeStandardOptions.findIndex(o=>o.dic_code == data.car_type) ;
       }
     },
     // 加载收费标准
@@ -923,7 +959,7 @@ export default {
             .addAttributes(this.searchStandard)
             .addAttribute("key", "")
             .addAttributes(params)
-            .addAttribute("page_size", 1000000)
+            .addAttribute("page_size", -1)
         )
         .then(response => {
           this.standards.attributes = response.attributes;
@@ -934,7 +970,7 @@ export default {
             this.searchStandards = datas;
             if(!datas.standard_type){
               this.ifConfig = false;
-              return this.$message.error("请先前往配置收费标准数据字典");
+              return this.$alert("请先前往配置收费标准数据字典");
             }
             let tempTree = {};
             for(let item of this.standards.dataItems){
@@ -957,28 +993,28 @@ export default {
               }
               this.chargeStandardOptions.push(datas.car_type[name])
             }
-//            this.chargeStandardOptions = this.chargeStandardOptions
+           this.chargeStandardOptions = this.chargeStandardOptions
           })
         })
-        .then(response => {
-          new DataDictionary(this.$api).ins().then(datas => {
+        // .then(response => {
+        //   new DataDictionary(this.$api).ins().then(datas => {
 
-            for (let item of response.dataItems.map(o => o.attributes)) {
-              if (!this.carTypeList[item.dic_name]) {
-                this.carTypeList[item.dic_name] = {
-                  name: datas.dic_name[item.dic_name],
-                  list: []
-                }
-              }
-              item.name = datas.standard_type[item.standard_type]
-              item.standard_content = JSON.parse(item.standard_content)
-              this.carTypeList[item.dic_name].list.push(item)
-            }
+        //     for (let item of response.dataItems.map(o => o.attributes)) {
+        //       if (!this.carTypeList[item.dic_name]) {
+        //         this.carTypeList[item.dic_name] = {
+        //           name: datas.dic_name[item.dic_name],
+        //           list: []
+        //         }
+        //       }
+        //       item.name = datas.standard_type[item.standard_type]
+        //       item.standard_content = JSON.parse(item.standard_content)
+        //       this.carTypeList[item.dic_name].list.push(item)
+        //     }
 
-            this.carTypeList = this.chargeStandardOptions
-            console.log(this.carTypeList)
-          })
-        })
+        //     this.carTypeList = this.chargeStandardOptions
+        //     console.log(this.carTypeList)
+        //   })
+        // })
         .catch(response => this.$message.error(response.message))
     },
     // 新增或编辑收费标准
@@ -998,6 +1034,10 @@ export default {
       .then(response =>{
         this.$message.info(response.message);
         this.pucker=!this.pucker;
+        this.standardData = {};
+        this.chargeStandards = [];
+        this.carTypeSelected = "";
+        this.chargeStandards = "";
         this.loadStandardDatas();
       })
       .catch(({ message }) => this.$message.error(message))

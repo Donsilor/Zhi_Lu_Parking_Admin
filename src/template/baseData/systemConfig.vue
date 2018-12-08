@@ -16,14 +16,14 @@
     <div class="center">
       <div class="title">基础环境</div>
       <div class="c_box">
-        <div v-if="pay.pay_type"><span>支付宝支付配置：<i>{{pay.pay_url}}</i></span>
-          <a href="javascript:" class="modify" @click="ifConfig = true">修改</a>
+        <div><span>支付宝支付配置：<i>{{zhifubao.pay_url}}</i></span>
+          <a href="javascript:" class="modify" @click="pay = zhifubao, ifConfig = true">修改</a>
         </div>
-        <div v-else><span>微信支付配置：<i>{{pay.pay_url}}</i></span>
-          <a href="javascript:" class="modify" @click="ifConfig = true">修改</a>
+        <div><span>微信支付配置：<i>{{weixin.pay_url}}</i></span>
+          <a href="javascript:" class="modify" @click="pay = weixin, ifConfig = true">修改</a>
         </div>
         <div><span>支付回调地址：<i>{{parking.pay_callback_url}}</i></span>
-          <a href="javascript:" class="modify" @click="ifConfig = true">修改</a>
+          <a href="javascript:" class="modify">修改</a>
         </div>
       </div>
     </div>
@@ -31,7 +31,7 @@
       <div class="title">车场变量</div>
       <div class="c_box">
         <div>
-          <span>总车位数：<i></i></span>
+          <span>总车位数：<i>{{parking.park_count}}</i></span>
           <a href="javascript:" class="modify" @click="ifParkingVariate = true">修改</a>
         </div>
         <div>
@@ -63,16 +63,16 @@
     <div class="main" v-if="ifConfig">
       <div class="depwd" v-drag.cursor="'#Config'">
         <div class="top-nav" id="Config">
-          <p class="t-text fl">微信支付配置</p>
+          <p class="t-text fl">{{pay.pay_type?"支付宝":"微信"}}支付配置</p>
           <p class="close fr" @click="ifConfig = false">x</p>
         </div>
         <div class="bot">
           <div class="cet">
             <div class="clf">
               <p class="red" hidden><i class="iconfont icon-jian-tianchong"></i>错误提示的文案</p>
-              <p class="clf">
+              <p class="clf" hidden>
                 <span class="fl"><!--<span class='red-text'>*</span>-->APPID：</span>
-                <input class="fl user" name="user" type="text" placeholder="wx8888888888888888" v-model="pay.photo_path">
+                <input class="fl user" name="user" type="text" placeholder="wx8888888888888888" >
               </p>
               <p class="clf">
                 <span class="fl"><!--<span class='red-text'>*</span>-->商户号：</span>
@@ -92,7 +92,7 @@
               </p>
               <p class="clf upload">
                 <span class="fl">支付私钥：</span>
-                <input class="fl" type="text" placeholder="请再次输入主机密码，必填" v-model="pay.photo_path">
+                <input class="fl" type="text" placeholder="请再次输入主机密码，必填" v-model="pay.pay_private_key">
               </p>
               <p class="clf upload">
                 <span class="fl" style="font-size: 12px;">请求URL,token获取：</span>
@@ -159,6 +159,7 @@
 <script>
 import { RequestParams, RequestDataItem ,User} from "../../assets/js/entity";
 export default {
+  name:"systemConfig",
   data () {
     return {
       ifConfig: false,
@@ -174,18 +175,35 @@ export default {
         remark: null,//      	N	String	备注
         update_time:null,//
       },
-      pay:{
-        id:null,//             	Y	String	ID
-        pay_type:null,//       	Y	Int	支付方式(0：微信 1：支付宝)
-        pay_account:null,//    	Y	Int	商家账号
-        businesser_code:null,//	Y	String	商户号
-        service_key:null,//    	Y	String	支付服务密钥
-        pay_public_key:null,// 	Y	Int	支付公钥
-        pay_private_key:null,//	Y	String	支付私钥
-        token_url:null,//      	Y	String	token获取地址
-        pay_url:null,//        	Y	String	支付URL
-        remark:null,//         	N	String	备注
+      zhifubao:{
+        id: null,//             	Y	String	ID
+        pay_type: null,//       	Y	Int	支付方式(0：微信 1：支付宝)
+        pay_account: null,//    	Y	Int	商家账号
+        businesser_code: null,//	Y	String	商户号
+        service_key: null,//    	Y	String	支付服务密钥
+        pay_public_key: null,// 	Y	Int	支付公钥
+        pay_private_key: null,//	Y	String	支付私钥
+        token_url: null,//      	Y	String	token获取地址
+        pay_url: null,//        	Y	String	支付URL
+        create_time: null,//    	Y	String	创建时间(格式：yyyy-MM-dd HH:mm:ss)
+        update_time: null,//    	Y	String	更新时间(格式：yyyy-MM-dd HH:mm:ss)
+        remark : null,//        	N	String	备注
       },
+      weixin:{
+        id: null,//             	Y	String	ID
+        pay_type: null,//       	Y	Int	支付方式(0：微信 1：支付宝)
+        pay_account: null,//    	Y	Int	商家账号
+        businesser_code: null,//	Y	String	商户号
+        service_key: null,//    	Y	String	支付服务密钥
+        pay_public_key: null,// 	Y	Int	支付公钥
+        pay_private_key: null,//	Y	String	支付私钥
+        token_url: null,//      	Y	String	token获取地址
+        pay_url: null,//        	Y	String	支付URL
+        create_time: null,//    	Y	String	创建时间(格式：yyyy-MM-dd HH:mm:ss)
+        update_time: null,//    	Y	String	更新时间(格式：yyyy-MM-dd HH:mm:ss)
+        remark : null,//        	N	String	备注
+      },
+      pays:[],
       parking:{
         id:null,//              	Y	String	ID
         photo_path:null,//      	Y	String	抓拍图片保存路径
@@ -226,7 +244,11 @@ export default {
     },
     async loadDatas(){
       this.parking = ((await this.$api.sysconfig.getbyid()).dataItems[0] || {}).attributes || {};
-      this.pay = ((await this.$api.sysconfig.getpay()).dataItems[0] || {}).attributes || {};
+      let pays = ((await this.$api.sysconfig.getpay()).dataItems.map(o=>o.attributes))
+
+      this.zhifubao = pays.filter(o=>o.pay_type)[0]||{pay_type:1};
+      this.weixin = pays.filter(o=>!o.pay_type)[0]||{pay_type:0};
+
       this.project = ((await this.$api.project.getlist(
         new RequestParams().addAttribute("key", `and id = '${User.info.project_id}'`)
       )).dataItems[0] || {}).attributes || {};

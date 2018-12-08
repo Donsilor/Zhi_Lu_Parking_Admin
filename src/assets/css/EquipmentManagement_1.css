@@ -3,7 +3,8 @@
 .box .result > .tab::-webkit-scrollbar-thumb{background-color: #bbb;}
 
 .box .content .search .top > div{width: 100%;}
-.box .cominput input[type=text]{width: 300px;}
+.box .cominput input[type=text],
+.box .cominput select{width: 300px;}
 .cominput .search-button.blu-button{float: left;height: 30px;line-height: 30px;margin-left: 15px;}
 
 
@@ -63,12 +64,13 @@
 .equipInfoTable .level3_ths > .th:nth-of-type(1){width: 11%;height: 50px;}
 .equipInfoTable .level3_ths > .th:nth-of-type(2){width: 10%;}
 .equipInfoTable .level3_ths > .th:nth-of-type(3){width: 7%;}
-.equipInfoTable .level3_ths > .th:nth-of-type(4){width: 10%;}
-.equipInfoTable .level3_ths > .th:nth-of-type(5){width: 20%;}
-.equipInfoTable .level3_ths > .th:nth-of-type(6){width: 14%;}
-.equipInfoTable .level3_ths > .th:nth-of-type(7){width: 13%;}
-.equipInfoTable .level3_ths > .th:nth-of-type(8){width: 6%;}
-.equipInfoTable .level3_ths > .th:nth-of-type(9){width: 9%;}
+.equipInfoTable .level3_ths > .th:nth-of-type(4){width: 12%;}
+.equipInfoTable .level3_ths > .th:nth-of-type(5){width: 12%;}
+.equipInfoTable .level3_ths > .th:nth-of-type(6){width: 10%;}
+.equipInfoTable .level3_ths > .th:nth-of-type(7){width: 12%;}
+.equipInfoTable .level3_ths > .th:nth-of-type(8){width: 11%;}
+.equipInfoTable .level3_ths > .th:nth-of-type(9){width: 6%;}
+.equipInfoTable .level3_ths > .th:nth-of-type(10){width: 9%;}
 
 .equipInfoTable .level1_itemTable > .td:first-of-type,
 .equipInfoTable .level2_itemTable > .td:first-of-type{width: 3%;}
@@ -106,22 +108,20 @@
 .equipInfoTable .level3_dataItem > .td:nth-of-type(1){width: 11%;}
 .equipInfoTable .level3_dataItem > .td:nth-of-type(2){width: 10%;}
 .equipInfoTable .level3_dataItem > .td:nth-of-type(3){width: 7%;}
-.equipInfoTable .level3_dataItem > .td:nth-of-type(4){width: 10%;}
-.equipInfoTable .level3_dataItem > .td:nth-of-type(5){width: 20%;}
-.equipInfoTable .level3_dataItem > .td:nth-of-type(6){width: 14%;}
-.equipInfoTable .level3_dataItem > .td:nth-of-type(7){width: 13%;}
-.equipInfoTable .level3_dataItem > .td:nth-of-type(8){width: 6%;}
-.equipInfoTable .level3_dataItem > .td:nth-of-type(9){width: 9%;}
+.equipInfoTable .level3_dataItem > .td:nth-of-type(4){width: 12%;}
+.equipInfoTable .level3_dataItem > .td:nth-of-type(5){width: 12%;}
+.equipInfoTable .level3_dataItem > .td:nth-of-type(6){width: 10%;}
+.equipInfoTable .level3_dataItem > .td:nth-of-type(7){width: 12%;}
+.equipInfoTable .level3_dataItem > .td:nth-of-type(8){width: 11%;}
+.equipInfoTable .level3_dataItem > .td:nth-of-type(9){width: 6%;}
+.equipInfoTable .level3_dataItem > .td:nth-of-type(10){width: 9%;}
 
 
 .icon-edit{font-size: 14px !important;}
 i:hover{cursor:pointer;}
 
 
-.depwd{width: 600px;top: calc(50% - 320px);left: calc(50% - 300px);}
-.main .bot{width:100%;background-color: #fff;padding-top: 10px;padding-bottom: 30px;}
-.t-text{font-size: 14px;color: #fff;line-height: 60px;margin-left:25px;}
-.cet{width:460px;margin: 0 auto;padding-top:5px;}
+.cet{width:460px;}
 .red{width:95%;margin: 0 auto;color: #f35857;font-size: 14px;height: 40px;line-height: 40px;padding-left: 25px;background-color:#ffeded;border-radius: 5px;padding-right: 0;}
 .red i{margin-right:10px;}
 .red span{display: block;font-size: 14px;height:40px;line-height:40px;float: right;padding-right:10px;cursor: pointer;}

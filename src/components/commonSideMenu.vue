@@ -15,7 +15,6 @@
           <router-link to="/systemConfig">系统配置</router-link>
         </div>
       </li>  
-        
       <li>
         <div class="title">业务中心</div>
         <div class="menu">
@@ -40,10 +39,10 @@
       </li>
     </ul>
     <ul id="sideMenuUl" ref="sideMenuUl" v-else>
-      <li :class="{current:currentLi==index}" @click="currentLi = index" v-for="(menus, index) in resourceMenus" :key="index">
+      <li :class="{current:currentLi==index}" @click="currentLi = index" v-for="(menus, index) in resourceMenus" :key="index" v-if="menus.isshow">
         <div class="title">{{menus.resource_name}}</div>
         <div class="menu">
-          <router-link v-for="(menu, index) in menus.children" :key="index" :to="menu.resource_url">{{menu.resource_name}}</router-link>
+          <router-link v-for="(menu, index) in menus.children" :key="index" :to="menu.resource_url" v-if="menu.isshow">{{menu.resource_name}}</router-link>
         </div>
       </li>
     </ul>

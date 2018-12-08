@@ -35,7 +35,6 @@
                 type="daterange"
                 align="right"
                 unlink-panels
-                value-format="yyyy-MM-DD HH:mm:ss"
                 range-separator="至"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期">
@@ -94,9 +93,10 @@
             <td><div :title="car.create_time">{{car.create_time}}</div></td>
             <td><div :title="car.update_time">{{car.update_time}}</div></td>
             <td><div :title="car.user_name">{{car.user_name}}</div></td>
-            <td> <a class="nonreg" href="javascript:;" @click="!car.is_oauth && (carData = car,ifAuthorize = true)">{{car.is_oauth?"已授权":"未授权"}}</a> </td>
+            <td> <a class="nonreg" href="javascript:;" @click="showAuthorize(carData = car)">{{car.is_oauth?"已授权":"未授权"}}</a> </td>
             <td class="de detext">
               <a class="bj" href="javascript:;" @click="showEditCars(index)">编辑</a>
+              <a class="bj" href="javascript:;" @click="delAuthorize(car)">取消授权</a>
               <a class="delete" href="javascript:;" @click="delCars(index)">删除</a>
             </td>
           </tr>
@@ -171,39 +171,44 @@
           <p class="red" hidden><i class="iconfont icon-jian-tianchong"></i>错误提示的文案<span>x</span></p>
           <div class="cet">
             <div class="clf">
-
               <p class="clf"><span class="fl">车牌号码：</span><span class="p-text" :asd="caraccreditData.car_id = carData.id">{{carData.car_no}}</span></p>
-              <p class="clf"><span class="fl">授权车位：</span><span class="p-text fl" :asd="caraccreditData.is_group = placeData.car_group_id?1:0" :asdasd="caraccreditData.place_id = placeData.car_group_id || placeData.id">{{placeData.car_group_id || placeData.car_place_no}}<span hidden class="red-text">为车位组时显示车位组名称，并修改标题为授权车位组</span></span>
-                <a class="ap-choose" href="javascript:" @click="ifAuthorizedParking = true, loadPlaceDatas()">请选择</a>
+              <p class="clf"><span class="fl">{{caraccreditData.is_group?"授权车位组":"授权车位"}}：</span><span class="p-text fl" :asd="caraccreditData.is_group = placeData.car_group_id?1:0" :asdasd="caraccreditData.place_id = placeData.car_group_id || placeData.id">{{placeData.car_group_id || placeData.car_place_no}}<span hidden class="red-text">为车位组时显示车位组名称，并修改标题为授权车位组</span></span>
+                <a class="ap-choose" href="javascript:" v-if="!carData.is_oauth" @click="ifAuthorizedParking = true, loadPlaceDatas()">请选择</a>
               </p>
               <p class="clf">
                 <span class="fl" :pucker="pucker">车牌类型：</span>
-                <select v-model="caraccreditData.car_type">
-                  <option v-for="(item, key, index) in standards" :key="index" :value="key">{{item.name}}</option>
+                <input type="text" disabled :value="standardMsg || standards[carData.car_type].name" v-if="!!carData.is_oauth || standardMsg" />
+                <select v-model="caraccreditData.car_type" v-else>
+                  <option v-for="(item, key, index) in standards" :key="index" :value="key" v-if="item.isShow">{{item.name}}</option>
                 </select>
               </p>
               <p class="clf">
                 <span class="fl">收费标准：</span>
-                <select v-model="standardData">
-                  <option v-for="(item, index) in (standards[caraccreditData.car_type]||{list:[]}).list" :key="index" :value="item">{{item.standard_name}}</option>
+                <input type="text" disabled :value="standardMsg || standards[carData.car_type].list[0].standard_name" v-if="!!carData.is_oauth || standardMsg"/>
+                <select v-model="standardData" v-else >
+                  <option v-for="(item, index) in (standards[caraccreditData.car_type]||{list:[]}).list" v-if="item.isShow" :key="index" :value="item">{{item.standard_name}}</option>
                 </select>
+                <!-- <span v-if="standardMsg" class="red-text position-red">{{standardMsg}}</span> -->
               </p>
-              <p class="clf">
-                <span class="fl">授权月份：</span>
-                  <select v-model="caraccreditData.autoMonthData" @change="caraccreditData.amount = caraccreditData.autoMonthData.fee">
+              <!-- <p class="clf"  v-if="!!carData.is_oauth"><span class="fl">自：</span><span class="p-text">{{caraccreditData.begin_time}}</span></p> -->
+              <p class="clf"  v-if="!!carData.is_oauth"><span class="fl">有效期至：</span><span class="p-text">{{caraccreditData.end_time}}</span></p>
+              <p class="clf" v-if="!!!carData.is_oauth">
+                <span class="fl">{{[1,1,0,0][+standardData.standard_type] ? "授权月份" : "授权年份"}}：</span>
+                  <input type="text" disabled :value="standardMsg" v-if="standardMsg"/>
+                  <select v-model="caraccreditData.autoMonthData" @change="caraccreditData.amount = caraccreditData.autoMonthData.fee" v-else >
                     <option v-for="(item, index) in standardData.standard_content" :key="index" :value="item">{{item.count}}</option>
                   </select>
                 <span class="red-text position-red">根据车辆类型及授权车位自动关联收费标准</span>
               </p>
-              <p class="clf"><span class="fl">收费金额：</span>
+              <p class="clf" v-if="!!!carData.is_oauth"><span class="fl">收费金额：</span>
                 <input class="fl" type="text" disabled v-model="caraccreditData.amount" placeholder="请输入备注" >
               </p>
-              <p class="clf"><span class="fl">可通行的设备：</span><span class="p-text">{{selecredDevices.map(o=>devices.dataItems[o].device_name)}}<a
+              <p class="clf"><span class="fl">可通行的设备：</span><span class="p-text">{{selecredDevices.map(o=>devices.dataItems[o].device_name)}}<a  v-if="!!!carData.is_oauth"
                 class="choose-equ" @click="ifTraffic = true,loadDeviceDatas()" href="javascript:;">请选择</a></span></p>
               <p class="bz clf"><span class="fl">备注：</span><input class="fl" type="text" placeholder="请输入备注"></p>
             </div>
-            <div class="button clf">
-              <a class="qr fr" @click="editAuthorize()">确定</a>
+            <div class="button clf" v-if="!carData.is_oauth">
+              <a class="qr fr" @click="!standardMsg ? editAuthorize() : $alert('请配置')">确定</a>
               <a class="qx fr" @click="ifAuthorize = false">取消</a>
             </div>
           </div>
@@ -298,7 +303,7 @@
                 </select>
               </p>
               <p class="button clf">
-                <a class="traffic-qx fr" @click="searchDevices = {}">取消</a>
+                <a class="traffic-qx fr" @click="searchDevices = {}">清除</a>
                 <a class="traffic-qr fr" @click="loadDeviceDatas()">搜索</a>
               </p>
             </div>
@@ -347,7 +352,7 @@
             <div class="clf">
               <p class="clf"><span class="fl">车位号或车位组编号：</span><input type="text" v-model="searchParams.key" placeholder="请输入" ></p>
               <p class="button clf">
-                <a class="ap-search fr" @click="loadPlaceDatas(1, {key:searchParams.key})" href="javascript:;">搜索</a>
+                <a class="ap-search fr" @click="loadPlaceDatas()" href="javascript:;">搜索</a>
                 <a class="ap-clear fr" @click="searchParams.key = null" href="javascript:;">清除</a>
               </p>
             </div>
@@ -355,11 +360,13 @@
           <div class="residents-table">
             <table>
               <tr>
+                <th>车场名称</th>
                 <th>车位主编号</th>
                 <th>车位号</th>
                 <th>操作</th>
               </tr>
               <tr  v-for="(place, index) in places.dataItems" v-bind:key="index">
+                <td>{{place.area_name}}</td>
                 <td>{{place.car_group_id/*车位组编号(GUID做为车位组编号，为空时没有车位组,导入时只要不大于32位字符即可)*/}}</td>
                 <td>{{place.car_place_no}}</td>
                 <td>
@@ -389,8 +396,10 @@ import { RegExpCheck } from '../../assets/js/common'
 import Pagination from "../Pagination";
 import moment from "moment";
   export default {
+    name:"carAccredit",
     data () {
       return {
+        standardMsg:null,
         pucker:false,
         searchDivShow: true,
         searchTimes:[],
@@ -408,6 +417,7 @@ import moment from "moment";
         },
         selecedCars:[],
         standards:{},
+        standardsItems:[],
         carData:{
           id:null,//          	Y	String	ID
           household_id:null,//	Y	String	住户ID
@@ -530,7 +540,47 @@ import moment from "moment";
       /**分页组件 */
       Pagination
     },
+    computed:{
+    },
     methods: {
+
+      /** */
+      ifStandards(placeData, carTyps){
+        let ISSHOW = [];
+        for(let ct in carTyps){
+          let isShow = true;
+          for(let item of carTyps[ct].list){
+            //如果存在车场
+            if(placeData&&placeData.area_id){
+              //匹配车场下的有位
+              if([1,0,1][+item.standard_type]&&placeData.area_id==item.area_id){
+                ISSHOW.push(isShow = item.isShow = 1)
+              }
+              //匹配车场下的无位
+              // else if([0,1,0,1][+item.standard_type]&&placeData.area_id==item.area_id){
+              //   ISSHOW.push(isShow = item.isShow = 1)
+              // }
+              else {
+                ISSHOW.push(isShow = item.isShow = 0)
+              }
+            }
+            //没有车场直接获取全局的无位
+            else if([0,1,0,1][+item.standard_type]){
+              ISSHOW.push(isShow = item.isShow = 1)
+            }
+            else {
+              ISSHOW.push(isShow = item.isShow = 0)
+            }
+          }
+          carTyps[ct].isShow = isShow;
+        }
+        if(!ISSHOW.some(o=>o)){
+          this.$alert(this.standardMsg = "该区域没有配置有效月卡或者年卡的收费配置", "警告")
+        }
+        else {
+          this.standardMsg = null;
+        }
+      },
 
       selectedAll(){
         if(this.selecedCars.length){
@@ -550,6 +600,45 @@ import moment from "moment";
         this.carData.temp_car_color = this.carData.car_color
         this.carData.temp_car_brand = this.carData.car_brand
         this.carData.temp_car_mode = this.carData.car_mode
+      },
+
+      showAuthorize(data){
+        if(data.is_oauth){
+          this.$api.carauth.getauth(new RequestParams().addAttribute("car_id", data.id))
+          .then(async response=>{
+            if(response.dataItems.length){
+              
+              let car = response.dataItems[0].attributes;
+              if(car.is_group){
+                this.placeData.car_group_id =  car.car_place_no;
+              }
+              else {
+                this.placeData.car_place_no = car.car_place_no;
+              }
+              this.loadStandardsDatas(car.is_project_fee_scale?car.area_id:null);
+              this.caraccreditData.begin_time = car.begin_time;
+              this.caraccreditData.end_time = car.end_time;
+              this.standardData.standard_name = this.$api.standard.getlist(new RequestParams().addAttribute("area_id", data.area_id))
+              this.devices.dataItems = response.dataItems[0].subItems.map(o=>o.attributes);
+              this.selecredDevices = [];
+              for(let i = 0; i < this.devices.dataItems.length; i++){this.selecredDevices.push(i)}
+            }
+          })
+          .catch(({message}) => this.$message.error(message))
+        }
+        else {
+          this.placeData = {};
+          this.loadStandardsDatas();
+        }
+      },
+
+      delAuthorize(car){
+        car.car_auth_id && this.$api.carauth.delete(new RequestParams().addAttribute("id", car.car_auth_id))
+        .then(response=>{
+          this.$message.success(response.message);
+          car.is_oauth = 0;
+        })
+        .catch(({message}) => this.$message.error(message))
       },
 
       editAuthorize(){
@@ -623,17 +712,30 @@ import moment from "moment";
         else this.$message.info("请选择要删除的车辆");
       },
 
-      loadStandardsDatas(){
+      loadStandardsDatas(area_id, car_type){
+        this.standards = {};
+        this.standardsItems = [];
         this.$api.standard
-          .getlist(new RequestParams().addAttribute("area_id", this.placeData.area_id).addAttribute("page_size", 1000000))
+          .getlist(new RequestParams()
+          .addAttribute("area_id", area_id || this.placeData.area_id)
+          .addAttribute("key", `and standard_type in ('0','1','2','3')`)
+          .addAttribute("page_size", -1))
           .then(response => {
+            if(!response.dataItems.length){
+              return this.$alert(this.standardMsg = "该区域没有配置有效月卡或者年卡的收费配置");
+            }
+
             new DataDictionary(this.$api).ins().then(datas => {
 
               if(!datas.standard_type){
-                return this.$message.error("请先前往配置收费标准数据字典");
+                return this.$alert("请先前往配置收费标准数据字典");
               }
+              this.standardMsg = null;
 
-              for(let item of response.dataItems.map(o => o.attributes)){
+              this.standardsItems = response.dataItems.map(o => o.attributes);
+              this.standards = {}
+
+              for(let item of response.dataItems.map(o => o.attributes).filter(o=> car_type ? o.car_type == car_type : true)){
                 if(!this.standards[item.car_type]){
                   this.standards[item.car_type] = {
                     name:datas.car_type[item.car_type].dic_name,
@@ -647,6 +749,8 @@ import moment from "moment";
 
               this.standards = this.standards;
               this.pucker = !this.pucker;
+              this.ifAuthorize = true
+              this.ifStandards(this.placeData,this.standards)
             })
           })
           .catch(response => this.$message.error(response.message));
@@ -676,8 +780,8 @@ import moment from "moment";
           .addAttributes(this.searchParams)
           .addAttributes(params)
           .addAttribute("page_index", pageNum)
-          .addAttribute("begin_time", this.searchTimes[0])
-          .addAttribute("end_time", this.searchTimes[1]))
+          .addAttribute("begin_time", this.searchTimes[0]  && moment(this.searchTimes[0]).format("YYYY-MM-DD"))
+          .addAttribute("end_time", this.searchTimes[1]  && moment(this.searchTimes[1]).format("YYYY-MM-DD")))
           .then(response => {
             this.cars.attributes = response.attributes;
             this.cars.dataItems = response.dataItems.map(o => o.attributes);
@@ -689,8 +793,8 @@ import moment from "moment";
       loadPlaceDatas(pageNum = 1, params = {}) {
         this.$api.place
           .getlist(new RequestParams()
-          .addAttributes(this.searchParams)
           .addAttributes(params)
+          .addAttribute("key", this.searchParams.key && `and car_place_no like '%${this.searchParams.key}%'`)
           .addAttribute("page_index", pageNum)
           )
           .then(response => {
@@ -707,7 +811,7 @@ import moment from "moment";
           .addAttributes(this.searchDevices)
           .addAttributes(params)
           .addAttribute("page_index", pageNum)
-          .addAttribute("page_size", 100000)
+          .addAttribute("page_size", -1)
           // .addAttribute("key", `device_type in ('INLET','OUTLET')`)
           )
           .then(response => {

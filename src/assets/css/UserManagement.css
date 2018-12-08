@@ -15,6 +15,7 @@
 .result .tab .usermanagement-table tr td:first-child{text-align:center;}
 .result .tab .usermanagement-table tr td:nth-child(2){text-align:left;}
 .result .tab .usermanagement-table tr td:nth-child(2) span{display:block;width:40px;height:40px;margin:auto;overflow:hidden;border-radius:50%;}
+.result .tab .usermanagement-table tr td:nth-child(2) img{width: 40px;height: 40px;border-radius: 50%;margin: 5px auto;display: block;}
 .result .tab .usermanagement-table tr td:nth-child(3){text-align:center;}
 .result .tab .usermanagement-table tr td:nth-child(4){text-align:center;}
 .result .tab .usermanagement-table tr td:nth-child(5){text-align:center;}
@@ -22,14 +23,8 @@
 .result .tab .usermanagement-table tr td:nth-child(9){text-align:center;}
 .result .tab .usermanagement-table tr td .normal{color:#48b765;}
 .result .tab .usermanagement-table tr td .freeze{color:#ea5657;}
-.result .tab .usermanagement-table tr td:last-child a{font-size:14px;color:#1c7dfa;}
-.result .tab .usermanagement-table tr td:last-child a:not(:last-child){margin-right:20px;}
 
 
-.depwd{width: 600px;position: absolute;top: calc(50% - 300px);left: calc(50% - 300px);}
-.bot{width:100%;background-color: #fff;}
-.t-text{font-size: 14px;color: #fff;line-height: 60px;margin-left:25px;}
-.cet{width: 440px;margin: 0 auto;padding-top: 10px;}
 .red{color: #f35857;font-size: 14px;height: 30px;line-height: 30px;margin-bottom: 25px;padding-left: 90px;}
 .cet p{line-height: 30px;margin-bottom: 20px;position: relative;}
 .remind{color: #FF0000;font-size: 12px;position: absolute;left: 120px;bottom: -25px;}

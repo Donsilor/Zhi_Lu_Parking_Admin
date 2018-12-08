@@ -33,7 +33,6 @@
                 type="daterange"
                 align="right"
                 unlink-panels
-                value-format="yyyy-MM-DD HH:mm:ss"
                 range-separator="至"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期">
@@ -46,7 +45,7 @@
         <div class="fl">
           <button class="plechoose fl" @click="selectedAll">请选择 <img src="../../assets/images/icon_9.png" alt=""></button>
           <button class="batchdel fl" @click="delHouses(null)">批量删除</button>
-          <button data-v-a422a792="" class="blu-button fl">导出EXCEL</button>
+          <button data-v-a422a792="" @click="exportExcel()" class="blu-button fl">导出EXCEL</button>
           <button hidden class="greenbut fl">配置车场收费标准</button>
           <div>共搜索到 <span>{{houses.attributes.tatal || 0}}</span> 条数据</div>
         </div>
@@ -142,7 +141,7 @@
             </div>
           </div>
           <div class="data clf">
-            <a class="addresidents" href="javascript:" v-show="this.searchHouseHlodId" @click="showEditHouseHolds(null)">添加住户</a><span>共搜索到{{houseHolds.attributes.tatal || 0}}条数据</span>
+            <a class="addresidents" href="javascript:"  @click="showEditHouseHolds(null)">添加住户</a><span>共搜索到{{houseHolds.attributes.tatal || 0}}条数据</span>
           </div>
           <div class="residents-table">
             <table>
@@ -202,8 +201,8 @@
         <div class="bot clf">
           <div class="cet clf">
             <div class="fl choose-file">选择文件<input type="file" accept=".xls,.xlsx" @change="selectImportExcelFile" /></div>
-            <a class="fr downloadtemp" >下载模板</a>
-            <p>{{importExcelFile.name || ""}} 支持扩展名：.xls .xlsx</p>
+            <a class="fr downloadtemp" href="./static/template-excel/房屋&住户&车辆导入模板.xls">下载模板</a>
+            <p>{{importExcelFile.name || "支持扩展名：.xls .xlsx"}}</p>
           </div>
           <div class="button clf">
             <a class="upload fr" href="javascript:" @click="importExcel()">上传</a>
@@ -255,7 +254,7 @@
               <div class="clf">
                 <span class="fl">出生日期：</span>
                 <el-date-picker
-                  v-model="houseHoldData.temp_birthday"
+                  v-model="houseHoldData.birthday"
                   type="date"
                   placeholder="选择日期">
                 </el-date-picker>
@@ -283,7 +282,9 @@ import Pagination from "../Pagination";
 import moment from "moment";
 import { array2Object, RegExpCheck } from '../../assets/js/common'
 import XLSX from 'xlsx';
+
 export default {
+  name:"houseManage", 
   data () {
     return {
       asd:false,
@@ -312,7 +313,7 @@ export default {
         room_no:null,//     	Y	String	房号
         remark:null,//      	N	String	备注
         temp_courtyard: null, //   	Y	String	庭院副本
-        temp_building: null, //    	Y	String	楼栋副本
+        temp_building: "", //    	Y	String	楼栋副本
         temp_units: null, //       	Y	String	单元副本
         temp_room_no: null //     	Y	String	房号副本
       },
@@ -334,7 +335,7 @@ export default {
         temp_tel:null,//              	Y	String	电话 副本
         temp_identification_no:null,//	N	String	证件号码 副本
         temp_addr:null,//             	N	String	证件地址 副本
-        temp_birthday:null,//         	N	String	出生日期 副本
+        temp_birthday:"",//         	N	String	出生日期 副本
       },
       houseHolds:{
         attributes: {
@@ -368,6 +369,55 @@ export default {
     Pagination
   },
   methods: {
+    
+    exportExcel(){
+      this.$confirm(`确定要导出数据到[Excel]吗?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+      .then(()=>{
+        let loading = this.$loading({
+          lock: true,
+          text: '正在导出...',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        });
+        let excelSheets = new ExcelSheets();
+        this.$api.house
+        .getlist(new RequestParams()
+        .addAttribute("page_size", -1))
+        .then(({dataItems})=>{
+          excelSheets.setSheetHeader("房屋列表", Object.keys(ExcelSheets.dictionary.房屋列表));
+          excelSheets.addRow("房屋列表", ExcelSheets.dictionary.房屋列表);
+          excelSheets.addRows("房屋列表", dataItems.map(o=>{
+            o = o.attributes
+            o.code = o.id;
+            return o;
+          }));
+          
+          return this.$api.household
+          .getlist(new RequestParams()
+          .addAttribute("page_size", -1))
+        })
+        .then(({dataItems})=>{
+          excelSheets.setSheetHeader("住户列表", Object.keys(ExcelSheets.dictionary.住户列表));
+          excelSheets.addRow("住户列表", ExcelSheets.dictionary.住户列表);
+          excelSheets.addRows("住户列表", dataItems.map(o=>{
+            o = o.attributes
+            o.code = o.id;
+            o.house_code = o.house_id
+            return o;
+          }));
+
+          excelSheets.exportExcel("房屋列表和住户列表");
+        })
+        .catch(({message}) => this.$message.error(message))
+        .finally(()=>loading.close());
+      })
+      .catch(() => { this.$message.info('已取消导出') })
+    },
+    
     selectImportExcelFile({target}){
       this.importExcelFile = target.files[0];
     },
@@ -379,6 +429,13 @@ export default {
           type: 'warning'
       })
       .then(()=>{
+        
+        let loading = this.$loading({
+          lock: true,
+          text: '正在导入...',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        });
         let excelSheets = new ExcelSheets();
         for(let name in ExcelSheets.dictionary){
           excelSheets.setSheetHeader(name, Object.keys(ExcelSheets.dictionary[name]));
@@ -407,7 +464,8 @@ export default {
           })
           .catch(error => this.$message.error(error.message), console.log(error))
           .catch(error => this.$message.error(error.message))
-          .catch(error => this.$message.error(error.message));
+          .catch(error => this.$message.error(error.message))
+          .finally(()=>loading.close());
         })
       })
       .catch((error) => (this.$message.info("文件不正确，导入失败") ,console.log(error)))
@@ -436,7 +494,6 @@ export default {
     showEditHouseHolds(id){
       this.houseHoldData = this.houseHolds.dataItems[id] || {};
       this.ifAddInhabitant = true;
-      this.searchHouseHlodId = this.houseData.id;
       this.houseHoldData.temp_household_type = this.houseHoldData.household_type
       this.houseHoldData.temp_full_name = this.houseHoldData.full_name
       this.houseHoldData.temp_sex = this.houseHoldData.sex
@@ -452,15 +509,40 @@ export default {
 
       if(!RegExpCheck.isText(String(this.houseData.temp_room_no).trim())) adopt = "请填写正确的房号";
       if(!RegExpCheck.isText(String(this.houseData.temp_units).trim())) adopt = "请填写正确的单元";
-      if(!RegExpCheck.isText(String(this.houseData.temp_building).trim())) adopt = "请填写正确的楼栋";
+      if(!RegExpCheck.isText(String(this.houseData.building).trim())) adopt = "请填写正确的楼栋";
       if(!RegExpCheck.isText(String(this.houseData.temp_courtyard).trim())) adopt = "请填写正确的庭院名称";
 
       if(adopt) return this.$message.error(adopt);
-
-      this.houseData.courtyard = this.houseData.temp_courtyard
+      
       this.houseData.building = this.houseData.temp_building
+      this.houseData.courtyard = this.houseData.temp_courtyard
       this.houseData.units = this.houseData.temp_units
       this.houseData.room_no = this.houseData.temp_room_no
+
+      this.$api.house.editor(new RequestParams()
+      .addDataItem(new RequestDataItem()
+      .addAttributes(this.houseData)
+      ))
+      .then(response=>{
+        if(response.dataItems.length){
+          this.searchHouseHlodId = response.dataItems[0].attributes.id;
+        }
+        this.$message.success(response.message)
+        this.loadHousesDatas();
+      })
+      .catch(({message}) => this.$message.error(message))
+    },
+
+    editHouseHlolds(){
+
+      let adopt = null;
+      if(!adopt && !this.searchHouseHlodId) adopt = "请先添加房屋";
+      if(!adopt && !RegExpCheck.isFullName(String(this.houseHoldData.temp_full_name).trim())) adopt = "请填写正确的姓名";
+      if(!adopt && !RegExpCheck.isTel(String(this.houseHoldData.temp_tel).trim())) adopt = "请填写正确的电话号码";
+      if(!adopt && !RegExpCheck.isIdCard(String(this.houseHoldData.temp_identification_no).trim())) adopt = "请填写正确的证件号码";
+      if(!adopt && !RegExpCheck.isAddr(String(this.houseHoldData.temp_addr).trim())) adopt = "请填写正确的证件地址";
+
+      if(adopt) return this.$message.error(adopt);
 
       this.houseHoldData.household_type = this.houseHoldData.temp_household_type
       this.houseHoldData.full_name = this.houseHoldData.temp_full_name
@@ -470,29 +552,6 @@ export default {
       this.houseHoldData.addr = this.houseHoldData.temp_addr
       this.houseHoldData.birthday = this.houseHoldData.temp_birthday
 
-      this.$api.house.editor(new RequestParams()
-      .addDataItem(new RequestDataItem()
-      .addAttributes(this.houseData)
-      ))
-      .then(response=>{
-        this.$message.success(response.message)
-        this.ifEditInfo = false;
-        this.loadHousesDatas();
-      })
-      .catch(({message}) => this.$message.error(message))
-    },
-
-    editHouseHlolds(){
-
-      let adopt = null;
-
-      if(!RegExpCheck.isFullName(String(this.houseHoldData.full_name).trim())) adopt = "请填写正确的姓名";
-      if(!RegExpCheck.isTel(String(this.houseHoldData.tel).trim())) adopt = "请填写正确的电话号码";
-      if(!RegExpCheck.isIdCard(String(this.houseHoldData.identification_no).trim())) adopt = "请填写正确的证件号码";
-      if(!RegExpCheck.isAddr(String(this.houseHoldData.addr).trim())) adopt = "请填写正确的证件地址";
-
-      if(adopt) return this.$message.error(adopt);
-
       this.$api.household.editor(new RequestParams()
       .addDataItem(new RequestDataItem()
       .addAttributes(this.houseHoldData)
@@ -501,7 +560,6 @@ export default {
       .then(response=>{
         this.$message.success(response.message)
         this.ifAddInhabitant = false;
-        this.ifEditInfo = false;
         this.loadHouseHoldsDatas();
       })
       .catch(({message}) => this.$message.error(message))
@@ -557,8 +615,8 @@ export default {
         .addAttributes(params)
         .addAttributes(this.searchParams)
         .addAttribute("page_index", pageNum)
-        .addAttribute("begin_time", this.searchTimes[0])
-        .addAttribute("end_time", this.searchTimes[1]))
+        .addAttribute("begin_time", this.searchTimes[0]  && moment(this.searchTimes[0]).format("YYYY-MM-DD"))
+        .addAttribute("end_time", this.searchTimes[1]  && moment(this.searchTimes[1]).format("YYYY-MM-DD")))
         .then(response => {
           this.houses.attributes = response.attributes;
           this.houses.dataItems = response.dataItems.map(o => o.attributes);
@@ -572,7 +630,7 @@ export default {
         .getlist(new RequestParams()
         .addAttributes(params)
         .addAttribute("page_index", pageNum)
-        .addAttribute("house_id", this.searchHouseHlodId))
+        .addAttribute("house_id", this.searchHouseHlodId || -1))
         .then(response => {
           this.houseHolds.attributes = response.attributes;
           this.houseHolds.dataItems = response.dataItems.map(o => o.attributes);
@@ -606,7 +664,6 @@ export default {
     left calc(50% - 400px)
 
   .bot
-    height 500px
 
     .cet
       width 95%

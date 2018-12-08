@@ -53,7 +53,7 @@
               <div :title="dept.remark">{{dept.remark}}</div>
             </td>
             <td>
-              <a href="javascript:" class="edit" @click="showEditDept(index)">编辑</a>
+              <a href="javascript:" class="edit" @click="showEditDept(dept)">编辑</a>
               <a href="javascript:" class="delete" @click="delDept(index)">删除</a>
             </td>
           </tr>
@@ -73,16 +73,16 @@
     <div class="main" v-if="ifEditDepartment">
       <div class="depwd" v-drag.cursor="'#department'">
         <div class="top-nav" id="department">
-          <p class="t-text fl">部门信息</p>
+          <p class="t-text fl">{{deptData.id ? "修改部门" : "新增部门"}}</p>
           <p class="close fr" @click="ifEditDepartment = false">x</p>
         </div>
         <div class="bot">
           <div class="cet">
             <div class="clf">
               <!-- <p class="red"><i class="iconfont icon-jian-tianchong"></i>错误提示的文案</p> -->
-              <p class="num">
+              <p class="num" >
                 <span class='red-text'>*</span><span>编号：</span>
-                <input type="text" v-model="deptData.temp_dept_code" placeholder="请输入编号，必填">
+                <input type="text"  v-bind:disabled="!!deptData.id" v-model="deptData.temp_dept_code" placeholder="请输入编号，必填">
               </p>
               <p class="name">
                 <span class='red-text'>*</span><span>名称：</span>
@@ -121,6 +121,7 @@ import { RegExpCheck } from '../../assets/js/common'
 import moment from 'moment'
 
 export default {
+  name:"departmentManage",
   data () {
     return {
       searchDivShow: true,
@@ -154,15 +155,16 @@ export default {
   },
   methods: {
 
-      selectedAll(){
+    selectedAll(){
         if(this.selectedDepts.length){
           this.selectedDepts = [];
         }
         else this.selectedDepts = this.depts.dataItems.map((o,i)=>i);
-      },
+    },
 
-    showEditDept (id) {
-      this.deptData = this.depts.dataItems[id] || {}
+    showEditDept (row) {
+      console.log(row)
+      this.deptData = row || {}
       this.ifEditDepartment = true
       this.deptData.temp_dept_code = this.deptData.dept_code
       this.deptData.temp_dept_name = this.deptData.dept_name
@@ -186,7 +188,6 @@ export default {
 
       this.$api.dept.editor(new RequestParams()
         .addAttributes(this.deptData)
-        .addAttribute("project_id", 0)
         )
         .then(response=>{
           this.$message.success(response.message)
@@ -223,7 +224,7 @@ export default {
         this.$api.dept
           .getlist(new RequestParams()
           .addAttributes(params)
-          .addAttribute("key", this.searchParam && `AND dept_code = '${this.searchParam}' OR dept_name = '${this.searchParam}'`)
+          .addAttribute("key", this.searchParam && `AND dept_code like '%${this.searchParam}%' OR dept_name like '%${this.searchParam}%'`)
           .addAttribute("page_index", pageNum))
           .then(response => {
             this.depts.attributes = response.attributes;

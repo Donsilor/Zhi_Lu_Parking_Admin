@@ -20,8 +20,6 @@
                 v-model="searchTimes"
                 type="daterange"
                 align="right"
-                unlink-panels
-                value-format="yyyy-MM-DD HH:mm:ss"
                 range-separator="至"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期">
@@ -80,7 +78,7 @@
               <td><div :title="project.create_time">{{project.create_time}}</div></td>
               <td><div :title="project.update_time">{{project.update_time}}</div></td>
               <td><div :title="project.user_name">{{project.user_name}}</div></td>
-              <td><span v-bind:class="{normal:project.status}">正常</span></td>
+              <td><a href="javascript:" class="buttion" @click="projectData = project,dialogProjectStatus = true" v-bind:class="{normal:project.status}">{{["正常","停用","注销"][project.status]}}</a></td>
               <td>
                 <a class="bj" href="javascript:" @click="showEditProject(index)">编辑</a>
                 <a href="javascript:" class="delete" v-on:click="delProject(index)">删除</a>
@@ -104,7 +102,7 @@
     <div class="main" v-if="ifEditInfo">
       <div class="depwd" v-drag.cursor="'#editDict'">
         <div class="top-nav" id="editDict">
-          <p class="t-text fl">项目信息</p>
+          <p class="t-text fl">{{projectData.id ? "修改项目" : "新增项目"}}</p>
           <p class="close fr" @click="ifEditInfo = false">x</p>
         </div>
         <div class="bot">
@@ -113,7 +111,7 @@
               <!-- <p class="red" ><i class="iconfont icon-jian-tianchong"></i>错误提示的文案</p> -->
               <p class="clf">
                 <span class="fl"><span class='red-text'>*</span>项目编号：</span>
-                <input class="fl" v-model="projectData.temp_project_code" placeholder="请输入编号，必填" type="text">
+                <input class="fl" v-bind:disabled="!!projectData.id" v-model="projectData.temp_project_code" placeholder="请输入编号，必填" type="text">
               </p>
               <p class="clf">
                 <span class="fl"><span class='red-text'>*</span>项目名称：</span>
@@ -158,6 +156,21 @@
       </div>
     </div>
     <!--弹窗-->
+    <el-dialog
+      title="确认修改项目状态"
+      :visible.sync="dialogProjectStatus"
+      width="20%"
+      >
+      <el-radio-group v-model="projectData.status">
+        <el-radio :label="0">正常</el-radio>
+        <el-radio :label="1">停用</el-radio>
+        <el-radio :label="2">注销</el-radio>
+      </el-radio-group>
+      <span slot="footer" class="dialog-footer">
+        <el-button :style="{padding: '0 0'}" @click="dialogProjectStatus = false">取 消</el-button>
+        <el-button :style="{padding: '0 0'}" type="primary" @click="updateStatus()">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -168,8 +181,10 @@ import Pagination from '../Pagination'
 import moment from 'moment'
 
 export default {
+  name:"projectManage",
   data () {
     return {
+      dialogProjectStatus:false,
       ifEditInfo: false,
       resetPW: false,
       /**是否显示搜索输入框 */
@@ -215,6 +230,15 @@ export default {
   filters: {},
   methods: {
 
+    updateStatus(){
+      this.$api.project.updatestatus(new RequestParams()
+      .addAttribute("id", this.projectData.id)
+      .addAttribute("status", this.projectData.status))
+      .then(({message}) => this.$message.success(message))
+      .catch(({message}) => this.$message.error(message))
+      .finally(()=>this.dialogProjectStatus = false);
+    },
+
     selectedAll () {
       if (this.selectedProjects.length) {
         this.selectedProjects = []
@@ -235,7 +259,7 @@ export default {
     },
 
     editProject () {
-      
+
       let adopt = null;
 //      if(String(this.projectData.project_code).trim() == "") adopt = "请填写项目编号";
 //      if(String(this.projectData.project_name).trim() == "") adopt = "请填写项目名称";
@@ -316,8 +340,8 @@ export default {
       .addAttributes(params)
       .addAttribute('key', this.searchParam && ` AND project_code like '%${this.searchParam}%' OR project_name like '${this.searchParam}'`)
       .addAttribute('page_index', pageNum)
-      .addAttribute('begin_time', this.searchTimes[0])
-      .addAttribute('end_time', this.searchTimes[1]))
+      .addAttribute('begin_time', this.searchTimes[0] && moment(this.searchTimes[0]).format("YYYY-MM-DD"))
+      .addAttribute('end_time', this.searchTimes[1] && moment(this.searchTimes[1]).format("YYYY-MM-DD")))
       .then(response => {
         this.projects.attributes = response.attributes
         this.projects.dataItems = response.dataItems.map(o => o.attributes)

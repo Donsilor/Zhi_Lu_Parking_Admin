@@ -6,12 +6,8 @@
 .result .tab .datadictionary-table tr th:nth-child(6){width:20%;text-align:center;}
 .result .tab .datadictionary-table tr th:nth-child(7){width:20%;text-align:center;}
 .result .tab .datadictionary-table tr th:nth-child(8){width:20%;text-align:center;}
-.result .tab .datadictionary-table tr td:last-child a:first-child {
-	margin-right: 15%;
-}
 
-
-.result .tab .datadictionary-table tr td{border-bottom:1px solid #e1e6eb;border-right:1px solid #e1e6eb;height:45px;font-size:14px;color:#999;}
+.result .tab .datadictionary-table tr td{border-bottom:1px solid #e1e6eb;border-right:1px solid #e1e6eb;height:45px;}
 .result .tab .datadictionary-table tr td:first-child{text-align:center;}
 .result .tab .datadictionary-table tr td:nth-child(2){text-align:left;padding-left:20px;}
 .result .tab .datadictionary-table tr td:nth-child(3){text-align:center;}
@@ -22,10 +18,6 @@
 .result .tab .datadictionary-table tr td:nth-child(8){text-align:center;}
 
 
-.depwd{width: 600px;top: calc(50% - 195px);left: calc(50% - 300px);}
-.bot{width:100%;background-color: #fff;}
-.t-text{font-size: 14px;color: #fff;line-height: 60px;margin-left:25px;}
-.cet{width: 440px;margin: 0 auto;padding-top: 10px;}
 .red{color: #f35857;font-size: 14px;height: 30px;line-height: 30px;margin-bottom: 25px;padding-left: 90px;}
 .cet p{line-height: 30px;margin-bottom: 20px;}
 .cet p span{text-align:right;width: 20%;}
